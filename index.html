@@ -4,8 +4,230 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Entablador.js</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+    <style>
+      body {
+        padding: 20px;
+        background-color: rgb(23, 16, 81);
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <h3>Entablador.js</h3>
+    <table id="TABLA" class="table table-hover table-sm table-striped table-bordered table-dark" style="margin-left: auto; margin-right: auto">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Edad</th>
+          <th>Fecha de Nacimiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>John Doe</td>
+          <td>30</td>
+          <td>01/01/1990</td>
+        </tr>
+        <tr>
+          <td>Jane Doe</td>
+          <td>25</td>
+          <td>01/01/1995</td>
+        </tr>
+        <tr>
+          <td>John Smith</td>
+          <td>40</td>
+          <td>01/01/1980</td>
+        </tr>
+      </tbody>
+    </table>
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/sc-2.2.0/sb-1.6.0/sr-1.3.0/datatables.min.css" rel="stylesheet" />
+  <script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/sc-2.2.0/sb-1.6.0/sr-1.3.0/datatables.min.js"></script>
+  <script src="https://cdn.datatables.net/plug-ins/1.12.1/filtering/type-based/accent-neutralise.js"></script>
+
+  <script>
+    /*
+      var TABLA = new DataTable("#TABLA", {
+        language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
+        autoWidth: false,
+        columnDefs: [
+          { type: "locale-compare", targets: "_all" },
+          {
+            targets: 2, // CALCULAR LA EDAD
+            render: function (data, type, row, meta) {
+              //console.log(data, type, row, meta);
+            },
+          },
+        ],
+        order: [[1, "asc"]],
+        columns: [
+          //{ data: null, defaultContent: "", orderable: false, width: "50px", className: "center botones", visible: false },
+          { data: "nombre", defaultContent: "" },
+          { data: "edad", defaultContent: "" },
+          { data: "fechaNcimiento", defaultContent: "" },
+          //{ data: null, defaultContent: "" },
+        ],
+      });
+      $("#TABLA_BAJURIM").on("preDraw.dt", function () {
+        $('#TABLA_BAJURIM [data-toggle="tooltip"]').tooltip("hide");
+      });
+      $("#TABLA_BAJURIM").on("draw.dt", function () {
+        $('#TABLA_BAJURIM [data-toggle="tooltip"]').tooltip();
+      });
+    */
+    // ########################################################################
+
+    /*
+      function ENTABLADOR() {
+        ENTABLADOR.crear = function (ID) {
+          console.log(`ID: ${ID}`);
+        };
+        return ENTABLADOR;
+      }
+      */
+    /*
+      ENTABLADOR
+          .crear({
+              ID: ID,
+              columns: [{}, {}, {}],
+              order: [1, "asc"],
+              columnDefs: [{}, {}],
+              autoWidth: false
+          })
+          .editable(true)
+          .guardar(true)
+          .eliminar(true)
+          .add([{}])
+          .draw();
+
+      */
+    // ########################################################################
+
+    const ENTABLADOR = (function () {
+      // Función para crear el objeto con métodos encadenables
+      function id(ID) {
+        const instancia = {
+          id: ID,
+          editable(state) {
+            console.log(ID + " -- editable: " + state);
+            return this;
+          },
+          guardar(state) {
+            console.log(ID + " -- guardar: " + state);
+            return this;
+          },
+          eliminar(state) {
+            console.log(ID + " -- eliminar: " + state);
+            return this;
+          },
+          add(data) {
+            console.log(ID + " -- add: " + data);
+            return this;
+          },
+          draw() {
+            console.log("Drawing table");
+            return this;
+          },
+        };
+        return instancia;
+      }
+      // ########################################################################
+      function crear(config) {
+        //console.log("config:", config);
+        //detect if it is an object (and not empty)
+        if (typeof config != "object" || Object.keys(config).length === 0) {
+          console.error("No se ha especificado una configuración correctamente");
+          return;
+        }
+        if (!config.id || typeof config.id != "string" || config.id == "") {
+          console.error("No se ha especificado un ID");
+          return;
+        }
+        if (document.getElementById(config.id) == null) {
+          console.error("No se ha encontrado el ID especificado (", config.id, ")");
+          return;
+        }
+        if (!(window[config.id] instanceof Element)) {
+          console.error("Ya existe una tabla con el ID especificado (", config.id, ")");
+          return;
+        }
+        const instancia = {
+          id: config.id,
+        };
+        // ########################################################################
+        /*
+          .crear({
+              ID: ID,
+              columns: [{}, {}, {}],
+              order: [1, "asc"],
+              columnDefs: [{}, {}],
+              autoWidth: false
+          })
+        */
+        if (config.columnDefs) {
+          columnDefs = config.columnDefs;
+          var hayLocaleCompare = false;
+          for (let i = 0; i < columnDefs.length; i++) {
+            if (columnDefs.type == "locale-compare") {
+              hayLocaleCompare = true;
+              break;
+            }
+          }
+          if (!hayLocaleCompare) {
+            columnDefs.unshift({ type: "locale-compare", targets: "_all" });
+          }
+        } else {
+          columnDefs = [{ type: "locale-compare", targets: "_all" }];
+        }
+        var opciones = {
+          language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
+          autoWidth: config.autoWidth || false,
+          columnDefs: columnDefs,
+          order: config.order || [[1, "asc"]],
+        };
+        if (config.columns) {
+          opciones.columns = config.columns;
+        }
+        //console.log("opciones:", opciones);
+        //console.log("config:", config);
+        var NuevaTabla = new DataTable("#" + config.id, opciones);
+        $("#" + config.id).on("preDraw.dt", function () {
+          $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
+        });
+        $("#" + config.id).on("draw.dt", function () {
+          $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
+        });
+        window[config.id] = NuevaTabla;
+
+        // ########################################################################
+        //return instancia;
+        return id(config.id);
+      }
+      return {
+        id,
+        crear,
+      };
+    })();
+
+    // Uso del objeto ENTABLADOR
+    /*
+      ENTABLADOR.crear({
+        ID: "tabla1",
+        columns: [{}, {}, {}],
+        order: [1, "asc"],
+        columnDefs: [{}, {}],
+        autoWidth: false,
+      })
+        .editable(true)
+        .guardar(true)
+        .eliminar(true)
+        .add([{}])
+        .draw();
+      */
+  </script>
 </html>
