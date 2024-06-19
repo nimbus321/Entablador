@@ -25,32 +25,45 @@ const ENTABLADOR = (function () {
     }
     const instancia = {
       id: ID,
+      tipoEdicion(type) {
+        // console.log(ID + " -- tipoEdicion: " + type);
+        var tipos = ["inline", "modal"];
+        if (!tipos.includes(type)) {
+          console.error("Tipo de edición no válido. Tipos válidos:", tipos);
+          return this;
+        }
+        //set data-editable-type
+        TABLA.table().node().setAttribute("data-editable-type", type);
+
+        // TABLA.table().node().classList.toggle("editable", state);
+        return this;
+      },
       editable(state) {
-        console.log(ID + " -- editable: " + state);
+        // console.log(ID + " -- editable: " + state);
         TABLA.table().node().classList.toggle("editable", state);
         return this;
       },
       guardar(state) {
-        console.log(ID + " -- guardar: " + state);
+        // console.log(ID + " -- guardar: " + state);
         return this;
       },
       eliminar() {
-        console.log(ID + " -- eliminar()");
+        // console.log(ID + " -- eliminar()");
         if (TABLA != null && !(TABLA instanceof Element)) {
           TABLA.destroy();
         }
         return this;
       },
       add(data) {
-        console.log(ID + " -- add: " + data);
+        // console.log(ID + " -- add: " + data);
 
         if (TABLA != null && typeof TABLA == "object" && !(TABLA instanceof Element)) {
           /*
-                [1,2,3]
-                [[1,2,3],[4,5,6]]
-                {a:1,b:2,c:3}
-                [{a:1,b:2,c:3},{a:4,b:5,c:6}]
-              */
+            [1,2,3]
+            [[1,2,3],[4,5,6]]
+            {a:1,b:2,c:3}
+            [{a:1,b:2,c:3},{a:4,b:5,c:6}]
+          */
           if (Array.isArray(data)) {
             if (typeof data[0] == "object") {
               TABLA.rows.add(data).draw();
@@ -141,11 +154,11 @@ const ENTABLADOR = (function () {
     });
     window[config.id] = NuevaTabla;
     //set click event
-    $("#" + config.id + " tbody").on("click", "tr", function () {
+    $("#" + config.id + " tbody").on("click", "tr td", function () {
       //detectar si la tabla tiene la class editable
       if ($(this).closest("table").hasClass("editable")) {
-        console.log("CLICK!!!");
-        console.log("EDITABLE!!!");
+        // console.log("CLICK!!!");
+        ENTABLADOR_EDITAR_TABLA(TABLA, this);
       }
     });
 
@@ -158,7 +171,113 @@ const ENTABLADOR = (function () {
     crear,
   };
 })();
+var CAMBIOS_BAJURIM = {
+  cambios: {},
+};
+function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
+  console.log("TABLA", TABLA);
+  console.log("el", el);
 
+  var cell = $(el);
+
+  var row = TABLA.row(cell).data();
+  console.log("row", row);
+  // console.log("cell", cell);
+  var indiceCelda = TABLA.cell(el).index().column;
+  // Obtener el dato de la celda específica que fue clickeada
+  var celdaDato = TABLA.cell(el).data();
+  console.log("indiceCelda", indiceCelda);
+  console.log("celdaDato", celdaDato);
+
+  //console.log(nombreColumna);
+  if (nombreColumna == "null" || nombreColumna == undefined || nombreColumna == "") {
+    console.log("nombreColumna", nombreColumna);
+    //detectar si la celda tiene la clase botones
+    if (!cell.hasClass("editable")) {
+      alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
+    }
+    return;
+  }
+
+  // obtener el row de la celda (usando datatables)
+  var row = TABLA.row(cell.closest("tr")).data();
+  //console.log("row", row);
+  var originalContentHTML = cell.html();
+  var originalContent = row[nombreColumna];
+
+  var camposInputDate = ["fechaNacimiento", "fechaInscripcion"];
+  var camposInputBolean = ["actualmenteEnYeshi"];
+  var input;
+  if (camposInputBolean.includes(nombreColumna)) {
+    input = $(`<input type="checkbox">`).prop("checked", originalContent);
+  } else {
+    var type = camposInputDate.includes(nombreColumna) ? "date" : "text";
+    input = $(`<input type="${type}">`).val(originalContent);
+  }
+
+  // Evitar que el clic en el input borre su contenido
+  input.on("click", function (event) {
+    event.stopPropagation();
+  });
+  //console.log("cell", cell);
+  cell.empty().html(input);
+  // Enfocar en el input recién creado
+  input.focus();
+  input.on("keydown", function (event) {
+    if (event.key === "Enter") {
+      const target = event.target;
+      if (target.tagName === "INPUT") {
+        //console.log('Se presionó Enter en el input.');
+        input.blur();
+      }
+    }
+    if (event.key === "Escape") {
+      const target = event.target;
+      if (target.tagName === "INPUT") {
+        //console.log('Se presionó Escape en el input.');
+        cell.empty().html(originalContentHTML);
+      }
+    }
+  });
+  // Manejar el evento 'blur' (pérdida de foco) en el input
+  input.on("blur", function () {
+    //detectar si es un checkbox
+    var newContent;
+    if (camposInputBolean.includes(nombreColumna)) {
+      newContent = input.prop("checked");
+    } else {
+      newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
+    }
+    //console.log("newContent: ",newContent, "originalContent: ",originalContent);
+
+    if (newContent == originalContent) {
+      //console.log("No se editó nada");
+      cell.empty().text(originalContent);
+      return;
+    }
+    cell.empty().text(newContent);
+    // Cambiar el color de la celda a 'text-primary'
+    cell.addClass("td-editado"); // AÑADIR TAMBIEN ------ text-primary font-weight-bold
+    cell.attr("title", "Campo Editado");
+    console.log("row", row);
+    var id = row.id;
+    /* VARIABLES
+          id,
+          nombreColumna,
+          newContent,
+      */
+    if (!CAMBIOS_BAJURIM.cambios[id]) {
+      CAMBIOS_BAJURIM.cambios[id] = {};
+    }
+    CAMBIOS_BAJURIM.cambios[id][nombreColumna] = newContent;
+
+    console.log("CAMBIOS_BAJURIM", CAMBIOS_BAJURIM);
+    row[nombreColumna] = newContent;
+    //console.log("nombreColumna",nombreColumna)
+    //console.log("row",row);
+    TABLA.draw();
+  });
+}
 // Uso del objeto ENTABLADOR
 /*
           ENTABLADOR.crear({
@@ -174,3 +293,17 @@ const ENTABLADOR = (function () {
             .add([{}])
             .draw();
           */
+ENTABLADOR.crear({
+  id: "TABLA",
+  columns: [{ data: "asd" }, { data: "asd2", class: "editable" }, { data: "asd3" }],
+  columnDefs: [
+    {
+      targets: 1, // Botones / Opciones
+      render: function (data, type, row, meta) {
+        return `lel`;
+      },
+    },
+  ],
+})
+  .editable(true)
+  .tipoEdicion("modal");
