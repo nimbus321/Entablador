@@ -10,18 +10,24 @@ const ENTABLADOR = (function () {
       return;
     }
     if (document.getElementById(ID) == null) {
-      console.error("No se ha encontrado el ID especificado (", ID, ")");
-      return;
+      console.error("'#" + ID + "' no existe");
+      // console.error("No se ha encontrado el ID especificado (", ID, ")");
+      return null;
     }
     //  if (!(window[ID] instanceof Element)) {
     //    console.error("No se ha encontrado el ID especificado (", ID, ")");
     //    return;
     //  }
     var TABLA = window[ID];
+    if (TABLA instanceof Element) {
+      console.error("Aún no has creado la tabla! '#" + ID + "' es solo un elemento HTML");
+      return this;
+    }
     const instancia = {
       id: ID,
       editable(state) {
         console.log(ID + " -- editable: " + state);
+        TABLA.table().node().classList.toggle("editable", state);
         return this;
       },
       guardar(state) {
@@ -40,11 +46,11 @@ const ENTABLADOR = (function () {
 
         if (TABLA != null && typeof TABLA == "object" && !(TABLA instanceof Element)) {
           /*
-            [1,2,3]
-            [[1,2,3],[4,5,6]]
-            {a:1,b:2,c:3}
-            [{a:1,b:2,c:3},{a:4,b:5,c:6}]
-          */
+                [1,2,3]
+                [[1,2,3],[4,5,6]]
+                {a:1,b:2,c:3}
+                [{a:1,b:2,c:3},{a:4,b:5,c:6}]
+              */
           if (Array.isArray(data)) {
             if (typeof data[0] == "object") {
               TABLA.rows.add(data).draw();
@@ -92,14 +98,14 @@ const ENTABLADOR = (function () {
     };
     // ########################################################################
     /*
-          .crear({
-              ID: ID,
-              columns: [{}, {}, {}],
-              order: [1, "asc"],
-              columnDefs: [{}, {}],
-              autoWidth: false
-          })
-        */
+              .crear({
+                  ID: ID,
+                  columns: [{}, {}, {}],
+                  order: [1, "asc"],
+                  columnDefs: [{}, {}],
+                  autoWidth: false
+              })
+            */
     if (config.columnDefs) {
       columnDefs = config.columnDefs;
       var hayLocaleCompare = false;
@@ -134,6 +140,14 @@ const ENTABLADOR = (function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
     });
     window[config.id] = NuevaTabla;
+    //set click event
+    $("#" + config.id + " tbody").on("click", "tr", function () {
+      //detectar si la tabla tiene la class editable
+      if ($(this).closest("table").hasClass("editable")) {
+        console.log("CLICK!!!");
+        console.log("EDITABLE!!!");
+      }
+    });
 
     // ########################################################################
     //return instancia;
@@ -147,16 +161,16 @@ const ENTABLADOR = (function () {
 
 // Uso del objeto ENTABLADOR
 /*
-      ENTABLADOR.crear({
-        ID: "tabla1",
-        columns: [{}, {}, {}],
-        order: [1, "asc"],
-        columnDefs: [{}, {}],
-        autoWidth: false,
-      })
-        .editable(true)
-        .guardar(true)
-        .eliminar(true)
-        .add([{}])
-        .draw();
-      */
+          ENTABLADOR.crear({
+            ID: "tabla1",
+            columns: [{}, {}, {}],
+            order: [1, "asc"],
+            columnDefs: [{}, {}],
+            autoWidth: false,
+          })
+            .editable(true)
+            .guardar(true)
+            .eliminar(true)
+            .add([{}])
+            .draw();
+          */
