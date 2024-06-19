@@ -5,6 +5,19 @@
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
   function id(ID) {
+    if (typeof ID != "string" || ID == "") {
+      console.error("No se ha especificado un ID");
+      return;
+    }
+    if (document.getElementById(ID) == null) {
+      console.error("No se ha encontrado el ID especificado (", ID, ")");
+      return;
+    }
+    //  if (!(window[ID] instanceof Element)) {
+    //    console.error("No se ha encontrado el ID especificado (", ID, ")");
+    //    return;
+    //  }
+    var TABLA = window[ID];
     const instancia = {
       id: ID,
       editable(state) {
@@ -15,16 +28,40 @@ const ENTABLADOR = (function () {
         console.log(ID + " -- guardar: " + state);
         return this;
       },
-      eliminar(state) {
-        console.log(ID + " -- eliminar: " + state);
+      eliminar() {
+        console.log(ID + " -- eliminar()");
+        if (TABLA != null && !(TABLA instanceof Element)) {
+          TABLA.destroy();
+        }
         return this;
       },
       add(data) {
         console.log(ID + " -- add: " + data);
+
+        if (TABLA != null && typeof TABLA == "object" && !(TABLA instanceof Element)) {
+          /*
+            [1,2,3]
+            [[1,2,3],[4,5,6]]
+            {a:1,b:2,c:3}
+            [{a:1,b:2,c:3},{a:4,b:5,c:6}]
+          */
+          if (Array.isArray(data)) {
+            if (typeof data[0] == "object") {
+              TABLA.rows.add(data).draw();
+            } else if (data[0] != null) {
+              TABLA.row.add(data).draw();
+            }
+          } else {
+            TABLA.row.add(data).draw();
+          }
+        }
         return this;
       },
       draw() {
         console.log("Drawing table");
+        if (TABLA != null && !(TABLA instanceof Element)) {
+          TABLA.draw();
+        }
         return this;
       },
     };
