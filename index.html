@@ -49,7 +49,7 @@
   <link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/sc-2.2.0/sb-1.6.0/sr-1.3.0/datatables.min.css" rel="stylesheet" />
   <script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/r-2.5.0/sc-2.2.0/sb-1.6.0/sr-1.3.0/datatables.min.js"></script>
   <script src="https://cdn.datatables.net/plug-ins/1.12.1/filtering/type-based/accent-neutralise.js"></script>
-
+  <script src="Entablador.js"></script>
   <script>
     /*
       var TABLA = new DataTable("#TABLA", {
@@ -107,127 +107,5 @@
 
       */
     // ########################################################################
-
-    const ENTABLADOR = (function () {
-      // Función para crear el objeto con métodos encadenables
-      function id(ID) {
-        const instancia = {
-          id: ID,
-          editable(state) {
-            console.log(ID + " -- editable: " + state);
-            return this;
-          },
-          guardar(state) {
-            console.log(ID + " -- guardar: " + state);
-            return this;
-          },
-          eliminar(state) {
-            console.log(ID + " -- eliminar: " + state);
-            return this;
-          },
-          add(data) {
-            console.log(ID + " -- add: " + data);
-            return this;
-          },
-          draw() {
-            console.log("Drawing table");
-            return this;
-          },
-        };
-        return instancia;
-      }
-      // ########################################################################
-      function crear(config) {
-        //console.log("config:", config);
-        //detect if it is an object (and not empty)
-        if (typeof config != "object" || Object.keys(config).length === 0) {
-          console.error("No se ha especificado una configuración correctamente");
-          return;
-        }
-        if (!config.id || typeof config.id != "string" || config.id == "") {
-          console.error("No se ha especificado un ID");
-          return;
-        }
-        if (document.getElementById(config.id) == null) {
-          console.error("No se ha encontrado el ID especificado (", config.id, ")");
-          return;
-        }
-        if (!(window[config.id] instanceof Element)) {
-          console.error("Ya existe una tabla con el ID especificado (", config.id, ")");
-          return;
-        }
-        const instancia = {
-          id: config.id,
-        };
-        // ########################################################################
-        /*
-          .crear({
-              ID: ID,
-              columns: [{}, {}, {}],
-              order: [1, "asc"],
-              columnDefs: [{}, {}],
-              autoWidth: false
-          })
-        */
-        if (config.columnDefs) {
-          columnDefs = config.columnDefs;
-          var hayLocaleCompare = false;
-          for (let i = 0; i < columnDefs.length; i++) {
-            if (columnDefs.type == "locale-compare") {
-              hayLocaleCompare = true;
-              break;
-            }
-          }
-          if (!hayLocaleCompare) {
-            columnDefs.unshift({ type: "locale-compare", targets: "_all" });
-          }
-        } else {
-          columnDefs = [{ type: "locale-compare", targets: "_all" }];
-        }
-        var opciones = {
-          language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
-          autoWidth: config.autoWidth || false,
-          columnDefs: columnDefs,
-          order: config.order || [[1, "asc"]],
-        };
-        if (config.columns) {
-          opciones.columns = config.columns;
-        }
-        //console.log("opciones:", opciones);
-        //console.log("config:", config);
-        var NuevaTabla = new DataTable("#" + config.id, opciones);
-        $("#" + config.id).on("preDraw.dt", function () {
-          $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
-        });
-        $("#" + config.id).on("draw.dt", function () {
-          $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
-        });
-        window[config.id] = NuevaTabla;
-
-        // ########################################################################
-        //return instancia;
-        return id(config.id);
-      }
-      return {
-        id,
-        crear,
-      };
-    })();
-
-    // Uso del objeto ENTABLADOR
-    /*
-      ENTABLADOR.crear({
-        ID: "tabla1",
-        columns: [{}, {}, {}],
-        order: [1, "asc"],
-        columnDefs: [{}, {}],
-        autoWidth: false,
-      })
-        .editable(true)
-        .guardar(true)
-        .eliminar(true)
-        .add([{}])
-        .draw();
-      */
   </script>
 </html>

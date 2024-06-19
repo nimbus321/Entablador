@@ -1,0 +1,16 @@
+{
+  "name": "entablador",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Entablador.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify": "uglifyjs Entablador.js -o Entablador.min.js --compress --mangle"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "uglify-js": "^3.18.0"
+  }
+}
