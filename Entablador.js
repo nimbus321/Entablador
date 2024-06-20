@@ -315,9 +315,8 @@ function getNewID(tablaDatos) {
   - number
   - checkbox
   - date
+  - Datetime-local (fecha con hora)
   
   - file
   - image
-
-  - tel
 */
