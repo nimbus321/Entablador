@@ -3,6 +3,8 @@
    ######################################### */
 
 var CAMBIOS_TABLAS = {};
+var Entablador_tipos_edicion = ["inline", "modal"];
+
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
   function id(ID) {
@@ -28,9 +30,8 @@ const ENTABLADOR = (function () {
       id: ID,
       tipoEdicion(type) {
         // console.log(ID + " -- tipoEdicion: " + type);
-        var tipos = ["inline", "modal"];
-        if (!tipos.includes(type)) {
-          console.error("Tipo de edición no válido. Tipos válidos:", tipos);
+        if (!Entablador_tipos_edicion.includes(type)) {
+          console.error("Tipo de edición no válido. Tipos válidos:", Entablador_tipos_edicion);
           return this;
         }
         //set data-editable-type
@@ -197,70 +198,74 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
     return;
   }
 
-  var type = "text";
-  input = $(`<input type="${type}">`).val(originalContent);
+  // --
+  var type_edicion = $(el).closest("table").attr("data-editable-type");
+  if (!Entablador_tipos_edicion.includes(type_edicion)) {
+    console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + Entablador_tipos_edicion[0] + "'. Tipos válidos:", Entablador_tipos_edicion);
+    type_edicion = Entablador_tipos_edicion[0];
+  }
+  console.log(type_edicion);
+  // --
+  if (type_edicion == "inline") {
+    var type_input = "text";
+    input = $(`<input type="${type_input}">`).val(originalContent);
+    cell.empty().html(input);
 
-  // input = $(`<input type="checkbox">`).prop("checked", originalContent);
-  // input = $(`<input type="${type}">`).val(originalContent);
+    // Evitar que el clic en el input borre su contenido
+    input.on("click", function (e) {
+      e.stopPropagation();
+    });
 
-  // Evitar que el clic en el input borre su contenido
-  input.on("click", function (event) {
-    event.stopPropagation();
-  });
-  //console.log("cell", cell);
-  cell.empty().html(input);
-  // Enfocar en el input recién creado
-  input.focus();
-  input.on("keydown", function (event) {
-    if (event.key === "Enter") {
-      const target = event.target;
-      if (target.tagName === "INPUT") {
-        //console.log('Se presionó Enter en el input.');
-        input.blur();
+    // Enfocar en el input recién creado
+    input.focus();
+    input.on("keydown", function (e) {
+      if (e.target.tagName === "INPUT") {
+        if (e.key === "Enter") {
+          input.blur();
+        }
+        if (e.key === "Escape") {
+          //console.log('Se presionó Escape en el input.');
+          cell.empty().html(originalContent);
+        }
       }
-    }
-    if (event.key === "Escape") {
-      const target = event.target;
-      if (target.tagName === "INPUT") {
-        //console.log('Se presionó Escape en el input.');
-        cell.empty().html(originalContent);
+    });
+
+    input.on("blur", function () {
+      // get type of input from data-editable-type attribute
+
+      //detectar si es un checkbox
+      newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
+      //console.log("newContent: ",newContent, "originalContent: ",originalContent);
+
+      if (newContent == originalContent) {
+        //console.log("No se editó nada");
+        cell.empty().text(originalContent);
+        return;
       }
-    }
-  });
-  // Manejar el evento 'blur' (pérdida de foco) en el input
-  input.on("blur", function () {
-    //detectar si es un checkbox
-    newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
-    //console.log("newContent: ",newContent, "originalContent: ",originalContent);
+      cell.empty().text(newContent);
+      // Cambiar el color de la celda a 'text-primary'
+      cell.addClass("td-editado"); // AÑADIR TAMBIEN ------ text-primary font-weight-bold
+      cell.attr("title", "Campo Editado");
+      console.log("row", row);
+      var id = row.id;
+      if (!CAMBIOS_TABLAS[TablaID]) {
+        CAMBIOS_TABLAS[TablaID] = {
+          cambios: {},
+          eliminados: [],
+        };
+      }
+      if (!CAMBIOS_TABLAS[TablaID].cambios[id]) {
+        CAMBIOS_TABLAS[TablaID].cambios[id] = {};
+      }
+      CAMBIOS_TABLAS[TablaID].cambios[id][nombreColumna] = newContent;
 
-    if (newContent == originalContent) {
-      //console.log("No se editó nada");
-      cell.empty().text(originalContent);
-      return;
-    }
-    cell.empty().text(newContent);
-    // Cambiar el color de la celda a 'text-primary'
-    cell.addClass("td-editado"); // AÑADIR TAMBIEN ------ text-primary font-weight-bold
-    cell.attr("title", "Campo Editado");
-    console.log("row", row);
-    var id = row.id;
-    if (!CAMBIOS_TABLAS[TablaID]) {
-      CAMBIOS_TABLAS[TablaID] = {
-        cambios: {},
-        eliminados: [],
-      };
-    }
-    if (!CAMBIOS_TABLAS[TablaID].cambios[id]) {
-      CAMBIOS_TABLAS[TablaID].cambios[id] = {};
-    }
-    CAMBIOS_TABLAS[TablaID].cambios[id][nombreColumna] = newContent;
-
-    console.log("CAMBIOS_TABLAS['" + TablaID + "']", CAMBIOS_TABLAS[TablaID]);
-    row[nombreColumna] = newContent;
-    //console.log("nombreColumna",nombreColumna)
-    //console.log("row",row);
-    TABLA.draw();
-  });
+      console.log("CAMBIOS_TABLAS['" + TablaID + "']", CAMBIOS_TABLAS[TablaID]);
+      row[nombreColumna] = newContent;
+      //console.log("nombreColumna",nombreColumna)
+      //console.log("row",row);
+      TABLA.draw();
+    });
+  } // aqui termina el inline
 }
 // Uso del objeto ENTABLADOR
 /*
@@ -290,11 +295,11 @@ ENTABLADOR.crear({
   // ],
 })
   .editable(true)
-  .tipoEdicion("modal")
+  .tipoEdicion("inline")
   .add([
-    { id: 1, nombre: "Juan", edad: 30, fechaNacimiento: "1991-01-01" },
-    { id: 2, nombre: "Pedro", edad: 25, fechaNacimiento: "1996-01-01" },
-    { id: 3, nombre: "Luis", edad: 35, fechaNacimiento: "1986-01-01" },
+    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "23/03/1993" },
+    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "17/08/1985" },
+    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "06/10/1990" },
   ]);
 
 function getNewID(tablaDatos) {
@@ -316,7 +321,37 @@ function getNewID(tablaDatos) {
   - checkbox
   - date
   - Datetime-local (fecha con hora)
+  - time
   
   - file
   - image
+*/
+/*
+var nombreIdentificador = "Nombre de la Persona";
+var inputs = ``;
+var div = `
+<div id="ENTABLADOR_MODAL" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Editar Datos | <span class="text-uppercase font-wight-bold text-primary">${nombreIdentificador}</span></h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">${inputs}</div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+      <button type="button" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+</div>
+`;
+if ($(".modal.show").length > 0) {
+  console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto.");
+}
+// var div = $('<div></div><h1>Input:</h1><input type="text">');
+$("body").prepend(div);
+$("#ENTABLADOR_MODAL").modal("show");
 */
