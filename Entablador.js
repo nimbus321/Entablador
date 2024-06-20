@@ -171,7 +171,7 @@ const ENTABLADOR = (function () {
     crear,
   };
 })();
-var CAMBIOS_BAJURIM = {
+var CAMBIOS_TABLA = {
   cambios: {},
 };
 function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
@@ -179,41 +179,27 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
   console.log("el", el);
 
   var cell = $(el);
-
-  var row = TABLA.row(cell).data();
-  console.log("row", row);
-  // console.log("cell", cell);
+  var row = TABLA.row(el).data();
   var indiceCelda = TABLA.cell(el).index().column;
-  // Obtener el dato de la celda específica que fue clickeada
-  var celdaDato = TABLA.cell(el).data();
-  console.log("indiceCelda", indiceCelda);
-  console.log("celdaDato", celdaDato);
+  var originalContent = TABLA.cell(el).data();
+  var nombreColumna = TABLA.settings().init().aoColumns[indiceCelda].data;
 
-  //console.log(nombreColumna);
-  if (nombreColumna == "null" || nombreColumna == undefined || nombreColumna == "") {
-    console.log("nombreColumna", nombreColumna);
-    //detectar si la celda tiene la clase botones
-    if (!cell.hasClass("editable")) {
-      alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
-    }
+  // console.log("cell", cell);
+  console.log("row", row);
+  console.log("indiceCelda", indiceCelda);
+  console.log("originalContent", originalContent);
+  console.log("nombreColumna", nombreColumna);
+
+  if (!$(el).hasClass("editable")) {
+    alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
     return;
   }
 
-  // obtener el row de la celda (usando datatables)
-  var row = TABLA.row(cell.closest("tr")).data();
-  //console.log("row", row);
-  var originalContentHTML = cell.html();
-  var originalContent = row[nombreColumna];
+  var type = "text";
+  input = $(`<input type="${type}">`).val(originalContent);
 
-  var camposInputDate = ["fechaNacimiento", "fechaInscripcion"];
-  var camposInputBolean = ["actualmenteEnYeshi"];
-  var input;
-  if (camposInputBolean.includes(nombreColumna)) {
-    input = $(`<input type="checkbox">`).prop("checked", originalContent);
-  } else {
-    var type = camposInputDate.includes(nombreColumna) ? "date" : "text";
-    input = $(`<input type="${type}">`).val(originalContent);
-  }
+  // input = $(`<input type="checkbox">`).prop("checked", originalContent);
+  // input = $(`<input type="${type}">`).val(originalContent);
 
   // Evitar que el clic en el input borre su contenido
   input.on("click", function (event) {
@@ -242,12 +228,7 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
   // Manejar el evento 'blur' (pérdida de foco) en el input
   input.on("blur", function () {
     //detectar si es un checkbox
-    var newContent;
-    if (camposInputBolean.includes(nombreColumna)) {
-      newContent = input.prop("checked");
-    } else {
-      newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
-    }
+    newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
     //console.log("newContent: ",newContent, "originalContent: ",originalContent);
 
     if (newContent == originalContent) {
@@ -261,17 +242,13 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
     cell.attr("title", "Campo Editado");
     console.log("row", row);
     var id = row.id;
-    /* VARIABLES
-          id,
-          nombreColumna,
-          newContent,
-      */
-    if (!CAMBIOS_BAJURIM.cambios[id]) {
-      CAMBIOS_BAJURIM.cambios[id] = {};
-    }
-    CAMBIOS_BAJURIM.cambios[id][nombreColumna] = newContent;
 
-    console.log("CAMBIOS_BAJURIM", CAMBIOS_BAJURIM);
+    if (!CAMBIOS_TABLA.cambios[id]) {
+      CAMBIOS_TABLA.cambios[id] = {};
+    }
+    CAMBIOS_TABLA.cambios[id][nombreColumna] = newContent;
+
+    console.log("CAMBIOS_TABLA", CAMBIOS_TABLA);
     row[nombreColumna] = newContent;
     //console.log("nombreColumna",nombreColumna)
     //console.log("row",row);
@@ -280,7 +257,7 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
 }
 // Uso del objeto ENTABLADOR
 /*
-          ENTABLADOR.crear({
+          ENTABLADOR.crear({-----------------------------------------------------------------
             ID: "tabla1",
             columns: [{}, {}, {}],
             order: [1, "asc"],
@@ -295,7 +272,7 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
           */
 ENTABLADOR.crear({
   id: "TABLA",
-  columns: [{ data: "asd" }, { data: "asd2", class: "editable" }, { data: "asd3" }],
+  columns: [{ data: "nombre" }, { data: "edad", class: "editable" }, { data: "fechaNacimiento" }],
   columnDefs: [
     {
       targets: 1, // Botones / Opciones
