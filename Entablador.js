@@ -2,6 +2,7 @@
    ##            Entablador.js            ##
    ######################################### */
 
+var CAMBIOS_TABLAS = {};
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
   function id(ID) {
@@ -171,13 +172,12 @@ const ENTABLADOR = (function () {
     crear,
   };
 })();
-var CAMBIOS_TABLA = {
-  cambios: {},
-};
 function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
+  console.log("-----------------------------------------------");
   console.log("TABLA", TABLA);
   console.log("el", el);
 
+  var TablaID = TABLA.table().node().id;
   var cell = $(el);
   var row = TABLA.row(el).data();
   var indiceCelda = TABLA.cell(el).index().column;
@@ -185,11 +185,13 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
   var nombreColumna = TABLA.settings().init().aoColumns[indiceCelda].data;
 
   // console.log("cell", cell);
+  console.log("TablaID:", TablaID);
   console.log("row", row);
   console.log("indiceCelda", indiceCelda);
   console.log("originalContent", originalContent);
   console.log("nombreColumna", nombreColumna);
 
+  console.log("-----------------------------------------------");
   if (!$(el).hasClass("editable")) {
     alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
     return;
@@ -221,7 +223,7 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
       const target = event.target;
       if (target.tagName === "INPUT") {
         //console.log('Se presionó Escape en el input.');
-        cell.empty().html(originalContentHTML);
+        cell.empty().html(originalContent);
       }
     }
   });
@@ -242,13 +244,18 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
     cell.attr("title", "Campo Editado");
     console.log("row", row);
     var id = row.id;
-
-    if (!CAMBIOS_TABLA.cambios[id]) {
-      CAMBIOS_TABLA.cambios[id] = {};
+    if (!CAMBIOS_TABLAS[TablaID]) {
+      CAMBIOS_TABLAS[TablaID] = {
+        cambios: {},
+        eliminados: [],
+      };
     }
-    CAMBIOS_TABLA.cambios[id][nombreColumna] = newContent;
+    if (!CAMBIOS_TABLAS[TablaID].cambios[id]) {
+      CAMBIOS_TABLAS[TablaID].cambios[id] = {};
+    }
+    CAMBIOS_TABLAS[TablaID].cambios[id][nombreColumna] = newContent;
 
-    console.log("CAMBIOS_TABLA", CAMBIOS_TABLA);
+    console.log("CAMBIOS_TABLAS['" + TablaID + "']", CAMBIOS_TABLAS[TablaID]);
     row[nombreColumna] = newContent;
     //console.log("nombreColumna",nombreColumna)
     //console.log("row",row);
@@ -257,30 +264,60 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
 }
 // Uso del objeto ENTABLADOR
 /*
-          ENTABLADOR.crear({-----------------------------------------------------------------
-            ID: "tabla1",
-            columns: [{}, {}, {}],
-            order: [1, "asc"],
-            columnDefs: [{}, {}],
-            autoWidth: false,
-          })
-            .editable(true)
-            .guardar(true)
-            .eliminar(true)
-            .add([{}])
-            .draw();
-          */
 ENTABLADOR.crear({
-  id: "TABLA",
-  columns: [{ data: "nombre" }, { data: "edad", class: "editable" }, { data: "fechaNacimiento" }],
-  columnDefs: [
-    {
-      targets: 1, // Botones / Opciones
-      render: function (data, type, row, meta) {
-        return `lel`;
-      },
-    },
-  ],
+  ID: "tabla1",
+  columns: [{}, {}, {}],
+  order: [1, "asc"],
+  columnDefs: [{}, {}],
+  autoWidth: false,
 })
   .editable(true)
-  .tipoEdicion("modal");
+  .guardar(true)
+  .eliminar(true)
+  .add([{}])
+  .draw();
+*/
+ENTABLADOR.crear({
+  id: "TABLA",
+  columns: [{ data: "id", visible: true }, { data: "nombre" }, { data: "edad", class: "editable" }, { data: "fechaNacimiento" }],
+  // columnDefs: [
+  //   {
+  //     targets: 1, // Botones / Opciones
+  //     render: function (data, type, row, meta) {
+  //       return `lel`;
+  //     },
+  //   },
+  // ],
+})
+  .editable(true)
+  .tipoEdicion("modal")
+  .add([
+    { id: 1, nombre: "Juan", edad: 30, fechaNacimiento: "1991-01-01" },
+    { id: 2, nombre: "Pedro", edad: 25, fechaNacimiento: "1996-01-01" },
+    { id: 3, nombre: "Luis", edad: 35, fechaNacimiento: "1986-01-01" },
+  ]);
+
+function getNewID(tablaDatos) {
+  // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
+  var idMayor = tablaDatos.reduce((max, obj) => {
+    const idNumber = Number(obj.id);
+    return !isNaN(idNumber) && idNumber > max ? idNumber : max;
+  }, -Infinity);
+
+  if (tablaDatos[idMayor] == null) {
+    return idMayor + 1;
+  } else {
+    console.error("Error: No se pudo obtener un nuevo ID!");
+  }
+}
+/* TIPOS DE CAMPOS
+  - text
+  - number
+  - checkbox
+  - date
+  
+  - file
+  - image
+
+  - tel
+*/
