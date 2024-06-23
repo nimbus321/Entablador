@@ -40,13 +40,13 @@ const ENTABLADOR = (function () {
         // TABLA.table().node().classList.toggle("editable", state);
         return this;
       },
-      editable(state) {
-        // console.log(ID + " -- editable: " + state);
-        TABLA.table().node().classList.toggle("editable", state);
+      editable(boolean) {
+        // console.log(ID + " -- editable: " + boolean);
+        TABLA.table().node().classList.toggle("editable", boolean);
         return this;
       },
-      guardar(state) {
-        // console.log(ID + " -- guardar: " + state);
+      guardar(boolean) {
+        // console.log(ID + " -- guardar: " + boolean);
         return this;
       },
       eliminar() {
@@ -84,6 +84,19 @@ const ENTABLADOR = (function () {
           TABLA.draw();
         }
         return this;
+      },
+      meta(meta) {
+        // console.log(ID + " -- meta: " + meta);
+        if (meta.key) {
+          TABLA.key = meta.key;
+        }
+        if (meta.inputsTypes) {
+          TABLA.inputsTypes = meta.inputsTypes;
+        }
+        return this;
+      },
+      editableStatus() {
+        return TABLA.table().node().classList.contains("editable");
       },
     };
     return instancia;
@@ -208,6 +221,9 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
   // --
   if (type_edicion == "inline") {
     var type_input = "text";
+    if (TABLA.inputsTypes && TABLA.inputsTypes[nombreColumna]) {
+      type_input = TABLA.inputsTypes[nombreColumna];
+    }
     input = $(`<input type="${type_input}">`).val(originalContent);
     cell.empty().html(input);
 
@@ -267,6 +283,19 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
     });
   } // aqui termina el inline
 }
+function getNewID(tablaDatos) {
+  // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
+  var idMayor = tablaDatos.reduce((max, obj) => {
+    const idNumber = Number(obj.id);
+    return !isNaN(idNumber) && idNumber > max ? idNumber : max;
+  }, -Infinity);
+
+  if (tablaDatos[idMayor] == null) {
+    return idMayor + 1;
+  } else {
+    console.error("Error: No se pudo obtener un nuevo ID!");
+  }
+}
 // Uso del objeto ENTABLADOR
 /*
 ENTABLADOR.crear({
@@ -284,7 +313,12 @@ ENTABLADOR.crear({
 */
 ENTABLADOR.crear({
   id: "TABLA",
-  columns: [{ data: "id", visible: true }, { data: "nombre" }, { data: "edad", class: "editable" }, { data: "fechaNacimiento" }],
+  columns: [
+    { data: "id", visible: true },
+    { data: "nombre", class: "editable" },
+    { data: "edad", class: "editable" },
+    { data: "fechaNacimiento", class: "editable" },
+  ],
   // columnDefs: [
   //   {
   //     targets: 1, // Botones / Opciones
@@ -300,21 +334,16 @@ ENTABLADOR.crear({
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "23/03/1993" },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "17/08/1985" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "06/10/1990" },
-  ]);
+  ])
+  .meta({
+    key: "id",
+    inputsTypes: {
+      nombre: "text",
+      edad: "number",
+      fechaNacimiento: "date",
+    },
+  });
 
-function getNewID(tablaDatos) {
-  // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
-  var idMayor = tablaDatos.reduce((max, obj) => {
-    const idNumber = Number(obj.id);
-    return !isNaN(idNumber) && idNumber > max ? idNumber : max;
-  }, -Infinity);
-
-  if (tablaDatos[idMayor] == null) {
-    return idMayor + 1;
-  } else {
-    console.error("Error: No se pudo obtener un nuevo ID!");
-  }
-}
 /* TIPOS DE CAMPOS
   - text
   - number
@@ -328,7 +357,7 @@ function getNewID(tablaDatos) {
 */
 /*
 var nombreIdentificador = "Nombre de la Persona";
-var inputs = ``;
+var inputs = `<input type="text" placeholder="info">`;
 var div = `
 <div id="ENTABLADOR_MODAL" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 <div class="modal-dialog modal-lg">
