@@ -4,6 +4,8 @@
 
 var CAMBIOS_TABLAS = {};
 var Entablador_tipos_edicion = ["inline", "modal"];
+var EditedSVG = `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`;
+var NewSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15px" height="15px" viewBox="0 0 512 512" version="1.1"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`;
 
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
@@ -258,10 +260,16 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
         cell.empty().text(originalContent);
         return;
       }
-      cell.empty().text(newContent);
-      // Cambiar el color de la celda a 'text-primary'
-      cell.addClass("td-editado"); // AÑADIR TAMBIEN ------ text-primary font-weight-bold
+      // cell.empty().text(newContent);
+      var indiceRow = TABLA.row(cell).index();
+      var cellDataTables = TABLA.cell({ row: indiceRow, column: indiceCelda });
+      cellDataTables.data(newContent).draw(false);
+      // cellDataTables.data(cellDataTables.data()).draw(false);
+
+      // cell.append(EditedSVG);
+      cell.addClass("td-editado text-primary font-weight-bold");
       cell.attr("title", "Campo Editado");
+
       console.log("row", row);
       var id = row.id;
       if (!CAMBIOS_TABLAS[TablaID]) {
@@ -319,14 +327,15 @@ ENTABLADOR.crear({
     { data: "edad", class: "editable" },
     { data: "fechaNacimiento", class: "editable" },
   ],
-  // columnDefs: [
-  //   {
-  //     targets: 1, // Botones / Opciones
-  //     render: function (data, type, row, meta) {
-  //       return `lel`;
-  //     },
-  //   },
-  // ],
+  columnDefs: [
+    {
+      targets: 1, // Botones / Opciones
+      render: function (data, type, row, meta) {
+        // return `lel`;
+        return data.toUpperCase();
+      },
+    },
+  ],
 })
   .editable(true)
   .tipoEdicion("inline")
