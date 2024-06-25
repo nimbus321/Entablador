@@ -274,16 +274,16 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
       newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
       //console.log("newContent: ",newContent, "originalContent: ",originalContent);
 
-      if (Cancelled) {
+      if (Cancelled || newContent == originalContent) {
         cell.empty();
         cellDataTables.data(originalContent).draw(false);
         return;
       }
-      if (newContent == originalContent) {
-        //console.log("No se editó nada");
-        cell.empty().text(originalContent);
-        return;
-      }
+      // if (newContent == originalContent) {
+      //   //console.log("No se editó nada");
+      //   cell.empty().text(originalContent);
+      //   return;
+      // }
       // cell.empty().text(newContent);
       cellDataTables.data(newContent).draw(false);
 
