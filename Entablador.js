@@ -6,7 +6,11 @@ var CAMBIOS_TABLAS = {};
 var Entablador_tipos_edicion = ["inline", "modal"];
 var EditedSVG = `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`;
 var NewSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15px" height="15px" viewBox="0 0 512 512" version="1.1"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`;
-var inputsValidos = ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "image"];
+var FileSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"<path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+var inputsValidos = ["text", "number", "date", "datetime-local", "checkbox", "time", "file"];
 var MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
 const ENTABLADOR = (function () {
@@ -171,6 +175,15 @@ const ENTABLADOR = (function () {
     $("#" + config.id).on("draw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
     });
+    //prepend input file to table
+    var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
+    $("#" + config.id).prepend(fileInput);
+    fileInput.on("change", function (event) {
+      console.log("subiendo..", event.target.files);
+      console.log(event.target.files[0].name);
+      event.target.value = "";
+    });
+
     window[config.id] = NuevaTabla;
     //set click event
     $("#" + config.id + " tbody").on("click", "tr td", function () {
@@ -234,8 +247,10 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
     if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && inputsValidos.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
       type_input = ENT_TABLA.inputsTypes[nombreColumna];
       console.log("type_input", type_input);
-      if (ENT_TABLA.inputsTypes[nombreColumna] == "checkbox") {
-        type_input = "checkbox";
+      if (type_input == "file" || type_input == "image") {
+        return;
+      }
+      if (type_input == "checkbox") {
         input = $(`<select>
                     <option value="true">Sí</option>
                     <option value="false">No</option>
@@ -274,7 +289,7 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
       newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
       //console.log("newContent: ",newContent, "originalContent: ",originalContent);
 
-      if (Cancelled || newContent == originalContent) {
+      if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image") {
         cell.empty();
         cellDataTables.data(originalContent).draw(false);
         return;
@@ -350,17 +365,18 @@ ENTABLADOR.crear({
     { data: "edad", class: "editable" },
     { data: "fechaNacimiento", class: "editable" },
     { data: "humano", class: "editable" },
+    { data: "archivos", class: "editable" },
   ],
   columnDefs: [
     {
-      targets: 1, // Botones / Opciones
+      targets: 1,
       render: function (data, type, row, meta) {
         // return `lel`;
         return data.toUpperCase();
       },
     },
     {
-      targets: 3, // Botones / Opciones
+      targets: 3,
       render: function (data, type, row, meta) {
         // return `lel`;
         //detect if it is a date
@@ -372,9 +388,32 @@ ENTABLADOR.crear({
       },
     },
     {
-      targets: 4, // Botones / Opciones
+      targets: 4,
       render: function (data, type, row, meta) {
         return data == "true" ? "Verdadero" : "Falso";
+      },
+    },
+    {
+      targets: 5,
+      render: function (data, type, row, meta) {
+        console.log("data", data);
+        var html = `<div style="display:flex; justify-content: space-between;"><div>`;
+        if (data != null && data != "") {
+          if (Array.isArray(data)) {
+            data.forEach((archivo) => {
+              //detect if it is an image
+              if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                html += `<a href="${archivo}" target="_blank" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"></a>`;
+              } else {
+                html += `<a href="${archivo}" target="_blank">${FileSVG}</a>`;
+              }
+            });
+          } else {
+            html += `<a href="${data}" target="_blank">${FileSVG}</a>`;
+          }
+        }
+        html += `</div><label for="ENTABLADOR_FILE_UPLOADER">${AddFileSVG}</label></div>`;
+        return html;
       },
     },
   ],
@@ -382,9 +421,9 @@ ENTABLADOR.crear({
   .editable(true)
   .tipoEdicion("inline")
   .add([
-    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false" },
-    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true" },
-    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false" },
+    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
+    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
+    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
   ])
   .meta({
     key: "id",
@@ -393,6 +432,7 @@ ENTABLADOR.crear({
       edad: "number",
       fechaNacimiento: "date",
       humano: "checkbox",
+      archivos: "file",
     },
   });
 
