@@ -229,11 +229,11 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
   // console.log(type_edicion);
   // --
   if (type_edicion == "inline") {
-    var input = $(`<input type="text">`);
+    var input = $(`<input type="text">`).val(originalContent);
     var type_input = "text";
     if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && inputsValidos.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
       type_input = ENT_TABLA.inputsTypes[nombreColumna];
-
+      console.log("type_input", type_input);
       if (ENT_TABLA.inputsTypes[nombreColumna] == "checkbox") {
         type_input = "checkbox";
         input = $(`<select>
@@ -395,7 +395,7 @@ ENTABLADOR.crear({
   .meta({
     key: "id",
     inputsTypes: {
-      nombre: "checkbox",
+      nombre: "text",
       edad: "number",
       fechaNacimiento: "date",
       humano: "checkbox",
