@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Entablador.js</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+    <link
+      href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAABNTU0AVKH/AOPj4wDExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAREQEREAIiIBERAREQAiIgIiICIiACIiAiIgIiIAMzMDMzAzMwAzMwMzMDMzACIiAiIgIiIAIiICIiAiIgAzMwMzMDMzADMzAzMwMzMAIiICIiAiIgAiIgIiICIiAAAAAAAAAAAAIiICIiAiIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      rel="icon"
+      type="image/x-icon"
+    />
     <style>
       body {
         padding: 20px;
@@ -51,36 +56,6 @@
         </tr>
       </tbody>
     </table>
-    <!-- <table id="TABLA2" class="table table-hover table-sm table-striped table-bordered table-dark" style="margin-left: auto; margin-right: auto">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Fecha de Nacimiento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>4</td>
-          <td>John Dee</td>
-          <td>30</td>
-          <td>2000-04-28</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>Morpheus</td>
-          <td>25</td>
-          <td>2000-08-04</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>Corinthian</td>
-          <td>40</td>
-          <td>2000-01-12</td>
-        </tr>
-      </tbody>
-    </table> -->
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -120,39 +95,5 @@
         $('#TABLA_BAJURIM [data-toggle="tooltip"]').tooltip();
       });
     */
-    // ########################################################################
-
-    /*
-      function ENTABLADOR() {
-        ENTABLADOR.crear = function (ID) {
-          console.log(`ID: ${ID}`);
-        };
-        return ENTABLADOR;
-      }
-      */
-    /*
-      ENTABLADOR
-          .crear({
-              ID: ID,
-              columns: [{}, {}, {}],
-              order: [1, "asc"],
-              columnDefs: [{}, {}],
-              autoWidth: false
-          })
-          .editable(true)
-          .guardar(true)
-          .eliminar(true)
-          .add([{}])
-          .draw();
-
-      */
-    // ########################################################################
-  </script>
-  <input type="date" id="date" />
-  <script>
-    var date = document.getElementById("date");
-    date.addEventListener("change", function () {
-      console.log(date.value);
-    });
   </script>
 </html>
