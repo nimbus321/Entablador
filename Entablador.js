@@ -24,8 +24,8 @@ const ENTABLADOR = (function () {
     //    console.error("No se ha encontrado el ID especificado (", ID, ")");
     //    return;
     //  }
-    var TABLA = window[ID];
-    if (TABLA instanceof Element) {
+    var ENT_TABLA = window[ID];
+    if (ENT_TABLA instanceof Element) {
       console.error("Aún no has creado la tabla! '#" + ID + "' es solo un elemento HTML");
       return this;
     }
@@ -38,14 +38,14 @@ const ENTABLADOR = (function () {
           return this;
         }
         //set data-editable-type
-        TABLA.table().node().setAttribute("data-editable-type", type);
+        ENT_TABLA.table().node().setAttribute("data-editable-type", type);
 
-        // TABLA.table().node().classList.toggle("editable", state);
+        // ENT_TABLA.table().node().classList.toggle("editable", state);
         return this;
       },
       editable(boolean) {
         // console.log(ID + " -- editable: " + boolean);
-        TABLA.table().node().classList.toggle("editable", boolean);
+        ENT_TABLA.table().node().classList.toggle("editable", boolean);
         return this;
       },
       guardar(boolean) {
@@ -54,15 +54,15 @@ const ENTABLADOR = (function () {
       },
       eliminar() {
         // console.log(ID + " -- eliminar()");
-        if (TABLA != null && !(TABLA instanceof Element)) {
-          TABLA.destroy();
+        if (ENT_TABLA != null && !(ENT_TABLA instanceof Element)) {
+          ENT_TABLA.destroy();
         }
         return this;
       },
       add(data) {
         // console.log(ID + " -- add: " + data);
 
-        if (TABLA != null && typeof TABLA == "object" && !(TABLA instanceof Element)) {
+        if (ENT_TABLA != null && typeof ENT_TABLA == "object" && !(ENT_TABLA instanceof Element)) {
           /*
             [1,2,3]
             [[1,2,3],[4,5,6]]
@@ -71,35 +71,35 @@ const ENTABLADOR = (function () {
           */
           if (Array.isArray(data)) {
             if (typeof data[0] == "object") {
-              TABLA.rows.add(data).draw();
+              ENT_TABLA.rows.add(data).draw();
             } else if (data[0] != null) {
-              TABLA.row.add(data).draw();
+              ENT_TABLA.row.add(data).draw();
             }
           } else {
-            TABLA.row.add(data).draw();
+            ENT_TABLA.row.add(data).draw();
           }
         }
         return this;
       },
       draw() {
         console.log("Drawing table");
-        if (TABLA != null && !(TABLA instanceof Element)) {
-          TABLA.draw();
+        if (ENT_TABLA != null && !(ENT_TABLA instanceof Element)) {
+          ENT_TABLA.draw();
         }
         return this;
       },
       meta(meta) {
         // console.log(ID + " -- meta: " + meta);
         if (meta.key) {
-          TABLA.key = meta.key;
+          ENT_TABLA.key = meta.key;
         }
         if (meta.inputsTypes) {
-          TABLA.inputsTypes = meta.inputsTypes;
+          ENT_TABLA.inputsTypes = meta.inputsTypes;
         }
         return this;
       },
       editableStatus() {
-        return TABLA.table().node().classList.contains("editable");
+        return ENT_TABLA.table().node().classList.contains("editable");
       },
     };
     return instancia;
@@ -176,7 +176,7 @@ const ENTABLADOR = (function () {
       //detectar si la tabla tiene la class editable
       if ($(this).closest("table").hasClass("editable")) {
         // console.log("CLICK!!!");
-        ENTABLADOR_EDITAR_TABLA(TABLA, this);
+        ENTABLADOR_EDITAR_TABLA(window[config.id], this);
       }
     });
 
@@ -189,19 +189,20 @@ const ENTABLADOR = (function () {
     crear,
   };
 })();
-function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
+function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
   console.log("-----------------------------------------------");
-  console.log("TABLA", TABLA);
+  console.log("ENT_TABLA", ENT_TABLA);
   console.log("el", el);
 
-  var TablaID = TABLA.table().node().id;
+  var TablaID = ENT_TABLA.table().node().id;
   var cell = $(el);
-  var row = TABLA.row(el).data();
-  var indexCelda = TABLA.cell(el).index().column;
-  var indexRow = TABLA.row(cell).index();
-  var originalContent = TABLA.cell(el).data();
-  var nombreColumna = TABLA.settings().init().aoColumns[indexCelda].data;
-  var cellDataTables = TABLA.cell({ row: indexRow, column: indexCelda });
+  var row = ENT_TABLA.row(el).data();
+  console.log(ENT_TABLA.data().toArray());
+  var indexCelda = ENT_TABLA.cell(el).index().column;
+  var indexRow = ENT_TABLA.row(cell).index();
+  var originalContent = ENT_TABLA.cell(el).data();
+  var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+  var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
 
   // console.log("cell", cell);
   console.log("TablaID:", TablaID);
@@ -228,8 +229,8 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
   // --
   if (type_edicion == "inline") {
     var type_input = "text";
-    if (TABLA.inputsTypes && TABLA.inputsTypes[nombreColumna]) {
-      type_input = TABLA.inputsTypes[nombreColumna];
+    if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna]) {
+      type_input = ENT_TABLA.inputsTypes[nombreColumna];
     }
     input = $(`<input type="${type_input}">`).val(originalContent);
     cell.empty().html(input);
@@ -248,10 +249,6 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
           input.blur();
         }
         if (e.key === "Escape") {
-          //console.log('Se presionó Escape en el input.');
-          // cell.empty().html(originalContent);
-          console.log(cellDataTables);
-          // cellDataTables.data("2000-12-10").draw(false);
           Cancelled = true;
           input.blur();
         }
@@ -299,7 +296,7 @@ function ENTABLADOR_EDITAR_TABLA(TABLA, el) {
       row[nombreColumna] = newContent;
       //console.log("nombreColumna",nombreColumna)
       //console.log("row",row);
-      TABLA.draw();
+      ENT_TABLA.draw();
     });
   } // aqui termina el inline
 }
@@ -384,6 +381,37 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
     },
   });
+
+ENTABLADOR.crear({
+  id: "TABLA2",
+  columns: [
+    { data: "id", visible: true },
+    { data: "aaaaaaa", class: "editable" },
+    { data: "bbbbbb", class: "editable" },
+    { data: "cccccc", class: "editable" },
+  ],
+  columnDefs: [
+    {
+      targets: 1, // Botones / Opciones
+      render: function (data, type, row, meta) {
+        // return `lel`;
+        return data.toUpperCase();
+      },
+    },
+    {
+      targets: 3, // Botones / Opciones
+      render: function (data, type, row, meta) {
+        // return `lel`;
+        //detect if it is a date
+        if (data == null) {
+          return data;
+        }
+        var fecha = new Date(data);
+        return `${fecha.getDate()} ${MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+      },
+    },
+  ],
+}).editable(true);
 
 /* TIPOS DE CAMPOS
   - text
