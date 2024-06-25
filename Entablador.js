@@ -6,12 +6,13 @@ var CAMBIOS_TABLAS = {};
 var Entablador_tipos_edicion = ["inline", "modal"];
 var EditedSVG = `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`;
 var NewSVG = `<svg class="mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15px" height="15px" viewBox="0 0 512 512" version="1.1"><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`;
-var FileSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+var FileSVG = `<svg style="cursor:zoom-in;" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 // var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"<path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 var inputsValidos = ["text", "number", "date", "datetime-local", "checkbox", "time", "file"];
 var MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+var ENTABLADOR_LabelClick = null;
 
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
@@ -106,6 +107,11 @@ const ENTABLADOR = (function () {
       editableStatus() {
         return ENT_TABLA.table().node().classList.contains("editable");
       },
+      subirArchivoURL(URL) {
+        console.log("subirArchivoURL: ", URL);
+        ENT_TABLA.subirArchivoURL = URL;
+        return this;
+      },
     };
     return instancia;
   }
@@ -179,8 +185,35 @@ const ENTABLADOR = (function () {
     var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
     $("#" + config.id).prepend(fileInput);
     fileInput.on("change", function (event) {
-      console.log("subiendo..", event.target.files);
-      console.log(event.target.files[0].name);
+      //detect from which cell the file was uploaded
+      console.log(ENTABLADOR_LabelClick);
+      var rowIndex = ENTABLADOR_LabelClick.row;
+      var columnIndex = ENTABLADOR_LabelClick.column;
+      var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
+
+      $(cell.node()).find(".uploading").show();
+
+      var files = event.target.files;
+      console.log("subiendo..", "(" + files[0].name + " +?)", files);
+      /*
+      $.post(ENT_TABLA.subirArchivoURL, { file: files }, function (data) {
+        console.log("subido", data);
+      });
+      */
+      console.log(files);
+      $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
+        var newContent = ["https://dummyimage.com/99.png"];
+        console.log("subido", newContent);
+        $(cell.node()).find(".uploading").hide();
+
+        var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
+        var oldData = cellDataTables.data();
+
+        console.log("newContent: ", newContent);
+        console.log("oldData: ", oldData);
+
+        cellDataTables.data([...oldData, ...newContent]).draw(false);
+      });
       event.target.value = "";
     });
 
@@ -204,30 +237,35 @@ const ENTABLADOR = (function () {
   };
 })();
 function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
-  console.log("-----------------------------------------------");
-  console.log("ENT_TABLA", ENT_TABLA);
-  console.log("el", el);
+  var debug = false;
+  if (debug) {
+    console.log("ENT_TABLA", ENT_TABLA);
+    console.log("el", el);
+  }
 
   var TablaID = ENT_TABLA.table().node().id;
   var cell = $(el);
   var row = ENT_TABLA.row(el).data();
-  console.log(ENT_TABLA.data().toArray());
   var indexCelda = ENT_TABLA.cell(el).index().column;
   var indexRow = ENT_TABLA.row(cell).index();
   var originalContent = ENT_TABLA.cell(el).data();
   var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
   var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
 
-  // console.log("cell", cell);
-  console.log("TablaID:", TablaID);
-  console.log("row", row);
-  console.log("indexCelda", indexCelda);
-  console.log("indexRow", indexRow);
-  console.log("originalContent", originalContent);
-  console.log("nombreColumna", nombreColumna);
-  console.log("cellDataTables", cellDataTables);
+  if (debug) {
+    console.log("-----------------------------------------------");
+    console.log("cell", cell);
+    console.log("TablaID:", TablaID);
+    console.log("row", row);
+    console.log("indexCelda", indexCelda);
+    console.log("indexRow", indexRow);
+    console.log("originalContent", originalContent);
+    console.log("nombreColumna", nombreColumna);
+    console.log("cellDataTables", cellDataTables);
+    console.log(".data().toArray():", ENT_TABLA.data().toArray());
+    console.log("-----------------------------------------------");
+  }
 
-  console.log("-----------------------------------------------");
   if (!$(el).hasClass("editable")) {
     alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
     return;
@@ -246,7 +284,7 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
     var type_input = "text";
     if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && inputsValidos.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
       type_input = ENT_TABLA.inputsTypes[nombreColumna];
-      console.log("type_input", type_input);
+      // console.log("type_input", type_input);
       if (type_input == "file" || type_input == "image") {
         return;
       }
@@ -396,7 +434,12 @@ ENTABLADOR.crear({
     {
       targets: 5,
       render: function (data, type, row, meta) {
-        console.log("data", data);
+        // console.log("data", data);
+        var rowIndex = meta.row;
+        var columnIndex = meta.col;
+        // console.log("rowIndex", rowIndex);
+        // console.log("columnIndex", columnIndex);
+
         var html = `<div style="display:flex; justify-content: space-between;"><div>`;
         if (data != null && data != "") {
           if (Array.isArray(data)) {
@@ -412,7 +455,7 @@ ENTABLADOR.crear({
             html += `<a href="${data}" target="_blank">${FileSVG}</a>`;
           }
         }
-        html += `</div><label for="ENTABLADOR_FILE_UPLOADER">${AddFileSVG}</label></div>`;
+        html += `</div><label for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label></div><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div>`;
         return html;
       },
     },
