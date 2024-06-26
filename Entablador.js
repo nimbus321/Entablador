@@ -458,7 +458,7 @@ ENTABLADOR.crear({
             html += `<a href="${data}" target="_blank">${FileSVG}</a>`;
           }
         }
-        html += `</div><label for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label></div><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div>`;
+        html += `</div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label></div><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div>`;
         return html;
       },
     },
