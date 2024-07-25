@@ -51,6 +51,9 @@ const ENTABLADOR = (function () {
         return this;
       },
       editable(boolean) {
+        if (typeof boolean == "undefined") {
+          return ENT_TABLA.table().node().classList.contains("editable");
+        }
         // console.log(ID + " -- editable: " + boolean);
         ENT_TABLA.table().node().classList.toggle("editable", boolean);
         return this;
@@ -104,9 +107,6 @@ const ENTABLADOR = (function () {
           ENT_TABLA.inputsTypes = meta.inputsTypes;
         }
         return this;
-      },
-      editableStatus() {
-        return ENT_TABLA.table().node().classList.contains("editable");
       },
       subirArchivoURL(URL) {
         console.log("subirArchivoURL: ", URL);
@@ -508,14 +508,14 @@ ENTABLADOR.crear({
               if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
                 html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" class="ENTABLADOR-tabla-file" style="height:20px;width:20px;"><div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
               } else {
-                html += `<a href="${archivo}" target="_blank" style="cursor:zoom-in;margin-right:5px;">${FileSVG}</a>`;
+                html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
               }
             });
           } else {
-            html += `<a href="${data}" target="_blank" style="cursor:zoom-in;margin-right:5px;">${FileSVG}</a>`;
+            html += `<a href="${data}" target="_blank" class="class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
           }
         }
-        html += `</div><div><div style="display:inline;" onclick="">${RemoveFileSVG}</div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div></div>`;
+        html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div></span>`;
         return html;
       },
     },
