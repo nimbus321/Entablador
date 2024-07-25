@@ -193,6 +193,7 @@ const ENTABLADOR = (function () {
       var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
 
       $(cell.node()).find(".uploading").show();
+      $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
 
       var files = event.target.files;
       console.log("subiendo..", "(" + files[0].name + " +?)", files);
@@ -206,6 +207,7 @@ const ENTABLADOR = (function () {
         var newContent = ["https://dummyimage.com/99"];
         console.log("subido", newContent);
         $(cell.node()).find(".uploading").hide();
+        $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
 
         var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
         var oldData = cellDataTables.data();
@@ -214,6 +216,8 @@ const ENTABLADOR = (function () {
         console.log("oldData: ", oldData);
 
         cellDataTables.data([...oldData, ...newContent]).draw(false);
+
+        ENTABLADOR_add_changes(NuevaTabla, rowIndex, columnIndex, newContent);
       });
       event.target.value = "";
     });
@@ -228,69 +232,17 @@ const ENTABLADOR = (function () {
       }
     });
 
-    NuevaTabla.on("draw", function () {
-      console.log("renderizado...");
-
-      let isShiftPressed = false;
-      var tabl = NuevaTabla.table().node();
-      tabl.addEventListener("mouseover", (event) => {
-        if (event.target.classList.contains("ENTABLADOR-tabla-file")) {
-          if (isShiftPressed) {
-            event.target.style.cursor = "no-drop";
-          } else {
-            event.target.style.cursor = "";
-          }
-        }
-      });
-
-      tabl.addEventListener("mouseout", (event) => {
-        if (event.target.classList.contains("ENTABLADOR-tabla-file")) {
-          event.target.style.cursor = "";
-        }
-      });
-
-      // Manejar eventos de teclado a nivel de documento
-      tabl.addEventListener("keydown", (event) => {
-        if (event.key === "Shift") {
-          isShiftPressed = true;
-          // Actualizar el cursor de elementos actualmente en "hover"
-          tabl.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
-            element.style.cursor = "no-drop";
-          });
-        }
-      });
-
-      tabl.addEventListener("keyup", (event) => {
-        if (event.key === "Shift") {
-          isShiftPressed = false;
-          // Actualizar el cursor de elementos actualmente en "hover"
-          tabl.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
-            element.style.cursor = "";
-          });
-        }
-      });
-
-      tabl.addEventListener("click", (event) => {
-        if (event.target.classList.contains("ENTABLADOR-tabla-file") && isShiftPressed) {
-          console.log("Click con shift!");
-
-          // Si el elemento es un anchor, prevenir su acción predeteb rminada
-          console.log("event.target.tagName", event.target.tagName);
-          event.stopPropagation();
-          if (event.target.tagName.toLowerCase() === "a") {
-            event.preventDefault();
-          }
-        }
-      });
-    });
-
     // ########################################################################
     //return instancia;
     return id(config.id);
   }
+  var _ = {
+    /* VARIABLE GLOBAL DE LA LIBRERÍA */
+  };
   return {
     id,
     crear,
+    _,
   };
 })();
 function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
@@ -395,20 +347,12 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
       cell.addClass("td-editado text-primary font-weight-bold");
       cell.attr("title", "Campo Editado");
 
-      console.log("row", row);
+      // console.log("row", row);
       var id = row.id;
-      if (!CAMBIOS_TABLAS[TablaID]) {
-        CAMBIOS_TABLAS[TablaID] = {
-          cambios: {},
-          eliminados: [],
-        };
-      }
-      if (!CAMBIOS_TABLAS[TablaID].cambios[id]) {
-        CAMBIOS_TABLAS[TablaID].cambios[id] = {};
-      }
-      CAMBIOS_TABLAS[TablaID].cambios[id][nombreColumna] = newContent;
 
-      console.log("CAMBIOS_TABLAS['" + TablaID + "']", CAMBIOS_TABLAS[TablaID]);
+      // añadir cambios a CAMBIOS_TABLAS
+      ENTABLADOR_add_changes(ENT_TABLA, indexRow, indexCelda, newContent);
+
       row[nombreColumna] = newContent;
       //console.log("nombreColumna",nombreColumna)
       //console.log("row",row);
@@ -431,6 +375,21 @@ function getNewID(tablaDatos) {
 }
 function ENTABLADOR_eliminarFotoBTN(event, cell) {
   event.preventDefault();
+
+  var tablaName = $(event.target).closest("table").attr("id");
+  var cellDataTables = window[tablaName].cell(cell);
+  var link = $(event.target).closest("a").attr("href");
+
+  console.log(cellDataTables.data());
+  console.log(link);
+
+  //remove link from array
+  var newContent = cellDataTables.data().filter((archivo) => archivo != link);
+  cellDataTables.data(newContent).draw(false);
+  var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
+
+  // añadir cambios a CAMBIOS_TABLAS
+  ENTABLADOR_add_changes(window[tablaName], cell.row, cell.column, newContent);
 }
 // Uso del objeto ENTABLADOR
 /*
@@ -579,3 +538,24 @@ if ($(".modal.show").length > 0) {
 $("body").prepend(div);
 $("#ENTABLADOR_MODAL").modal("show");
 */
+function ENTABLADOR_add_changes(table, rowIndex, columnIndex, newContent) {
+  var nombreColumna = table.settings().init().aoColumns[columnIndex].data;
+  var nombreRow = table.row(rowIndex).data()[table.key];
+  var table_name = table.table().node().id;
+  // console.log(nombreColumna);
+  // console.log(nombreRow);
+  // añadir cambios a CAMBIOS_TABLAS
+  if (!CAMBIOS_TABLAS[table_name]) {
+    CAMBIOS_TABLAS[table_name] = {
+      cambios: {
+        [nombreRow]: { [nombreColumna]: newContent },
+        eliminados: [],
+      },
+    };
+  } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
+    CAMBIOS_TABLAS[table_name].cambios[nombreRow] = { [nombreColumna]: newContent };
+  } else {
+    CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = newContent;
+  }
+  console.log("Cambios Actualizados:", CAMBIOS_TABLAS);
+}
