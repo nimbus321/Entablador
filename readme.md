@@ -5,7 +5,7 @@
 ```html
 <!-- Normal version -->
 <script src="https://cdn.jsdelivr.net/gh/nimbus321/Entablador@latest/Entablador.js"></script>
-<!-- Minified version (BROKEN) -->
+<!-- Minified version (PROBABLY -NOT- BROKEN) -->
 <script src="https://cdn.jsdelivr.net/gh/nimbus321/Entablador@latest/Entablador.min.js"></script>
 ```
 
