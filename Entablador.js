@@ -2,8 +2,6 @@
    ##            Entablador.js            ##
    ######################################### */
 
-var CAMBIOS_TABLAS = {};
-var Entablador_tipos_edicion = ["inline", "modal"];
 var EditedSVG = `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`;
 var NewSVG = `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 15 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 var FileSVG = `<svg class="ENTABLADOR-tabla-file" xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
@@ -18,7 +16,11 @@ var ENTABLADOR_LabelClick = null;
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
   function id(ID) {
-    if (typeof ID != "string" || ID == "") {
+    if (typeof ID != "string") {
+      console.error("El ID debe ser un string");
+      return;
+    }
+    if (ID == "") {
       console.error("No se ha especificado un ID");
       return;
     }
@@ -40,8 +42,8 @@ const ENTABLADOR = (function () {
       id: ID,
       tipoEdicion(type) {
         // console.log(ID + " -- tipoEdicion: " + type);
-        if (!Entablador_tipos_edicion.includes(type)) {
-          console.error("Tipo de edición no válido. Tipos válidos:", Entablador_tipos_edicion);
+        if (!ENTABLADOR._.editTypes.includes(type)) {
+          console.error("Tipo de edición no válido. Tipos válidos:", ENTABLADOR._.editTypes);
           return this;
         }
         //set data-editable-type
@@ -238,6 +240,8 @@ const ENTABLADOR = (function () {
   }
   var _ = {
     /* VARIABLE GLOBAL DE LA LIBRERÍA */
+    CAMBIOS_TABLAS: {},
+    editTypes: ["inline", "modal"],
   };
   return {
     id,
@@ -282,9 +286,9 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
 
   // --
   var type_edicion = $(el).closest("table").attr("data-editable-type");
-  if (!Entablador_tipos_edicion.includes(type_edicion)) {
-    console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + Entablador_tipos_edicion[0] + "'. Tipos válidos:", Entablador_tipos_edicion);
-    type_edicion = Entablador_tipos_edicion[0];
+  if (!ENTABLADOR._.editTypes.includes(type_edicion)) {
+    console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + ENTABLADOR._.editTypes[0] + "'. Tipos válidos:", ENTABLADOR._.editTypes);
+    type_edicion = ENTABLADOR._.editTypes[0];
   }
   // console.log(type_edicion);
   // --
@@ -334,6 +338,11 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
 
       //detectar si es un checkbox
       newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
+      console.log("newContent", newContent);
+      if (type_input == "number") {
+        //replace the letter 'e' with ''
+        newContent = newContent.replace(/e/g, "");
+      }
       //console.log("newContent: ",newContent, "originalContent: ",originalContent);
 
       if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image") {
@@ -542,6 +551,7 @@ function ENTABLADOR_add_changes(table, rowIndex, columnIndex, newContent) {
   var nombreColumna = table.settings().init().aoColumns[columnIndex].data;
   var nombreRow = table.row(rowIndex).data()[table.key];
   var table_name = table.table().node().id;
+  var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
   // console.log(nombreColumna);
   // console.log(nombreRow);
   // añadir cambios a CAMBIOS_TABLAS
