@@ -6,12 +6,8 @@ var EditedSVG = `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns
 var NewSVG = `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 15 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 var FileSVG = `<svg class="ENTABLADOR-tabla-file" xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
 
-// var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor"<path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 var AddFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 var RemoveFileSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="mr-1" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-var inputsValidos = ["text", "number", "date", "datetime-local", "checkbox", "time", "file"];
-var MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-var ENTABLADOR_LabelClick = null;
 
 const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
@@ -189,16 +185,16 @@ const ENTABLADOR = (function () {
     $("#" + config.id).prepend(fileInput);
     fileInput.on("change", function (event) {
       //detect from which cell the file was uploaded
-      console.log(ENTABLADOR_LabelClick);
-      var rowIndex = ENTABLADOR_LabelClick.row;
-      var columnIndex = ENTABLADOR_LabelClick.column;
+      // console.log(ENTABLADOR._.LabelClick);
+      var rowIndex = ENTABLADOR._.LabelClick.row;
+      var columnIndex = ENTABLADOR._.LabelClick.column;
       var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
 
       $(cell.node()).find(".uploading").show();
       $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
 
       var files = event.target.files;
-      console.log("subiendo..", "(" + files[0].name + " +?)", files);
+      // console.log("subiendo..", "(" + files[0].name + " +?)", files);
       /*
       $.post(ENT_TABLA.subirArchivoURL, { file: files }, function (data) {
         console.log("subido", data);
@@ -214,8 +210,8 @@ const ENTABLADOR = (function () {
         var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
         var oldData = cellDataTables.data();
 
-        console.log("newContent: ", newContent);
-        console.log("oldData: ", oldData);
+        // console.log("newContent: ", newContent);
+        // console.log("oldData: ", oldData);
 
         cellDataTables.data([...oldData, ...newContent]).draw(false);
 
@@ -242,6 +238,9 @@ const ENTABLADOR = (function () {
     /* VARIABLE GLOBAL DE LA LIBRERÍA */
     CAMBIOS_TABLAS: {},
     editTypes: ["inline", "modal"],
+    inputsValidos: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
+    MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    LabelClick: null,
   };
   return {
     id,
@@ -295,7 +294,7 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
   if (type_edicion == "inline") {
     var input = $(`<input type="text">`).val(originalContent);
     var type_input = "text";
-    if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && inputsValidos.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
+    if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && ENTABLADOR._.inputsValidos.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
       type_input = ENT_TABLA.inputsTypes[nombreColumna];
       // console.log("type_input", type_input);
       if (type_input == "file" || type_input == "image") {
@@ -326,7 +325,7 @@ function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
           input.blur();
         }
         if (e.key === "Escape") {
-          console.log("Escape!!!");
+          // console.log("Escape!!!");
           Cancelled = true;
           input.blur();
         }
@@ -389,8 +388,8 @@ function ENTABLADOR_eliminarFotoBTN(event, cell) {
   var cellDataTables = window[tablaName].cell(cell);
   var link = $(event.target).closest("a").attr("href");
 
-  console.log(cellDataTables.data());
-  console.log(link);
+  // console.log(cellDataTables.data());
+  // console.log(link);
 
   //remove link from array
   var newContent = cellDataTables.data().filter((archivo) => archivo != link);
@@ -446,11 +445,12 @@ ENTABLADOR.crear({
       render: function (data, type, row, meta) {
         // return `lel`;
         //detect if it is a date
-        if (data == null) {
+        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+        if (data == null || data == "") {
           return data;
         }
         var fecha = new Date(data);
-        return `${fecha.getDate()} ${MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
       },
     },
     {
@@ -483,7 +483,7 @@ ENTABLADOR.crear({
             html += `<a href="${data}" target="_blank" class="class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
           }
         }
-        html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div></span>`;
+        html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
         return html;
       },
     },
