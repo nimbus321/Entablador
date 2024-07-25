@@ -1,8 +1,11 @@
-TO-DO
+# TO-DO
 
-- .MIN BROKEN
 - type_edicion modal
 - poder eliminar los archivos haciendo click mientras tengo precionado shift
 
 - hacer que al eliminar los datos se renderize correctamente. en especial date
 - limpiar los nombres de las variables (y functions) para meterlas en la variable global ENTABLADOR
+
+# FIXED - ON WATCH
+
+- .MIN.JS FIXED - on the future may break
