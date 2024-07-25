@@ -232,8 +232,8 @@ const ENTABLADOR = (function () {
       console.log("renderizado...");
 
       let isShiftPressed = false;
-
-      document.addEventListener("mouseover", (event) => {
+      var tabl = NuevaTabla.table().node();
+      tabl.addEventListener("mouseover", (event) => {
         if (event.target.classList.contains("ENTABLADOR-tabla-file")) {
           if (isShiftPressed) {
             event.target.style.cursor = "no-drop";
@@ -243,34 +243,34 @@ const ENTABLADOR = (function () {
         }
       });
 
-      document.addEventListener("mouseout", (event) => {
+      tabl.addEventListener("mouseout", (event) => {
         if (event.target.classList.contains("ENTABLADOR-tabla-file")) {
           event.target.style.cursor = "";
         }
       });
 
       // Manejar eventos de teclado a nivel de documento
-      document.addEventListener("keydown", (event) => {
+      tabl.addEventListener("keydown", (event) => {
         if (event.key === "Shift") {
           isShiftPressed = true;
           // Actualizar el cursor de elementos actualmente en "hover"
-          document.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
+          tabl.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
             element.style.cursor = "no-drop";
           });
         }
       });
 
-      document.addEventListener("keyup", (event) => {
+      tabl.addEventListener("keyup", (event) => {
         if (event.key === "Shift") {
           isShiftPressed = false;
           // Actualizar el cursor de elementos actualmente en "hover"
-          document.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
+          tabl.querySelectorAll(".ENTABLADOR-tabla-file:hover").forEach((element) => {
             element.style.cursor = "";
           });
         }
       });
 
-      document.addEventListener("click", (event) => {
+      tabl.addEventListener("click", (event) => {
         if (event.target.classList.contains("ENTABLADOR-tabla-file") && isShiftPressed) {
           console.log("Click con shift!");
 
@@ -429,6 +429,9 @@ function getNewID(tablaDatos) {
     console.error("Error: No se pudo obtener un nuevo ID!");
   }
 }
+function ENTABLADOR_eliminarFotoBTN(event, cell) {
+  event.preventDefault();
+}
 // Uso del objeto ENTABLADOR
 /*
 ENTABLADOR.crear({
@@ -503,7 +506,7 @@ ENTABLADOR.crear({
             data.forEach((archivo) => {
               //detect if it is an image
               if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                html += `<a href="${archivo}" target="_blank" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" class="ENTABLADOR-tabla-file" style="height:20px;width:20px;"></a>`;
+                html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" class="ENTABLADOR-tabla-file" style="height:20px;width:20px;"><div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
               } else {
                 html += `<a href="${archivo}" target="_blank" style="cursor:zoom-in;margin-right:5px;">${FileSVG}</a>`;
               }
@@ -512,7 +515,7 @@ ENTABLADOR.crear({
             html += `<a href="${data}" target="_blank" style="cursor:zoom-in;margin-right:5px;">${FileSVG}</a>`;
           }
         }
-        html += `</div><div><div style="display:inline3;" onclick="ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };ENTABLADOR_eliminarFotoBTN()">${RemoveFileSVG}</div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div></div>`;
+        html += `</div><div><div style="display:inline;" onclick="">${RemoveFileSVG}</div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('click!');ENTABLADOR_LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><div class="uploading" style="display: none;"><div class="spinner-border spinner-border-sm mr-1"></div>Subiendo...</div></div>`;
         return html;
       },
     },
