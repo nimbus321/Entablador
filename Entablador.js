@@ -232,17 +232,22 @@ const ENTABLADOR = (function () {
                 if (data != null && data != "") {
                   var RemoveFileSVG = ENTABLADOR._.SVGs.RemoveFileSVG;
                   var FileSVG = ENTABLADOR._.SVGs.FileSVG;
+
+                  function crearElement(data, archivo) {
+                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                  }
+
                   if (Array.isArray(data)) {
                     data.forEach((archivo) => {
                       //detect if it is an image
                       if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
                         html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
                       } else {
-                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                        html += crearElement(data, archivo);
                       }
                     });
                   } else {
-                    html += `<a href="${data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                    html += crearElement(data);
                   }
                 }
                 html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
@@ -473,8 +478,42 @@ function ENTABLADOR_eliminarFotoBTN(event, cell) {
   // console.log(link);
 
   //remove link from array
-  var newContent = cellDataTables.data().filter((archivo) => archivo != link);
-  cellDataTables.data(newContent).draw(false);
+  console.log("cellDataTables.data()", cellDataTables.data());
+  var data = cellDataTables.data();
+  var newContent;
+
+  // -------------------------
+  /*if (typeof data == "object") {
+    newContent = data.filter((archivo) => archivo != link);
+    cellDataTables.data(newContent).draw(false);
+  } else {
+    if (typeof data == "string") {
+      if (data == link) {
+        cellDataTables.data("").draw(false);
+        newContent = "";
+      }
+    }
+  }
+  if (newContent){}*/
+  // -------------------------
+  //detect if it is an array
+  if (Array.isArray(data)) {
+    newContent = data.filter((archivo) => archivo != link);
+    //detect if it is an empty array
+    if (newContent.length == 0) {
+      newContent = "";
+    }
+    cellDataTables.data(newContent).draw(false);
+  } else {
+    //detect if it is a string
+    if (typeof data == "string") {
+      if (data == link) {
+        cellDataTables.data("").draw(false);
+        newContent = "";
+      }
+    }
+  }
+
   var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
 
   // añadir cambios a CAMBIOS_TABLAS

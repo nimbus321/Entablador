@@ -1,15 +1,16 @@
 # TO-DO
 
+- dejar que el usuario agregue campos
 - type_edicion modal
 
 # TRABAJANDO EN ELLO
 
-- error al tratar de eliminar ID:2 columna: Archivos.
 - arreglar el duplicado de svg file. quitar redundancia ('rget="\_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_elimina')
 - .min
 
 # ULTIMOS HECHOS
 
+- error al tratar de eliminar ID:2 columna: Archivos. - habilitar poder poner de datos de file strings (y no solo arrays)
 - al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.
 - .meta() en desuso. ahora se establece en el mismo config de .crear()
 
