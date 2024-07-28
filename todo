@@ -4,6 +4,9 @@
 
 # TRABAJANDO EN ELLO
 
+- arreglar el duplicado de svg file. quitar redundancia ('rget="\_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_elimina')
+- .min
+
 # ULTIMOS HECHOS
 
 - al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.
