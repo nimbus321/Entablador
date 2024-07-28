@@ -5,21 +5,19 @@
 
 # TRABAJANDO EN ELLO
 
-- arreglar el duplicado de svg file. quitar redundancia ('rget="\_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_elimina')
-- .min
-
 # ULTIMOS HECHOS
 
-- error al tratar de eliminar ID:2 columna: Archivos. - habilitar poder poner de datos de file strings (y no solo arrays)
-- al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.
-- .meta() en desuso. ahora se establece en el mismo config de .crear()
+- .MIN.JS FIXED - on the future may break
 
 # FIXED - ON WATCH
 
-- .MIN.JS FIXED - on the future may break
-- hacer que al eliminar los datos se renderize correctamente. en especial date - Parece solucionado? no recuerdo arreglarlo
-
 # DONE
 
+- metido todas las functions dentro de ENTABLADOR.\_.
+- al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.
+- error al tratar de eliminar ID:2 columna: Archivos. - habilitar poder poner de datos de file strings (y no solo arrays)
+- .meta() en desuso. ahora se establece en el mismo config de .crear()
+- arreglar el duplicado de svg file. quitar redundancia ('rget="\_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_elimina')
+- hacer que al eliminar los datos se renderize correctamente. en especial date - Parece solucionado? no recuerdo arreglarlo
 - limpiar los nombres de las variables (y functions) para meterlas en la variable global ENTABLADOR
 - poder eliminar los archivos haciendo click mientras tengo precionado shift - cambiado a :hover

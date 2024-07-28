@@ -234,14 +234,14 @@ const ENTABLADOR = (function () {
                   var FileSVG = ENTABLADOR._.SVGs.FileSVG;
 
                   function crearElement(data, archivo) {
-                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
                   }
 
                   if (Array.isArray(data)) {
                     data.forEach((archivo) => {
                       //detect if it is an image
                       if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
                       } else {
                         html += crearElement(data, archivo);
                       }
@@ -303,7 +303,7 @@ const ENTABLADOR = (function () {
 
         cellDataTables.data([...oldData, ...newContent]).draw(false);
 
-        ENTABLADOR_add_changes(NuevaTabla, rowIndex, columnIndex, newContent);
+        ENTABLADOR._.addChanges(NuevaTabla, rowIndex, columnIndex, newContent);
       });
       event.target.value = "";
     });
@@ -314,7 +314,7 @@ const ENTABLADOR = (function () {
       //detectar si la tabla tiene la class editable
       if ($(this).closest("table").hasClass("editable")) {
         // console.log("CLICK!!!");
-        ENTABLADOR_EDITAR_TABLA(window[config.id], this);
+        ENTABLADOR._.editTable(window[config.id], this);
       }
     });
 
@@ -330,6 +330,196 @@ const ENTABLADOR = (function () {
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     LabelClick: null,
     SVGs: SVGs,
+    addChanges: function (table, rowIndex, columnIndex, newContent) {
+      var nombreColumna = table.settings().init().aoColumns[columnIndex].data;
+      var nombreRow = table.row(rowIndex).data()[table.key];
+      var table_name = table.table().node().id;
+      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
+      // console.log(nombreColumna);
+      // console.log(nombreRow);
+      // añadir cambios a CAMBIOS_TABLAS
+      if (!CAMBIOS_TABLAS[table_name]) {
+        CAMBIOS_TABLAS[table_name] = {
+          cambios: {
+            [nombreRow]: { [nombreColumna]: newContent },
+            eliminados: [],
+          },
+        };
+      } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
+        CAMBIOS_TABLAS[table_name].cambios[nombreRow] = { [nombreColumna]: newContent };
+      } else {
+        CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = newContent;
+      }
+      console.log("Cambios Actualizados:", CAMBIOS_TABLAS);
+    },
+    editTable: function (ENT_TABLA, el) {
+      var debug = false;
+      if (debug) {
+        console.log("ENT_TABLA", ENT_TABLA);
+        console.log("el", el);
+      }
+
+      var TablaID = ENT_TABLA.table().node().id;
+      var cell = $(el);
+      var row = ENT_TABLA.row(el).data();
+      var indexCelda = ENT_TABLA.cell(el).index().column;
+      var indexRow = ENT_TABLA.row(cell).index();
+      var originalContent = ENT_TABLA.cell(el).data();
+      var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+      var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
+
+      if (debug) {
+        console.log("-----------------------------------------------");
+        console.log("cell", cell);
+        console.log("TablaID:", TablaID);
+        console.log("row", row);
+        console.log("indexCelda", indexCelda);
+        console.log("indexRow", indexRow);
+        console.log("originalContent", originalContent);
+        console.log("nombreColumna", nombreColumna);
+        console.log("cellDataTables", cellDataTables);
+        console.log(".data().toArray():", ENT_TABLA.data().toArray());
+        console.log("-----------------------------------------------");
+      }
+
+      if (!$(el).hasClass("editable")) {
+        alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
+        return;
+      }
+
+      // --
+      var type_edicion = $(el).closest("table").attr("data-editable-type");
+      if (!ENTABLADOR._.editTypes.includes(type_edicion)) {
+        console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + ENTABLADOR._.editTypes[0] + "'. Tipos válidos:", ENTABLADOR._.editTypes);
+        type_edicion = ENTABLADOR._.editTypes[0];
+      }
+      // console.log(type_edicion);
+      // --
+      if (type_edicion == "inline") {
+        var input = $(`<input type="text">`).val(originalContent);
+        var type_input = "text";
+        if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && ENTABLADOR._.validInputs.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
+          type_input = ENT_TABLA.inputsTypes[nombreColumna];
+          // console.log("type_input", type_input);
+          if (type_input == "file" || type_input == "image") {
+            return;
+          }
+          if (type_input == "checkbox") {
+            input = $(`<select><option value="true">Sí</option><option value="false">No</option></select>`).val(originalContent);
+          } else {
+            input = $(`<input type="${type_input}">`).val(originalContent);
+          }
+        }
+        cell.empty().html(input);
+
+        // Evitar que el clic en el input borre su contenido
+        input.on("click", function (e) {
+          e.stopPropagation();
+        });
+        var Cancelled = false;
+
+        // Enfocar en el input recién creado
+        input.focus();
+        input.on("keydown", function (e) {
+          if (e.target.tagName === "INPUT") {
+            if (e.key === "Enter") {
+              input.blur();
+            }
+            if (e.key === "Escape") {
+              // console.log("Escape!!!");
+              Cancelled = true;
+              input.blur();
+            }
+          }
+        });
+
+        input.on("blur", function () {
+          // get type of input from data-editable-type attribute
+
+          //detectar si es un checkbox
+          newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
+          console.log("newContent", newContent);
+          if (type_input == "number") {
+            //replace the letter 'e' with ''
+            newContent = newContent.replace(/e/g, "");
+          }
+          //console.log("newContent: ",newContent, "originalContent: ",originalContent);
+
+          if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image") {
+            cell.empty();
+            cellDataTables.data(originalContent).draw(false);
+            return;
+          }
+          cellDataTables.data(newContent).draw(false);
+
+          cell.append(ENTABLADOR._.SVGs.EditedSVG);
+          cell.addClass("td-editado text-primary font-weight-bold");
+          cell.attr("title", "Campo Editado");
+
+          // console.log("row", row);
+          var id = row.id;
+
+          // añadir cambios a CAMBIOS_TABLAS
+          ENTABLADOR._.addChanges(ENT_TABLA, indexRow, indexCelda, newContent);
+
+          row[nombreColumna] = newContent;
+          //console.log("nombreColumna",nombreColumna)
+          //console.log("row",row);
+          ENT_TABLA.draw();
+        });
+      } // aqui termina el inline
+    },
+    deleteFile: function (event, cell) {
+      event.preventDefault();
+
+      var tablaName = $(event.target).closest("table").attr("id");
+      var cellDataTables = window[tablaName].cell(cell);
+      var link = $(event.target).closest("a").attr("href");
+
+      // console.log(cellDataTables.data());
+      // console.log(link);
+
+      //remove link from array
+      console.log("cellDataTables.data()", cellDataTables.data());
+      var data = cellDataTables.data();
+      var newContent;
+
+      //detect if it is an array
+      if (Array.isArray(data)) {
+        newContent = data.filter((archivo) => archivo != link);
+        //detect if it is an empty array
+        if (newContent.length == 0) {
+          newContent = "";
+        }
+        cellDataTables.data(newContent).draw(false);
+      } else {
+        //detect if it is a string
+        if (typeof data == "string") {
+          if (data == link) {
+            cellDataTables.data("").draw(false);
+            newContent = "";
+          }
+        }
+      }
+
+      var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
+
+      // añadir cambios a CAMBIOS_TABLAS
+      ENTABLADOR._.addChanges(window[tablaName], cell.row, cell.column, newContent);
+    },
+    getNewID: function (tablaDatos) {
+      // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
+      var idMayor = tablaDatos.reduce((max, obj) => {
+        const idNumber = Number(obj.id);
+        return !isNaN(idNumber) && idNumber > max ? idNumber : max;
+      }, -Infinity);
+
+      if (tablaDatos[idMayor] == null) {
+        return idMayor + 1;
+      } else {
+        console.error("Error: No se pudo obtener un nuevo ID!");
+      }
+    },
   };
   return {
     id,
@@ -337,188 +527,6 @@ const ENTABLADOR = (function () {
     _,
   };
 })();
-function ENTABLADOR_EDITAR_TABLA(ENT_TABLA, el) {
-  var debug = false;
-  if (debug) {
-    console.log("ENT_TABLA", ENT_TABLA);
-    console.log("el", el);
-  }
-
-  var TablaID = ENT_TABLA.table().node().id;
-  var cell = $(el);
-  var row = ENT_TABLA.row(el).data();
-  var indexCelda = ENT_TABLA.cell(el).index().column;
-  var indexRow = ENT_TABLA.row(cell).index();
-  var originalContent = ENT_TABLA.cell(el).data();
-  var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
-  var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
-
-  if (debug) {
-    console.log("-----------------------------------------------");
-    console.log("cell", cell);
-    console.log("TablaID:", TablaID);
-    console.log("row", row);
-    console.log("indexCelda", indexCelda);
-    console.log("indexRow", indexRow);
-    console.log("originalContent", originalContent);
-    console.log("nombreColumna", nombreColumna);
-    console.log("cellDataTables", cellDataTables);
-    console.log(".data().toArray():", ENT_TABLA.data().toArray());
-    console.log("-----------------------------------------------");
-  }
-
-  if (!$(el).hasClass("editable")) {
-    alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
-    return;
-  }
-
-  // --
-  var type_edicion = $(el).closest("table").attr("data-editable-type");
-  if (!ENTABLADOR._.editTypes.includes(type_edicion)) {
-    console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + ENTABLADOR._.editTypes[0] + "'. Tipos válidos:", ENTABLADOR._.editTypes);
-    type_edicion = ENTABLADOR._.editTypes[0];
-  }
-  // console.log(type_edicion);
-  // --
-  if (type_edicion == "inline") {
-    var input = $(`<input type="text">`).val(originalContent);
-    var type_input = "text";
-    if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && ENTABLADOR._.validInputs.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
-      type_input = ENT_TABLA.inputsTypes[nombreColumna];
-      // console.log("type_input", type_input);
-      if (type_input == "file" || type_input == "image") {
-        return;
-      }
-      if (type_input == "checkbox") {
-        input = $(`<select><option value="true">Sí</option><option value="false">No</option></select>`).val(originalContent);
-      } else {
-        input = $(`<input type="${type_input}">`).val(originalContent);
-      }
-    }
-    cell.empty().html(input);
-
-    // Evitar que el clic en el input borre su contenido
-    input.on("click", function (e) {
-      e.stopPropagation();
-    });
-    var Cancelled = false;
-
-    // Enfocar en el input recién creado
-    input.focus();
-    input.on("keydown", function (e) {
-      if (e.target.tagName === "INPUT") {
-        if (e.key === "Enter") {
-          input.blur();
-        }
-        if (e.key === "Escape") {
-          // console.log("Escape!!!");
-          Cancelled = true;
-          input.blur();
-        }
-      }
-    });
-
-    input.on("blur", function () {
-      // get type of input from data-editable-type attribute
-
-      //detectar si es un checkbox
-      newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
-      console.log("newContent", newContent);
-      if (type_input == "number") {
-        //replace the letter 'e' with ''
-        newContent = newContent.replace(/e/g, "");
-      }
-      //console.log("newContent: ",newContent, "originalContent: ",originalContent);
-
-      if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image") {
-        cell.empty();
-        cellDataTables.data(originalContent).draw(false);
-        return;
-      }
-      cellDataTables.data(newContent).draw(false);
-
-      cell.append(ENTABLADOR._.SVGs.EditedSVG);
-      cell.addClass("td-editado text-primary font-weight-bold");
-      cell.attr("title", "Campo Editado");
-
-      // console.log("row", row);
-      var id = row.id;
-
-      // añadir cambios a CAMBIOS_TABLAS
-      ENTABLADOR_add_changes(ENT_TABLA, indexRow, indexCelda, newContent);
-
-      row[nombreColumna] = newContent;
-      //console.log("nombreColumna",nombreColumna)
-      //console.log("row",row);
-      ENT_TABLA.draw();
-    });
-  } // aqui termina el inline
-}
-function getNewID(tablaDatos) {
-  // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
-  var idMayor = tablaDatos.reduce((max, obj) => {
-    const idNumber = Number(obj.id);
-    return !isNaN(idNumber) && idNumber > max ? idNumber : max;
-  }, -Infinity);
-
-  if (tablaDatos[idMayor] == null) {
-    return idMayor + 1;
-  } else {
-    console.error("Error: No se pudo obtener un nuevo ID!");
-  }
-}
-function ENTABLADOR_eliminarFotoBTN(event, cell) {
-  event.preventDefault();
-
-  var tablaName = $(event.target).closest("table").attr("id");
-  var cellDataTables = window[tablaName].cell(cell);
-  var link = $(event.target).closest("a").attr("href");
-
-  // console.log(cellDataTables.data());
-  // console.log(link);
-
-  //remove link from array
-  console.log("cellDataTables.data()", cellDataTables.data());
-  var data = cellDataTables.data();
-  var newContent;
-
-  // -------------------------
-  /*if (typeof data == "object") {
-    newContent = data.filter((archivo) => archivo != link);
-    cellDataTables.data(newContent).draw(false);
-  } else {
-    if (typeof data == "string") {
-      if (data == link) {
-        cellDataTables.data("").draw(false);
-        newContent = "";
-      }
-    }
-  }
-  if (newContent){}*/
-  // -------------------------
-  //detect if it is an array
-  if (Array.isArray(data)) {
-    newContent = data.filter((archivo) => archivo != link);
-    //detect if it is an empty array
-    if (newContent.length == 0) {
-      newContent = "";
-    }
-    cellDataTables.data(newContent).draw(false);
-  } else {
-    //detect if it is a string
-    if (typeof data == "string") {
-      if (data == link) {
-        cellDataTables.data("").draw(false);
-        newContent = "";
-      }
-    }
-  }
-
-  var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
-
-  // añadir cambios a CAMBIOS_TABLAS
-  ENTABLADOR_add_changes(window[tablaName], cell.row, cell.column, newContent);
-}
 // Uso del objeto ENTABLADOR
 /*
 ENTABLADOR.crear({
@@ -649,28 +657,6 @@ if ($(".modal.show").length > 0) {
 $("body").prepend(div);
 $("#ENTABLADOR_MODAL").modal("show");
 */
-function ENTABLADOR_add_changes(table, rowIndex, columnIndex, newContent) {
-  var nombreColumna = table.settings().init().aoColumns[columnIndex].data;
-  var nombreRow = table.row(rowIndex).data()[table.key];
-  var table_name = table.table().node().id;
-  var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
-  // console.log(nombreColumna);
-  // console.log(nombreRow);
-  // añadir cambios a CAMBIOS_TABLAS
-  if (!CAMBIOS_TABLAS[table_name]) {
-    CAMBIOS_TABLAS[table_name] = {
-      cambios: {
-        [nombreRow]: { [nombreColumna]: newContent },
-        eliminados: [],
-      },
-    };
-  } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
-    CAMBIOS_TABLAS[table_name].cambios[nombreRow] = { [nombreColumna]: newContent };
-  } else {
-    CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = newContent;
-  }
-  console.log("Cambios Actualizados:", CAMBIOS_TABLAS);
-}
 // Add css rule
 var style = document.createElement("style");
 style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor { position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {position: absolute !important;display: block !important;bottom: -24px;left: 2px;color: var(--danger);width: max-content;z-index: 1;}`;
