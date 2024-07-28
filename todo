@@ -4,6 +4,7 @@
 
 # TRABAJANDO EN ELLO
 
+- error al tratar de eliminar ID:2 columna: Archivos.
 - arreglar el duplicado de svg file. quitar redundancia ('rget="\_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR_elimina')
 - .min
 
