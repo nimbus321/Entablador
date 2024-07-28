@@ -97,6 +97,7 @@ const ENTABLADOR = (function () {
         return this;
       },
       meta(meta) {
+        // NO EN USO --
         // console.log(ID + " -- meta: " + meta);
         if (meta.key) {
           ENT_TABLA.key = meta.key;
@@ -173,7 +174,89 @@ const ENTABLADOR = (function () {
     }
     //console.log("opciones:", opciones);
     //console.log("config:", config);
+
+    /* ########################################################################
+      GENERAR Automaticamente la columna de input 'file'
+      .meta({
+        key: "id",
+        inputsTypes: {
+          nombre: "text",
+          edad: "number",
+          fechaNacimiento: "date",
+          humano: "checkbox",
+          archivos: "file",
+        },
+      })
+    */
+    if (config.meta && config.meta.key) {
+      opciones.key = config.meta.key;
+    }
+    if (config.meta && config.meta.inputsTypes) {
+      //loop through config.meta.inputsTypes
+      // console.log("---", config.meta.inputsTypes);
+      for (var columnaNombre in config.meta.inputsTypes) {
+        if (config.meta.inputsTypes[columnaNombre] == "file") {
+          var hayFile = false;
+          //loop through config.columns
+          for (var i = 0; i < opciones.columns.length; i++) {
+            if (opciones.columns[i].data == columnaNombre) {
+              var columnINDEX = i;
+              // search through columnDefs
+              for (var j = 0; j < opciones.columnDefs.length; j++) {
+                if (opciones.columnDefs[j].targets == columnINDEX) {
+                  // remove element from the array and issue a warning
+                  // be aware that it can be many elements with the same target
+                  console.warn("La columna '" + columnaNombre + "' ya tiene una definición en columnDefs. Se ha eliminado la definición.");
+                  opciones.columnDefs.splice(j, 1);
+                  j--;
+                }
+              }
+
+              hayFile = true;
+            }
+          }
+          console.log("columnINDEX", columnINDEX);
+          console.log("antes", opciones.columnDefs.length);
+          console.log("hayFile", hayFile);
+          if (hayFile) {
+            opciones.columnDefs.push({
+              targets: columnINDEX,
+              render: function (data, type, row, meta) {
+                // console.log("data", data);
+                var rowIndex = meta.row;
+                var columnIndex = meta.col;
+                // console.log("rowIndex", rowIndex);
+                // console.log("columnIndex", columnIndex);
+
+                var html = `<div style="display:flex; justify-content: space-between;"><div>`;
+                if (data != null && data != "") {
+                  var RemoveFileSVG = ENTABLADOR._.SVGs.RemoveFileSVG;
+                  var FileSVG = ENTABLADOR._.SVGs.FileSVG;
+                  if (Array.isArray(data)) {
+                    data.forEach((archivo) => {
+                      //detect if it is an image
+                      if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" class="ENTABLADOR-tabla-file" style="height:20px;width:20px;"><div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                      } else {
+                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                      }
+                    });
+                  } else {
+                    html += `<a href="${data}" target="_blank" class="class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                  }
+                }
+                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+                return html;
+              },
+            });
+          }
+          console.log("despues", opciones.columnDefs.length);
+        }
+      }
+    }
     var NuevaTabla = new DataTable("#" + config.id, opciones);
+    NuevaTabla.key = config.meta.key;
+    NuevaTabla.inputsTypes = config.meta.inputsTypes;
     $("#" + config.id).on("preDraw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
     });
@@ -422,6 +505,16 @@ ENTABLADOR.crear({
 */
 ENTABLADOR.crear({
   id: "TABLA",
+  meta: {
+    key: "id",
+    inputsTypes: {
+      nombre: "text",
+      edad: "number",
+      fechaNacimiento: "date",
+      humano: "checkbox",
+      archivos: "file",
+    },
+  },
   columns: [
     { data: "id", visible: true },
     { data: "nombre", class: "editable" },
@@ -457,36 +550,6 @@ ENTABLADOR.crear({
         return data == "true" ? "Verdadero" : "Falso";
       },
     },
-    {
-      targets: 5,
-      render: function (data, type, row, meta) {
-        // console.log("data", data);
-        var rowIndex = meta.row;
-        var columnIndex = meta.col;
-        // console.log("rowIndex", rowIndex);
-        // console.log("columnIndex", columnIndex);
-
-        var html = `<div style="display:flex; justify-content: space-between;"><div>`;
-        if (data != null && data != "") {
-          var RemoveFileSVG = ENTABLADOR._.SVGs.RemoveFileSVG;
-          var FileSVG = ENTABLADOR._.SVGs.FileSVG;
-          if (Array.isArray(data)) {
-            data.forEach((archivo) => {
-              //detect if it is an image
-              if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" class="ENTABLADOR-tabla-file" style="height:20px;width:20px;"><div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
-              } else {
-                html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
-              }
-            });
-          } else {
-            html += `<a href="${data}" target="_blank" class="class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="btn-eliminar" onclick="ENTABLADOR_eliminarFotoBTN(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
-          }
-        }
-        html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
-        return html;
-      },
-    },
   ],
 })
   .editable(true)
@@ -495,8 +558,8 @@ ENTABLADOR.crear({
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-  ])
-  .meta({
+  ]);
+/*.meta({
     key: "id",
     inputsTypes: {
       nombre: "text",
@@ -505,7 +568,7 @@ ENTABLADOR.crear({
       humano: "checkbox",
       archivos: "file",
     },
-  });
+  })*/
 
 /* TIPOS DE CAMPOS
   - text
