@@ -98,18 +98,40 @@ const ENTABLADOR = (function () {
       },
       meta(meta) {
         // NO EN USO --
-        // console.log(ID + " -- meta: " + meta);
-        if (meta.key) {
-          ENT_TABLA.key = meta.key;
-        }
-        if (meta.inputsTypes) {
-          ENT_TABLA.inputsTypes = meta.inputsTypes;
-        }
+        console.warn("Deprecated: 'meta' method is deprecated. Use 'tipoEdicion' instead.");
         return this;
       },
       subirArchivoURL(URL) {
         console.log("subirArchivoURL: ", URL);
         ENT_TABLA.subirArchivoURL = URL;
+        return this;
+      },
+      uploadData(data) {
+        /* tener en cuenta que el formato de la DB es
+        {
+          ID1: {
+            COLUMNA1: "VALOR",
+            COLUMNA2: "VALOR",
+            COLUMNA3: "VALOR",
+          },
+          ID2: {
+            COLUMNA1: "VALOR",
+            COLUMNA2: "VALOR",
+            COLUMNA3: "VALOR",
+          }
+        }
+        */
+        console.log("uploadData: ", data);
+        //check if it is an array
+        if (!Array.isArray(data)) {
+          console.error("uploadData: data is not an array. data:", data);
+          return this;
+        }
+        ENT_TABLA.rows.add(data).draw();
+
+        //añadir cambios a CAMBIOS_TABLAS
+        ENTABLADOR._.addChanges(ENT_TABLA, 0, 0, data);
+
         return this;
       },
     };
@@ -215,9 +237,9 @@ const ENTABLADOR = (function () {
               hayFile = true;
             }
           }
-          console.log("columnINDEX", columnINDEX);
-          console.log("antes", opciones.columnDefs.length);
-          console.log("hayFile", hayFile);
+          // console.log("columnINDEX", columnINDEX);
+          // console.log("antes", opciones.columnDefs.length);
+          // console.log("hayFile", hayFile);
           if (hayFile) {
             opciones.columnDefs.push({
               targets: columnINDEX,
@@ -255,7 +277,7 @@ const ENTABLADOR = (function () {
               },
             });
           }
-          console.log("despues", opciones.columnDefs.length);
+          // console.log("despues", opciones.columnDefs.length);
         }
       }
     }
@@ -507,10 +529,12 @@ const ENTABLADOR = (function () {
       // añadir cambios a CAMBIOS_TABLAS
       ENTABLADOR._.addChanges(window[tablaName], cell.row, cell.column, newContent);
     },
-    getNewID: function (tablaDatos) {
+    getNewID: function (tablaDatos, tableID) {
+      // CUIDADO CON ESTO. FALTA VERLO BIEN DE NUEVO !!!!!!
+      console.log("tablaDatos", tablaDatos);
       // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
       var idMayor = tablaDatos.reduce((max, obj) => {
-        const idNumber = Number(obj.id);
+        const idNumber = Number(obj[tableID]);
         return !isNaN(idNumber) && idNumber > max ? idNumber : max;
       }, -Infinity);
 
@@ -519,6 +543,45 @@ const ENTABLADOR = (function () {
       } else {
         console.error("Error: No se pudo obtener un nuevo ID!");
       }
+    },
+    FIRESTORE_TO_TABLE: function (columnKey, json) {
+      if (columnKey == null || columnKey == "") {
+        console.error("Error: No se ha especificado una tabla");
+        return;
+      }
+      if (typeof json !== "object" && !Array.isArray(json)) {
+        return "Error: No es un array";
+      }
+      var json = JSON.parse(JSON.stringify(json));
+
+      var array = [];
+      for (const ID in json) {
+        if (Object.hasOwnProperty.call(json, ID)) {
+          const element = json[ID];
+          element[columnKey] = ID;
+          array.push(element);
+        }
+      }
+      return array;
+    },
+    TABLE_TO_FIRESTORE: function (columnKey, array) {
+      if (typeof array !== "object" && !Array.isArray(array)) {
+        return "Error: No es un array";
+      }
+      var array = JSON.parse(JSON.stringify(array));
+      var obj = {};
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (element[columnKey] == undefined) {
+          // element[columnKey] = ENTABLADOR._.getNewID(array, columnKey);
+          console.error("Error: Omitiendo row. No se ha encontrado la key '" + columnKey + "' en el elemento", element);
+          continue;
+        }
+        obj[element[columnKey]] = element;
+        // eliminar la key y value de columnKey
+        delete obj[element[columnKey]][columnKey];
+      }
+      return obj;
     },
   };
   return {
@@ -605,6 +668,9 @@ ENTABLADOR.crear({
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "true", archivos: "" },
+    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", humano: "false", archivos: "" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "" },
   ]);
 /*.meta({
     key: "id",

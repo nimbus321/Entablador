@@ -1,18 +1,21 @@
 # TO-DO
 
-- dejar que el usuario agregue campos
 - type_edicion modal
+- tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
 
 # TRABAJANDO EN ELLO
 
-# ULTIMOS HECHOS
+- dejar que el usuario agregue campos - uploadData(data)
 
-- .MIN.JS FIXED - on the future may break
+# ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
+- .MIN.JS FIXED - on the future may break
+
 # DONE
 
+- +FIRESTORE_TO_TABLE() +TABLE_TO_FIRESTORE()
 - metido todas las functions dentro de ENTABLADOR.\_.
 - al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.
 - error al tratar de eliminar ID:2 columna: Archivos. - habilitar poder poner de datos de file strings (y no solo arrays)
