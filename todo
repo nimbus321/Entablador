@@ -15,6 +15,7 @@
 
 # DONE
 
+- svg de agregar file se oculta si la tabla no es editable
 - +FIRESTORE_TO_TABLE() +TABLE_TO_FIRESTORE()
 - metido todas las functions dentro de ENTABLADOR.\_.
 - al declarar en inputsTypes un input 'file' hacer que se renderice la automaticamente en columnDefs.

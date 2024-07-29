@@ -272,7 +272,7 @@ const ENTABLADOR = (function () {
                     html += crearElement(data);
                   }
                 }
-                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+                html += `</div><div><label class="mb-0 d-none" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
                 return html;
               },
             });
@@ -725,5 +725,5 @@ $("#ENTABLADOR_MODAL").modal("show");
 */
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor { position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {position: absolute !important;display: block !important;bottom: -24px;left: 2px;color: var(--danger);width: max-content;z-index: 1;}`;
+style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor { position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {position: absolute !important;display: block !important;bottom: -24px;left: 2px;color: var(--danger);width: max-content;z-index: 1;} table.editable label[for="ENTABLADOR_FILE_UPLOADER"]{display:block !important;}"`;
 document.head.appendChild(style);
