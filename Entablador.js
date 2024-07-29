@@ -13,27 +13,27 @@ const ENTABLADOR = (function () {
   // Función para crear el objeto con métodos encadenables
   function id(ID) {
     if (typeof ID != "string") {
-      console.error("El ID debe ser un string");
-      return;
-    }
-    if (ID == "") {
+      if (!$.fn.DataTable.isDataTable(ID)) {
+        console.error("El ID debe ser una tabla de DataTable");
+        return;
+      } else {
+        ID = ID.tables().nodes().to$().attr("id");
+      }
+    } else if (ID == "") {
       console.error("No se ha especificado un ID");
       return;
-    }
-    if (document.getElementById(ID) == null) {
+    } else if (document.getElementById(ID) == null) {
       console.error("'#" + ID + "' no existe");
       // console.error("No se ha encontrado el ID especificado (", ID, ")");
       return null;
     }
-    //  if (!(window[ID] instanceof Element)) {
-    //    console.error("No se ha encontrado el ID especificado (", ID, ")");
-    //    return;
-    //  }
+
     var ENT_TABLA = window[ID];
     if (ENT_TABLA instanceof Element) {
       console.error("Aún no has creado la tabla! '#" + ID + "' es solo un elemento HTML");
-      return this;
+      return;
     }
+
     const instancia = {
       id: ID,
       tipoEdicion(type) {
@@ -127,7 +127,16 @@ const ENTABLADOR = (function () {
           console.error("uploadData: data is not an array. data:", data);
           return this;
         }
-        ENT_TABLA.rows.add(data).draw();
+        // subir a la tabla y poner la class .newData a la row
+        var rows = ENT_TABLA.rows.add(data).draw().nodes();
+        $(rows).addClass("font-weight-bold text-success").attr("title", "Dato Nuevo");
+
+        //   $(rows).find('td').each(function(){
+        //     //poner la clase menos al primero
+        //     if($(this).index() != 0){
+        //         $(this).addClass('td-recienAgregado font-weight-bold text-success').attr('title', 'Dato Nuevo');
+        //     }
+        // });
 
         //añadir cambios a CAMBIOS_TABLAS
         ENTABLADOR._.addChanges(ENT_TABLA, 0, 0, data);
@@ -692,7 +701,7 @@ ENTABLADOR.crear({
   - time
   
   - file
-  - image
+  - image X
 */
 /*
 var nombreIdentificador = "Nombre de la Persona";
