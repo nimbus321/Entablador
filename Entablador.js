@@ -5,7 +5,8 @@
 const ENTABLADOR = (function () {
   var SVGs = {
     EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
-    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Nuevo Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 15 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
+    // NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Nuevo Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 15 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
+    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success); cursor:pointer;" width="15px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator</title><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M170.666667,42.6666667 C99.9742187,42.6666667 42.6666667,99.9742187 42.6666667,170.666667 C42.6666667,241.359115 99.9742187,298.666667 170.666667,298.666667 C241.359115,298.666667 298.666667,241.359115 298.666667,170.666667 C298.666667,99.9742187 241.359115,42.6666667 170.666667,42.6666667 Z M192,85.3333333 L191.999333,149.333333 L256,149.333333 L256,192 L191.999333,191.999333 L192,256 L149.333333,256 L149.333333,191.999333 L85.3333333,192 L85.3333333,149.333333 L149.333333,149.333333 L149.333333,85.3333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`,
     FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RemoveFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" class="mr-1" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -63,6 +64,8 @@ const ENTABLADOR = (function () {
       eliminar() {
         // console.log(ID + " -- eliminar()");
         if (ENT_TABLA != null && !(ENT_TABLA instanceof Element)) {
+          // remove .editable
+          // ENT_TABLA.table().node().classList.remove("editable");
           ENT_TABLA.destroy();
         }
         return this;
@@ -106,7 +109,7 @@ const ENTABLADOR = (function () {
         ENT_TABLA.subirArchivoURL = URL;
         return this;
       },
-      uploadData(data) {
+      uploadData(data, dontForceAutoID) {
         /* tener en cuenta que el formato de la DB es
         {
           ID1: {
@@ -121,25 +124,52 @@ const ENTABLADOR = (function () {
           }
         }
         */
-        console.log("uploadData: ", data);
+        /* EXPECTED VALUE FOR  data:
+        [{
+          ENTABLADOR_KEY: "ID",
+          COLUMNA1: "VALOR",
+          COLUMNA2: "VALOR",
+          COLUMNA3: "VALOR",
+        }]
+       */
+        // console.log("uploadData: ", data);
         //check if it is an array
         if (!Array.isArray(data)) {
           console.error("uploadData: data is not an array. data:", data);
           return this;
         }
+        //check if it is an array of objects
+        for (let i = 0; i < data.length; i++) {
+          if (typeof data[i] != "object") {
+            console.error("uploadData: data is not an array of objects. data:", data);
+            return this;
+          }
+          //check if it has the key specified
+          if (data[i][ENT_TABLA.key] == undefined) {
+            if (dontForceAutoID) {
+              console.error("uploadData: data is missing the key specified and dontForceAutoID=true. data:", data);
+              return this;
+            } else {
+              data[i][ENT_TABLA.key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), ENT_TABLA.key, data);
+            }
+          }
+        }
+
         // subir a la tabla y poner la class .newData a la row
         var rows = ENT_TABLA.rows.add(data).draw().nodes();
         $(rows).addClass("font-weight-bold text-success").attr("title", "Dato Nuevo");
-
-        //   $(rows).find('td').each(function(){
-        //     //poner la clase menos al primero
-        //     if($(this).index() != 0){
-        //         $(this).addClass('td-recienAgregado font-weight-bold text-success').attr('title', 'Dato Nuevo');
-        //     }
-        // });
+        // en cada celda que tenga algun dato poner el svg new
+        $(rows)
+          .find("td")
+          .each(function () {
+            if ($(this).text() != "") {
+              $(this).append(ENTABLADOR._.SVGs.NewSVG);
+            }
+          });
 
         //añadir cambios a CAMBIOS_TABLAS
         ENTABLADOR._.addChanges(ENT_TABLA, 0, 0, data);
+        // FALTA ESTOOOO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         return this;
       },
@@ -538,20 +568,36 @@ const ENTABLADOR = (function () {
       // añadir cambios a CAMBIOS_TABLAS
       ENTABLADOR._.addChanges(window[tablaName], cell.row, cell.column, newContent);
     },
-    getNewID: function (tablaDatos, tableID) {
-      // CUIDADO CON ESTO. FALTA VERLO BIEN DE NUEVO !!!!!!
-      console.log("tablaDatos", tablaDatos);
-      // Obtiene el ID más grande de la tabla (si es que hay IDs numéricos, incluso si son strings)
-      var idMayor = tablaDatos.reduce((max, obj) => {
-        const idNumber = Number(obj[tableID]);
-        return !isNaN(idNumber) && idNumber > max ? idNumber : max;
-      }, -Infinity);
+    getNewID: function (objects, tableID, extraData) {
+      // tablaDatos, tableID, extraData
+      // Filtra los objetos que tienen la propiedad `tableID`
+      const filteredObjects = objects.filter((obj) => obj.hasOwnProperty(tableID));
 
-      if (tablaDatos[idMayor] == null) {
-        return idMayor + 1;
-      } else {
-        console.error("Error: No se pudo obtener un nuevo ID!");
+      // Extrae las IDs de los objetos filtrados
+      const objectIDs = filteredObjects.map((obj) => obj[tableID]);
+
+      // Extrae las IDs adicionales de `extraData` basado en `tableID`, ignorando los objetos que no tienen la propiedad `tableID`
+      const extraIDs = extraData ? extraData.filter((obj) => obj.hasOwnProperty(tableID)).map((obj) => obj[tableID]) : [];
+
+      // Combina todas las IDs
+      const allIDs = objectIDs.concat(extraIDs);
+
+      // Si no hay IDs, retorna 1
+      if (allIDs.length === 0) {
+        return 1;
       }
+
+      // Función para extraer el número de una cadena
+      function extractNumber(id) {
+        const num = parseInt(id.toString().replace(/\D/g, ""), 10);
+        return isNaN(num) ? 0 : num;
+      }
+
+      // Encuentra la ID máxima de todas las IDs combinadas
+      const maxID = Math.max(...allIDs.map((id) => extractNumber(id)));
+
+      // Retorna la nueva ID que es +1 mayor que la ID más alta
+      return maxID + 1;
     },
     FIRESTORE_TO_TABLE: function (columnKey, json) {
       if (columnKey == null || columnKey == "") {
@@ -636,18 +682,18 @@ ENTABLADOR.crear({
   },
   columns: [
     { data: "id", visible: true },
-    { data: "nombre", class: "editable" },
-    { data: "edad", class: "editable" },
-    { data: "fechaNacimiento", class: "editable" },
-    { data: "humano", class: "editable" },
-    { data: "archivos", class: "editable" },
+    { data: "nombre", class: "editable", defaultContent: "" },
+    { data: "edad", class: "editable", defaultContent: "" },
+    { data: "fechaNacimiento", class: "editable", defaultContent: "" },
+    { data: "humano", class: "editable", defaultContent: "" },
+    { data: "archivos", class: "editable", defaultContent: "" },
   ],
   columnDefs: [
     {
       targets: 1,
       render: function (data, type, row, meta) {
         // return `lel`;
-        return data.toUpperCase();
+        return data ? data.toUpperCase() : data;
       },
     },
     {
@@ -666,7 +712,17 @@ ENTABLADOR.crear({
     {
       targets: 4,
       render: function (data, type, row, meta) {
-        return data == "true" ? "Verdadero" : "Falso";
+        var resultado;
+        if (data == "" || data == undefined) {
+          return;
+        }
+        if (data == "true" || data == true) {
+          resultado = "true";
+        }
+        if (data == "false" || data == false) {
+          resultado = "false";
+        }
+        return resultado;
       },
     },
   ],

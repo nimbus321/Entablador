@@ -2,13 +2,16 @@
 
 - type_edicion modal
 - tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
-- al eliminar la tabla con .eliminar() hacer que se quite la clase .editable y los event listener, etc
+- hacer una function para sanitizar inputs en especial text. quitar ' " \ ` .
 
 # TRABAJANDO EN ELLO
 
-- dejar que el usuario agregue campos - uploadData(data)
+- al eliminar la tabla con .eliminar() hacer que se quite la clase .editable y los event listener, etc (checar los event listener !)
+- dejar que el usuario agregue campos - uploadData(data) - avances muy grandes !
 
 # ULTIMOS HECHOS
+
+- hecho de nuevo getNewID()
 
 # FIXED - ON WATCH
 
