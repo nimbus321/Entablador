@@ -106,6 +106,14 @@ const ENTABLADOR = (function () {
         console.warn("Deprecated: 'meta' method is deprecated. Use 'tipoEdicion' instead.");
         return this;
       },
+      mandatoryFields(arr) {
+        if (arr == undefined) {
+          return ENTABLADOR._.mandatoryFields;
+        } else if (Array.isArray(arr)) {
+          ENTABLADOR._.mandatoryFields = arr;
+        }
+        return this;
+      },
       subirArchivoURL(URL) {
         console.log("subirArchivoURL: ", URL);
         ENT_TABLA.subirArchivoURL = URL;
@@ -137,19 +145,19 @@ const ENTABLADOR = (function () {
         // console.log("uploadData: ", data);
         //check if it is an array
         if (!Array.isArray(data)) {
-          console.error("uploadData: data is not an array. data:", data);
+          console.error(".uploadData(data) -> data is not an array. data:", data);
           return this;
         }
         //check if it is an array of objects
         for (let i = 0; i < data.length; i++) {
           if (typeof data[i] != "object") {
-            console.error("uploadData: data is not an array of objects. data:", data);
+            console.error(".uploadData(data) -> data is not an array of objects. data:", data);
             return this;
           }
           //check if it has the key specified
           if (data[i][ENT_TABLA.key] == undefined) {
             if (dontForceAutoID) {
-              console.error("uploadData: value of the key '" + ENT_TABLA.key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
+              console.error(".uploadData() -> value of the key '" + ENT_TABLA.key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
               return this;
             } else {
               data[i][ENT_TABLA.key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), ENT_TABLA.key, data);
@@ -161,7 +169,16 @@ const ENTABLADOR = (function () {
               .toArray()
               .some((row) => row[ENT_TABLA.key] == data[i][ENT_TABLA.key]);
             if (existeID_enTabla) {
-              console.error("uploadData: '" + ENT_TABLA.key + ": " + data[i][ENT_TABLA.key] + "' already exists in the table. data:", data);
+              console.error(".uploadData() -> '" + ENT_TABLA.key + ": " + data[i][ENT_TABLA.key] + "' already exists in the table.\nData:", data);
+              return this;
+            }
+          }
+
+          //check mandatoryFields
+          for (let j = 0; j < ENTABLADOR._.mandatoryFields.length; j++) {
+            var mandatoryField = ENTABLADOR._.mandatoryFields[j];
+            if (data[i][mandatoryField] == undefined) {
+              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nmandatoryFields:", ENTABLADOR._.mandatoryFields, "\nData:", data[i]);
               return this;
             }
           }
@@ -437,6 +454,7 @@ const ENTABLADOR = (function () {
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    mandatoryFields: [],
     LabelClick: null,
     SVGs: SVGs,
     addChanges: function (table_name, nombreRow, nombreColumna, value, soloCrearID = false) {
