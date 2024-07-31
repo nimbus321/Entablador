@@ -5,9 +5,8 @@
 const ENTABLADOR = (function () {
   var SVGs = {
     EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
-    // NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Nuevo Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 15 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
-    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success); cursor:pointer;" width="15px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator</title><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M170.666667,42.6666667 C99.9742187,42.6666667 42.6666667,99.9742187 42.6666667,170.666667 C42.6666667,241.359115 99.9742187,298.666667 170.666667,298.666667 C241.359115,298.666667 298.666667,241.359115 298.666667,170.666667 C298.666667,99.9742187 241.359115,42.6666667 170.666667,42.6666667 Z M192,85.3333333 L191.999333,149.333333 L256,149.333333 L256,192 L191.999333,191.999333 L192,256 L149.333333,256 L149.333333,191.999333 L85.3333333,192 L85.3333333,149.333333 L149.333333,149.333333 L149.333333,85.3333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`,
-    FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
+    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator-filled</title><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`,
+    FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" class="" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RemoveFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" class="mr-1" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   };
@@ -65,8 +64,11 @@ const ENTABLADOR = (function () {
         // console.log(ID + " -- eliminar()");
         if (ENT_TABLA != null && !(ENT_TABLA instanceof Element)) {
           // remove .editable
-          // ENT_TABLA.table().node().classList.remove("editable");
+          ENT_TABLA.table().node().classList.remove("editable");
+          // remove envent listener
+          $("#" + ID + " tbody").off("click", "tr td");
           ENT_TABLA.destroy();
+          console.log("Tabla eliminada: ", ID);
         }
         return this;
       },
@@ -147,14 +149,23 @@ const ENTABLADOR = (function () {
           //check if it has the key specified
           if (data[i][ENT_TABLA.key] == undefined) {
             if (dontForceAutoID) {
-              console.error("uploadData: data is missing the key specified and dontForceAutoID=true. data:", data);
+              console.error("uploadData: value of the key '" + ENT_TABLA.key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
               return this;
             } else {
               data[i][ENT_TABLA.key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), ENT_TABLA.key, data);
             }
+          } else {
+            //check if the key already exists in the table
+            var existeID_enTabla = ENT_TABLA.rows()
+              .data()
+              .toArray()
+              .some((row) => row[ENT_TABLA.key] == data[i][ENT_TABLA.key]);
+            if (existeID_enTabla) {
+              console.error("uploadData: '" + ENT_TABLA.key + ": " + data[i][ENT_TABLA.key] + "' already exists in the table. data:", data);
+              return this;
+            }
           }
         }
-
         // subir a la tabla y poner la class .newData a la row
         var rows = ENT_TABLA.rows.add(data).draw().nodes();
         $(rows).addClass("font-weight-bold text-success").attr("title", "Dato Nuevo");
@@ -168,8 +179,32 @@ const ENTABLADOR = (function () {
           });
 
         //añadir cambios a CAMBIOS_TABLAS
-        ENTABLADOR._.addChanges(ENT_TABLA, 0, 0, data);
-        // FALTA ESTOOOO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        var data = JSON.parse(JSON.stringify(data));
+        console.log("data", data);
+        for (let i = 0; i < data.length; i++) {
+          var row = data[i];
+          var columnKey = ENT_TABLA.key;
+          var columnKey_data = row[columnKey];
+          delete row[columnKey];
+          //detect if it is an empty object
+          if (Object.keys(row).length === 0) {
+            var table_name = ENT_TABLA.table().node().id;
+
+            ENTABLADOR._.addChanges(table_name, columnKey_data, 0, 0, true);
+          } else {
+            for (const column in row) {
+              if (Object.hasOwnProperty.call(row, column)) {
+                const value = row[column];
+
+                var table_name = ENT_TABLA.table().node().id;
+                var nombreRow = columnKey_data;
+                var nombreColumna = column;
+
+                ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, value);
+              }
+            }
+          }
+        }
 
         return this;
       },
@@ -295,14 +330,14 @@ const ENTABLADOR = (function () {
                   var FileSVG = ENTABLADOR._.SVGs.FileSVG;
 
                   function crearElement(data, archivo) {
-                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
                   }
 
                   if (Array.isArray(data)) {
                     data.forEach((archivo) => {
                       //detect if it is an image
                       if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:zoom-in;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
+                        html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
                       } else {
                         html += crearElement(data, archivo);
                       }
@@ -311,7 +346,7 @@ const ENTABLADOR = (function () {
                     html += crearElement(data);
                   }
                 }
-                html += `</div><div><label class="mb-0 d-none" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
                 return html;
               },
             });
@@ -340,6 +375,7 @@ const ENTABLADOR = (function () {
       var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
 
       $(cell.node()).find(".uploading").show();
+      console.log(10000, $(cell.node()));
       $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
 
       var files = event.target.files;
@@ -358,13 +394,25 @@ const ENTABLADOR = (function () {
 
         var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
         var oldData = cellDataTables.data();
-
+        var finalData;
+        if (Array.isArray(oldData)) {
+          finalData = [...oldData, ...newContent];
+        } else if (oldData == "") {
+          finalData = newContent;
+        } else {
+          finalData = [oldData, ...newContent];
+          console.log(finalData);
+        }
         // console.log("newContent: ", newContent);
         // console.log("oldData: ", oldData);
 
-        cellDataTables.data([...oldData, ...newContent]).draw(false);
+        cellDataTables.data(finalData).draw(false);
 
-        ENTABLADOR._.addChanges(NuevaTabla, rowIndex, columnIndex, newContent);
+        var table_name = NuevaTabla.table().node().id;
+        var nombreRow = NuevaTabla.row(rowIndex).data()[NuevaTabla.key];
+        var nombreColumna = NuevaTabla.settings().init().aoColumns[columnIndex].data;
+
+        ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
       });
       event.target.value = "";
     });
@@ -391,25 +439,33 @@ const ENTABLADOR = (function () {
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     LabelClick: null,
     SVGs: SVGs,
-    addChanges: function (table, rowIndex, columnIndex, newContent) {
-      var nombreColumna = table.settings().init().aoColumns[columnIndex].data;
-      var nombreRow = table.row(rowIndex).data()[table.key];
-      var table_name = table.table().node().id;
+    addChanges: function (table_name, nombreRow, nombreColumna, value, soloCrearID = false) {
+      // nombreColumna = table.settings().init().aoColumns[columnIndex].data;
+      // nombreRow = table.row(rowIndex).data()[table.key];
+      // var table_name = table.table().node().id;
+
       var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
       // console.log(nombreColumna);
       // console.log(nombreRow);
       // añadir cambios a CAMBIOS_TABLAS
+      var contenido;
+      if (soloCrearID) {
+        contenido = {};
+      } else {
+        contenido = { [nombreColumna]: value };
+      }
+
       if (!CAMBIOS_TABLAS[table_name]) {
         CAMBIOS_TABLAS[table_name] = {
           cambios: {
-            [nombreRow]: { [nombreColumna]: newContent },
+            [nombreRow]: contenido,
             eliminados: [],
           },
         };
       } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
-        CAMBIOS_TABLAS[table_name].cambios[nombreRow] = { [nombreColumna]: newContent };
-      } else {
-        CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = newContent;
+        CAMBIOS_TABLAS[table_name].cambios[nombreRow] = contenido;
+      } else if (!soloCrearID) {
+        CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = value;
       }
       console.log("Cambios Actualizados:", CAMBIOS_TABLAS);
     },
@@ -429,6 +485,7 @@ const ENTABLADOR = (function () {
       var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
       var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
 
+      console.log("indexCelda, indexRow", "(" + indexCelda + ", " + indexRow + ")");
       if (debug) {
         console.log("-----------------------------------------------");
         console.log("cell", cell);
@@ -496,10 +553,13 @@ const ENTABLADOR = (function () {
 
         input.on("blur", function () {
           // get type of input from data-editable-type attribute
-
+          var newContent = input.val();
           //detectar si es un checkbox
-          newContent = input.val().replace(/"/g, "'").replace(/`/g, "'").trim();
-          console.log("newContent", newContent);
+          if (newContent == null) {
+            newContent = "";
+          }
+          newContent = newContent.replace(/"/g, "'").replace(/`/g, "'").trim();
+          // console.log("newContent", newContent);
           if (type_input == "number") {
             //replace the letter 'e' with ''
             newContent = newContent.replace(/e/g, "");
@@ -521,7 +581,11 @@ const ENTABLADOR = (function () {
           var id = row.id;
 
           // añadir cambios a CAMBIOS_TABLAS
-          ENTABLADOR._.addChanges(ENT_TABLA, indexRow, indexCelda, newContent);
+          var table_name = ENT_TABLA.table().node().id;
+          var nombreRow = ENT_TABLA.row(indexRow).data()[ENT_TABLA.key];
+          var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+
+          ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
 
           row[nombreColumna] = newContent;
           //console.log("nombreColumna",nombreColumna)
@@ -563,10 +627,12 @@ const ENTABLADOR = (function () {
         }
       }
 
+      // añadir cambios a CAMBIOS_TABLAS
+      var table_name = window[tablaName].table().node().id;
+      var nombreRow = window[tablaName].row(cell.row).data()[window[tablaName].key];
       var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
 
-      // añadir cambios a CAMBIOS_TABLAS
-      ENTABLADOR._.addChanges(window[tablaName], cell.row, cell.column, newContent);
+      ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
     },
     getNewID: function (objects, tableID, extraData) {
       // tablaDatos, tableID, extraData
@@ -717,10 +783,10 @@ ENTABLADOR.crear({
           return;
         }
         if (data == "true" || data == true) {
-          resultado = "true";
+          resultado = "si";
         }
         if (data == "false" || data == false) {
-          resultado = "false";
+          resultado = "no";
         }
         return resultado;
       },
@@ -747,18 +813,6 @@ ENTABLADOR.crear({
       archivos: "file",
     },
   })*/
-
-/* TIPOS DE CAMPOS
-  - text
-  - number
-  - checkbox
-  - date
-  - Datetime-local (fecha con hora)
-  - time
-  
-  - file
-  - image X
-*/
 /*
 var nombreIdentificador = "Nombre de la Persona";
 var inputs = `<input type="text" placeholder="info">`;
@@ -790,5 +844,5 @@ $("#ENTABLADOR_MODAL").modal("show");
 */
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor { position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {position: absolute !important;display: block !important;bottom: -24px;left: 2px;color: var(--danger);width: max-content;z-index: 1;} table.editable label[for="ENTABLADOR_FILE_UPLOADER"]{display:block !important;}"`;
+style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable label[for="ENTABLADOR_FILE_UPLOADER"] {display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {display: none;}`;
 document.head.appendChild(style);

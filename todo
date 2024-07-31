@@ -1,24 +1,31 @@
+# IDEAS
+
+- en un futuro MUY lejano, hacer para que .addChanges() funcione con arrays.
+- en getNewID() poner una clausula para verificar si el id que esta a punto de poner existe, y si si existe ponerlo recursivo o algo similar
+- considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
+- poner importador de excel?
+- tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
+
 # TO-DO
 
 - type_edicion modal
-- tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
 - hacer una function para sanitizar inputs en especial text. quitar ' " \ ` .
+- crear un meta para establecer que columnas son obligatorias para el usuario rellenar.
 
 # TRABAJANDO EN ELLO
 
-- al eliminar la tabla con .eliminar() hacer que se quite la clase .editable y los event listener, etc (checar los event listener !)
 - dejar que el usuario agregue campos - uploadData(data) - avances muy grandes !
 
 # ULTIMOS HECHOS
 
-- hecho de nuevo getNewID()
+- al agregar datos con uploadData() verificar si y existe la ID en otro row. OBLIGARTORIO! por la manera en que funciona firestore
 
 # FIXED - ON WATCH
 
-- .MIN.JS FIXED - on the future may break
-
 # DONE
 
+- al eliminar la tabla con .eliminar() hacer que se quite la clase .editable y los event listener, etc (checar los event listener !)
+- hecho de nuevo getNewID()
 - svg de agregar file se oculta si la tabla no es editable
 - +FIRESTORE_TO_TABLE() +TABLE_TO_FIRESTORE()
 - metido todas las functions dentro de ENTABLADOR.\_.
