@@ -457,6 +457,34 @@ const ENTABLADOR = (function () {
     mandatoryFields: [],
     LabelClick: null,
     SVGs: SVGs,
+    sanitize: function (input) {
+      if (typeof input !== "string") {
+        console.warn("sanitize() -> input is not a string. Returning the same input.");
+        return input;
+      }
+      /*
+        caracter    |  reemplazar con
+        ------------|-----------------
+        .           |  ,
+        [           |  (
+        ]           |  )
+        *           |  -
+        ~           |  -
+        /           |  -
+        "           |  '
+        `           |  '
+
+      */
+      input = input.replace(/\./g, ",");
+      input = input.replace(/\[/g, "(");
+      input = input.replace(/\]/g, ")");
+      input = input.replace(/\*/g, "-");
+      input = input.replace(/~/g, "-");
+      input = input.replace(/\//g, "-");
+      input = input.replace(/"/g, "'");
+      input = input.replace(/`/g, "'");
+      return input.trim();
+    },
     addChanges: function (table_name, nombreRow, nombreColumna, value, soloCrearID = false) {
       // nombreColumna = table.settings().init().aoColumns[columnIndex].data;
       // nombreRow = table.row(rowIndex).data()[table.key];

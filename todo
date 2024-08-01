@@ -9,21 +9,20 @@
 # TO-DO
 
 - type_edicion modal
-- hacer una function para sanitizar inputs en especial text. quitar ' " \ ` .
-- crear un meta para establecer que columnas son obligatorias para el usuario rellenar.
 
 # TRABAJANDO EN ELLO
 
-- dejar que el usuario agregue campos - uploadData(data) - avances muy grandes !
-
 # ULTIMOS HECHOS
 
-- al agregar datos con uploadData() verificar si y existe la ID en otro row. OBLIGARTORIO! por la manera en que funciona firestore
+- crear un meta para establecer que columnas son obligatorias para el usuario rellenar. - creado .mandatoryFields()
+- dejar que el usuario agregue campos - uploadData(data) - avances muy grandes !
 
 # FIXED - ON WATCH
 
 # DONE
 
+- hacer una function para sanitizar inputs en especial text - listo .sanitize()
+- al agregar datos con uploadData() verificar si y existe la ID en otro row. OBLIGARTORIO! por la manera en que funciona firestore
 - al eliminar la tabla con .eliminar() hacer que se quite la clase .editable y los event listener, etc (checar los event listener !)
 - hecho de nuevo getNewID()
 - svg de agregar file se oculta si la tabla no es editable
