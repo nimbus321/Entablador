@@ -5,24 +5,24 @@
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
 - poner importador de excel?
 
+- verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
+
 # TO-DO
 
+- oscurecer un poco la foto de files on hover
 - type_edicion modal
 
 # TRABAJANDO EN ELLO
 
-- verificar si todas las class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
-
 # ULTIMOS HECHOS
-
-- mandatoryFields hecho para que funcione con multiples tablas
 
 # FIXED - ON WATCH
 
-- tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
-
 # DONE
 
+- adaptado para que funcione bien la columna con type file cuando el tipo de edicion es inline
+- mandatoryFields hecho para que funcione con multiples tablas
+- tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..
 - dejar que el usuario agregue campos - uploadData(data) - avances muy grandes !
 - crear un meta para establecer que columnas son obligatorias para el usuario rellenar. - creado .mandatoryFields()
 - hacer una function para sanitizar inputs en especial text - listo .sanitize()

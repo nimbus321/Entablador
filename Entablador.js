@@ -379,6 +379,9 @@ const ENTABLADOR = (function () {
       }
     }
     var NuevaTabla = new DataTable("#" + config.id, opciones);
+    //poner el attr data-editable-type
+    console.log(config.meta);
+    NuevaTabla.table().node().setAttribute("data-editable-type", "inline");
     NuevaTabla.key = config.meta.key;
     NuevaTabla.inputsTypes = config.meta.inputsTypes;
     $("#" + config.id).on("preDraw.dt", function () {
@@ -561,6 +564,8 @@ const ENTABLADOR = (function () {
       var type_edicion = $(el).closest("table").attr("data-editable-type");
       var editTypes = ENTABLADOR._.editTypes;
       if (!editTypes.includes(type_edicion)) {
+        //poner class
+        $(el).closest("table").attr("data-editable-type", editTypes[0]);
         console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
         type_edicion = editTypes[0];
       }
@@ -846,8 +851,8 @@ ENTABLADOR.crear({
     },
   ],
 })
-  .editable(true)
-  .tipoEdicion("inline")
+  // .editable(true)
+  // .tipoEdicion("inline")
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
@@ -856,16 +861,6 @@ ENTABLADOR.crear({
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", humano: "false", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "" },
   ]);
-/*.meta({
-    key: "id",
-    inputsTypes: {
-      nombre: "text",
-      edad: "number",
-      fechaNacimiento: "date",
-      humano: "checkbox",
-      archivos: "file",
-    },
-  })*/
 /*
 var nombreIdentificador = "Nombre de la Persona";
 var inputs = `<input type="text" placeholder="info">`;
@@ -897,5 +892,5 @@ $("#ENTABLADOR_MODAL").modal("show");
 */
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable label[for="ENTABLADOR_FILE_UPLOADER"] {display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {display: none;}`;
+style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable[data-editable-type="inline"] .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable[data-editable-type="inline"] label[for="ENTABLADOR_FILE_UPLOADER"] {  display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}table:not([data-editable-type="inline"]) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}`;
 document.head.appendChild(style);
