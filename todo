@@ -9,7 +9,7 @@
 
 # TO-DO
 
-- oscurecer un poco la foto de files on hover
+-
 - type_edicion modal
 
 # TRABAJANDO EN ELLO
@@ -20,6 +20,7 @@
 
 # DONE
 
+- oscurecer un poco la foto de files on hover
 - adaptado para que funcione bien la columna con type file cuando el tipo de edicion es inline
 - mandatoryFields hecho para que funcione con multiples tablas
 - tal vez vale la pena simplificar y evitar redundancias y hacer var ent = ENTABLADOR; en lo posible. no exactamente asi..

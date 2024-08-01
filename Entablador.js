@@ -380,7 +380,6 @@ const ENTABLADOR = (function () {
     }
     var NuevaTabla = new DataTable("#" + config.id, opciones);
     //poner el attr data-editable-type
-    console.log(config.meta);
     NuevaTabla.table().node().setAttribute("data-editable-type", "inline");
     NuevaTabla.key = config.meta.key;
     NuevaTabla.inputsTypes = config.meta.inputsTypes;
@@ -523,7 +522,7 @@ const ENTABLADOR = (function () {
       } else if (!soloCrearID) {
         CAMBIOS_TABLAS[table_name].cambios[nombreRow][nombreColumna] = value;
       }
-      console.log("Cambios Actualizados:", CAMBIOS_TABLAS);
+      console.log("Cambios Actualizados en '" + table_name + "':", CAMBIOS_TABLAS[table_name]);
     },
     editTable: function (ENT_TABLA, el) {
       var debug = false;
@@ -851,7 +850,7 @@ ENTABLADOR.crear({
     },
   ],
 })
-  // .editable(true)
+  .editable(true)
   // .tipoEdicion("inline")
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
@@ -892,5 +891,5 @@ $("#ENTABLADOR_MODAL").modal("show");
 */
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable[data-editable-type="inline"] .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable[data-editable-type="inline"] label[for="ENTABLADOR_FILE_UPLOADER"] {  display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}table:not([data-editable-type="inline"]) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}`;
+style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable[data-editable-type="inline"] .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable[data-editable-type="inline"] label[for="ENTABLADOR_FILE_UPLOADER"] {  display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}table:not([data-editable-type="inline"]) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}a.ENTABLADOR-tabla-anchor img:hover{filter: brightness(80%);}`;
 document.head.appendChild(style);
