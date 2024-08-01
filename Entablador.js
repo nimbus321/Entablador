@@ -38,8 +38,9 @@ const ENTABLADOR = (function () {
       id: ID,
       tipoEdicion(type) {
         // console.log(ID + " -- tipoEdicion: " + type);
-        if (!ENTABLADOR._.editTypes.includes(type)) {
-          console.error("Tipo de edición no válido. Tipos válidos:", ENTABLADOR._.editTypes);
+        var editTypes = ENTABLADOR._.editTypes;
+        if (!editTypes.includes(type)) {
+          console.error("Tipo de edición no válido. Tipos válidos:", editTypes);
           return this;
         }
         //set data-editable-type
@@ -106,12 +107,15 @@ const ENTABLADOR = (function () {
         console.warn("Deprecated: 'meta' method is deprecated. Use 'tipoEdicion' instead.");
         return this;
       },
-      mandatoryFields(arr) {
-        if (arr == undefined) {
-          return ENTABLADOR._.mandatoryFields;
-        } else if (Array.isArray(arr)) {
-          ENTABLADOR._.mandatoryFields = arr;
+      mandatoryFields(arg) {
+        var mandatoryFields = ENTABLADOR._.mandatoryFields;
+        if (arg == undefined) {
+          return mandatoryFields[ID] ? mandatoryFields[ID] : [];
+        } else if (!Array.isArray(arg) || (arg.length > 0 && typeof arg[0] != "string")) {
+          console.error("El argumento de .mandatoryFields() debe ser un array con strings dentro.\nDatos:", arg);
+          return;
         }
+        mandatoryFields[ID] = arg;
         return this;
       },
       subirArchivoURL(URL) {
@@ -175,10 +179,11 @@ const ENTABLADOR = (function () {
           }
 
           //check mandatoryFields
-          for (let j = 0; j < ENTABLADOR._.mandatoryFields.length; j++) {
-            var mandatoryField = ENTABLADOR._.mandatoryFields[j];
+          var mandatoryFields = ENTABLADOR._.mandatoryFields[ENT_TABLA.table().node().id];
+          for (let j = 0; j < mandatoryFields.length; j++) {
+            var mandatoryField = mandatoryFields[j];
             if (data[i][mandatoryField] == undefined) {
-              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nmandatoryFields:", ENTABLADOR._.mandatoryFields, "\nData:", data[i]);
+              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nmandatoryFields:", mandatoryFields, "\nData:", data[i]);
               return this;
             }
           }
@@ -342,10 +347,11 @@ const ENTABLADOR = (function () {
                 // console.log("columnIndex", columnIndex);
 
                 var html = `<div style="display:flex; justify-content: space-between;"><div>`;
+                var SVGs = ENTABLADOR._.SVGs;
+                var RemoveFileSVG = SVGs.RemoveFileSVG;
+                var FileSVG = SVGs.FileSVG;
+                var AddFileSVG = SVGs.AddFileSVG;
                 if (data != null && data != "") {
-                  var RemoveFileSVG = ENTABLADOR._.SVGs.RemoveFileSVG;
-                  var FileSVG = ENTABLADOR._.SVGs.FileSVG;
-
                   function crearElement(data, archivo) {
                     return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;">${FileSVG}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none">${RemoveFileSVG}</div></a>`;
                   }
@@ -363,7 +369,7 @@ const ENTABLADOR = (function () {
                     html += crearElement(data);
                   }
                 }
-                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${ENTABLADOR._.SVGs.AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
                 return html;
               },
             });
@@ -387,8 +393,9 @@ const ENTABLADOR = (function () {
     fileInput.on("change", function (event) {
       //detect from which cell the file was uploaded
       // console.log(ENTABLADOR._.LabelClick);
-      var rowIndex = ENTABLADOR._.LabelClick.row;
-      var columnIndex = ENTABLADOR._.LabelClick.column;
+      var LabelClick = ENTABLADOR._.LabelClick;
+      var rowIndex = LabelClick.row;
+      var columnIndex = LabelClick.column;
       var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
 
       $(cell.node()).find(".uploading").show();
@@ -454,7 +461,7 @@ const ENTABLADOR = (function () {
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    mandatoryFields: [],
+    mandatoryFields: {},
     LabelClick: null,
     SVGs: SVGs,
     sanitize: function (input) {
@@ -531,7 +538,6 @@ const ENTABLADOR = (function () {
       var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
       var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
 
-      console.log("indexCelda, indexRow", "(" + indexCelda + ", " + indexRow + ")");
       if (debug) {
         console.log("-----------------------------------------------");
         console.log("cell", cell);
@@ -553,9 +559,10 @@ const ENTABLADOR = (function () {
 
       // --
       var type_edicion = $(el).closest("table").attr("data-editable-type");
-      if (!ENTABLADOR._.editTypes.includes(type_edicion)) {
-        console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + ENTABLADOR._.editTypes[0] + "'. Tipos válidos:", ENTABLADOR._.editTypes);
-        type_edicion = ENTABLADOR._.editTypes[0];
+      var editTypes = ENTABLADOR._.editTypes;
+      if (!editTypes.includes(type_edicion)) {
+        console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
+        type_edicion = editTypes[0];
       }
       // console.log(type_edicion);
       // --
@@ -619,7 +626,7 @@ const ENTABLADOR = (function () {
           }
           cellDataTables.data(newContent).draw(false);
 
-          cell.append(ENTABLADOR._.SVGs.EditedSVG);
+          cell.append(SVGs.EditedSVG);
           cell.addClass("td-editado text-primary font-weight-bold");
           cell.attr("title", "Campo Editado");
 
