@@ -560,17 +560,17 @@ const ENTABLADOR = (function () {
       }
 
       // --
-      var type_edicion = $(el).closest("table").attr("data-editable-type");
+      var type_edition = $(el).closest("table").attr("data-editable-type");
       var editTypes = ENTABLADOR._.editTypes;
-      if (!editTypes.includes(type_edicion)) {
+      if (!editTypes.includes(type_edition)) {
         //poner class
         $(el).closest("table").attr("data-editable-type", editTypes[0]);
-        console.warn("Tipo de edición ('" + type_edicion + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
-        type_edicion = editTypes[0];
+        console.warn("Tipo de edición ('" + type_edition + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
+        type_edition = editTypes[0];
       }
-      // console.log(type_edicion);
+      // console.log(type_edition);
       // --
-      if (type_edicion == "inline") {
+      if (type_edition == "inline") {
         var input = $(`<input type="text">`).val(originalContent);
         var type_input = "text";
         if (ENT_TABLA.inputsTypes && ENT_TABLA.inputsTypes[nombreColumna] && ENTABLADOR._.validInputs.includes(ENT_TABLA.inputsTypes[nombreColumna])) {
@@ -649,7 +649,10 @@ const ENTABLADOR = (function () {
           //console.log("row",row);
           ENT_TABLA.draw();
         });
-      } // aqui termina el inline
+      } else if (type_edition == "modal") {
+        var type_input = ENT_TABLA.inputsTypes[nombreColumna];
+        ENTABLADOR._.prepararModal(TablaID, nombreColumna, type_input, originalContent);
+      } // aqui termina el type_edicion
     },
     deleteFile: function (event, cell) {
       event.preventDefault();
@@ -761,6 +764,43 @@ const ENTABLADOR = (function () {
       }
       return obj;
     },
+    prepararModal: function (nombreTabla, nombreColumna, type_input, originalContent) {
+      console.log(nombreTabla, nombreColumna, type_input, originalContent);
+      //detect if modal exist
+      if ($("#ENTABLADOR_EDICION_MODAL").length < 1) {
+        console.log("no existe modal");
+        // no existe modal, crearlo
+        var div = `
+        <div id="ENTABLADOR_EDICION_MODAL" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">???</span></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">??</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+        </div>
+        `;
+        $("body").prepend(div);
+      }
+
+      $("#ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text("Nombre de la Persona");
+      $("#ENTABLADOR_EDICION_MODAL .modal-body").html('<input type="text" placeholder="info">');
+
+      if ($(".modal.show").length > 0) {
+        console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto.");
+        return;
+      }
+      $("#ENTABLADOR_EDICION_MODAL").modal("show");
+    },
   };
   return {
     id,
@@ -851,7 +891,7 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  // .tipoEdicion("inline")
+  .tipoEdicion("modal")
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
@@ -860,35 +900,6 @@ ENTABLADOR.crear({
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", humano: "false", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "" },
   ]);
-/*
-var nombreIdentificador = "Nombre de la Persona";
-var inputs = `<input type="text" placeholder="info">`;
-var div = `
-<div id="ENTABLADOR_MODAL" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Editar Datos | <span class="text-uppercase font-wight-bold text-primary">${nombreIdentificador}</span></h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">${inputs}</div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-      <button type="button" class="btn btn-primary">Guardar Cambios</button>
-    </div>
-  </div>
-</div>
-</div>
-`;
-if ($(".modal.show").length > 0) {
-  console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto.");
-}
-// var div = $('<div></div><h1>Input:</h1><input type="text">');
-$("body").prepend(div);
-$("#ENTABLADOR_MODAL").modal("show");
-*/
 // Add css rule
 var style = document.createElement("style");
 style.innerHTML = `table.editable .ENTABLADOR-tabla-anchor {  position: relative;}table.editable[data-editable-type="inline"] .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar {  position: absolute !important;  display: block !important;  bottom: -24px;  left: 2px;  color: var(--danger);  width: max-content;  z-index: 1;}table.editable[data-editable-type="inline"] label[for="ENTABLADOR_FILE_UPLOADER"] {  display: block;}table:not(.editable) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}table:not([data-editable-type="inline"]) label[for="ENTABLADOR_FILE_UPLOADER"] {  display: none;}a.ENTABLADOR-tabla-anchor img:hover{filter: brightness(80%);}`;
