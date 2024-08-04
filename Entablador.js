@@ -407,7 +407,6 @@ const ENTABLADOR = (function () {
     }
 
     NuevaTabla.orderColumns = orderColumns;
-    console.log("orderColumns desp", orderColumns);
 
     NuevaTabla.inputsTypes = config.meta.inputsTypes;
     $("#" + config.id).on("preDraw.dt", function () {
