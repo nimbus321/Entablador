@@ -13,12 +13,15 @@
 
 # TRABAJANDO EN ELLO
 
+- .columns .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente
+
 # ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
 # DONE
 
+- hacer botones de eliminar como primera columna cuando está la opcion de .editar
 - oscurecer un poco la foto de files on hover
 - adaptado para que funcione bien la columna con type file cuando el tipo de edicion es inline
 - mandatoryFields hecho para que funcione con multiples tablas
