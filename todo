@@ -14,10 +14,9 @@
 
 # TRABAJANDO EN ELLO
 
-- .columns .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
-
 # ULTIMOS HECHOS
 
+- .inputsTypes .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
 - mejorar css para que sea display:none el label de subir archivos y el btn de eliminarlos
 - creado npm run minify-css
 
