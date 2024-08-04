@@ -5,12 +5,14 @@
   "main": "Entablador.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "minify": "uglifyjs Entablador.js -o Entablador.min.js --compress --mangle"
+    "minify": "uglifyjs Entablador.js -o Entablador.min.js --compress --mangle",
+    "minify-css": "cleancss -o style.min.css style.css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "uglify-js": "^3.18.0"
+    "uglify-js": "^3.18.0",
+    "clean-css-cli": "^5.3.2"
   }
 }

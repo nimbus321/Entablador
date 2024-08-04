@@ -4,21 +4,26 @@
 - en getNewID() poner una clausula para verificar si el id que esta a punto de poner existe, y si si existe ponerlo recursivo o algo similar
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
 - poner importador de excel?
+- crear .edited() que devuelva si la tabla fue editada o no.
 
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
 
 # TO-DO
 
 - type_edicion modal
-- al eliminar una row completa, verificar como hacer con los CAMBIOS
 
 # TRABAJANDO EN ELLO
 
-- .columns .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente
+- .columns .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
 
 # ULTIMOS HECHOS
 
+- mejorar css para que sea display:none el label de subir archivos y el btn de eliminarlos
+- creado npm run minify-css
+
 # FIXED - ON WATCH
+
+- al eliminar una row completa, verificar como hacer con los CAMBIOS
 
 # DONE
 
