@@ -5,12 +5,15 @@
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
 - poner importador de excel?
 - crear .edited() que devuelva si la tabla fue editada o no.
+- cambiar los nombres methods() a ingles en lo posible
 
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
 
 # TO-DO
 
-- type_edicion modal
+- tener en cuenta que debe haber un modal por tabla.
+- cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
+- type_edition modal
 
 # TRABAJANDO EN ELLO
 

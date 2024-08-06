@@ -38,14 +38,17 @@ const ENTABLADOR = (function () {
     const instancia = {
       id: ID,
       tipoEdicion(type) {
+        if (type == undefined) {
+          return ENT_TABLA.table().node().getAttribute("data-edition-type");
+        }
         // console.log(ID + " -- tipoEdicion: " + type);
         var editTypes = ENTABLADOR._.editTypes;
         if (!editTypes.includes(type)) {
           console.error("Tipo de edición no válido. Tipos válidos:", editTypes);
           return this;
         }
-        //set data-editable-type
-        ENT_TABLA.table().node().setAttribute("data-editable-type", type);
+        //set data-edition-type
+        ENT_TABLA.table().node().setAttribute("data-edition-type", type);
 
         // ENT_TABLA.table().node().classList.toggle("editable", state);
         return this;
@@ -391,8 +394,8 @@ const ENTABLADOR = (function () {
       }
     }
     var NuevaTabla = new DataTable("#" + config.id, opciones);
-    //poner el attr data-editable-type
-    NuevaTabla.table().node().setAttribute("data-editable-type", "inline");
+    //poner el attr data-edition-type
+    NuevaTabla.table().node().setAttribute("data-edition-type", "inline");
     NuevaTabla.ENTABLADOR = {};
     NuevaTabla.ENTABLADOR.key = config.meta.key;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key;
@@ -587,17 +590,17 @@ const ENTABLADOR = (function () {
       }
 
       // --
-      var type_edition = $(el).closest("table").attr("data-editable-type");
+      var edition_type = $(el).closest("table").attr("data-edition-type");
       var editTypes = ENTABLADOR._.editTypes;
-      if (!editTypes.includes(type_edition)) {
+      if (!editTypes.includes(edition_type)) {
         //poner class
-        $(el).closest("table").attr("data-editable-type", editTypes[0]);
-        console.warn("Tipo de edición ('" + type_edition + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
-        type_edition = editTypes[0];
+        $(el).closest("table").attr("data-edition-type", editTypes[0]);
+        console.warn("Tipo de edición ('" + edition_type + "') no válido para la tabla '#" + TablaID + "'. Por defecto puesto '" + editTypes[0] + "'. Tipos válidos:", editTypes);
+        edition_type = editTypes[0];
       }
-      // console.log(type_edition);
+      // console.log(edition_type);
       // --
-      if (type_edition == "inline") {
+      if (edition_type == "inline") {
         var input = $(`<input type="text">`).val(originalContent);
         var type_input = "text";
         var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
@@ -637,7 +640,7 @@ const ENTABLADOR = (function () {
         });
 
         input.on("blur", function () {
-          // get type of input from data-editable-type attribute
+          // get type of input from data-edition-type attribute
           var newContent = input.val();
           //detectar si es un checkbox
           if (newContent == null) {
@@ -677,11 +680,11 @@ const ENTABLADOR = (function () {
           //console.log("row",row);
           ENT_TABLA.draw();
         });
-      } else if (type_edition == "modal") {
+      } else if (edition_type == "modal") {
         var row = ENT_TABLA.row(el).data();
         var nombreColumnaClick = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
         ENTABLADOR._.prepararModal(TablaID, nombreColumnaClick, row);
-      } // aqui termina el type_edicion
+      } // aqui termina el edition_type
     },
     deleteFile: function (event, cell) {
       event.preventDefault();
@@ -793,53 +796,23 @@ const ENTABLADOR = (function () {
       }
       return obj;
     },
-    prepararModal: function (nombreTabla, nombreColumnaClick, row) {
-      console.log(nombreTabla, nombreColumnaClick, row);
+    prepararModal: function (table_name, nombreColumnaClick, row) {
+      // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
-      if ($("#ENTABLADOR_EDICION_MODAL").length < 1) {
-        console.log("no existe modal");
-        // no existe modal, crearlo
-        var div = `
-        <div id="ENTABLADOR_EDICION_MODAL" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">??</div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-          </div>
-        </div>
-        </div>
-        `;
-        $("body").prepend(div);
+      if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
+        ENTABLADOR._.crearModal(table_name, nombreColumnaClick, row);
       }
 
       if ($(".modal.show").length > 0) {
         console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto.");
         return;
       }
-      var secondary_key = row[window[nombreTabla].ENTABLADOR.secondary_key];
+      var ENT_TABLA = window[table_name];
+      var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
       $("#ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
 
-      var inputsTypes = window[nombreTabla].ENTABLADOR.inputsTypes;
-      var orderColumns = window[nombreTabla].settings()[0].aoColumns;
-
-      console.log("----------------------------------------------------");
-      console.log("inputsTypes", inputsTypes);
-      console.log("nombreColumnaClick", nombreColumnaClick);
-      console.log("row", row);
-      console.log("orderColumns", orderColumns);
-      console.log("----------------------------------------------------");
-      // GENERAR TODOS LOS INPUTS DE TODAS LAS COLUMNAS
-
-      // $("#ENTABLADOR_EDICION_MODAL .modal-body").html('<input type="text" placeholder="info">');
+      // var html = `<input type="text" placeholder="info">`;
+      // $("#ENTABLADOR_EDICION_MODAL .modal-body").html(html);
 
       $("#ENTABLADOR_EDICION_MODAL").modal("show");
     },
@@ -880,6 +853,100 @@ const ENTABLADOR = (function () {
         if (index > -1) {
           Eliminados.eliminados.splice(index, 1);
         }
+      }
+    },
+    crearInputModal(input, columna) {
+      if (input == "text") {
+        var div = `
+        <div class="form-group row">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+          </div>
+        </div>`;
+      } else if (input == "") {
+      }
+    },
+    crearModal: function (table_name, nombreColumnaClick, row) {
+      if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
+        console.log("no existe modal. creando...");
+        var ENT_TABLA = window[table_name];
+        var div = `
+      <div id="ENTABLADOR_EDICION_MODAL" data-table-name="${table_name}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      `;
+        $("body").prepend(div);
+
+        var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
+        var columnsOrder = ENT_TABLA.settings()
+          .init()
+          .aoColumns.map((obj) => obj.data)
+          .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+
+        console.log("----------------------------------------------------");
+        console.log("inputsTypes", inputsTypes);
+        console.log("nombreColumnaClick", nombreColumnaClick);
+        console.log("row", row);
+        console.log("columnsOrder", columnsOrder);
+        console.log("----------------------------------------------------");
+        // GENERAR TODOS LOS INPUTS DE TODAS LAS COLUMNAS
+        var html = `
+        <div class="form-group row">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-2">Checkbox</div>
+          <div class="col-sm-10">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck1">
+              <label class="form-check-label" for="gridCheck1">
+                Example checkbox
+              </label>
+            </div>
+          </div>
+        </div>
+        ----------
+         <br> <br>
+        `;
+        //   for (let i = 0; i < columns.length; i++) {
+        //     const column = columns[i];
+        //     const value = row[column];
+        //     var type = "text";
+        //     if (inputsTypes && inputsTypes[column] && ENTABLADOR._.validInputs.includes(inputsTypes[column])) {
+        //       type = inputsTypes[column];
+        //     }
+        //     var html = `<div class="form-group">
+        //   <label for="ENTABLADOR_${column}" class="col-form-label">${column}</label>
+        //   <input type="${type}" class="form-control" id="ENTABLADOR_${column}" value="${value}">
+        // </div>`;
+        //     $("#ENTABLADOR_EDICION_MODAL .modal-body").append(html);
+        //   }
+        html += this.crearInputModal(input, columna);
+        $("#ENTABLADOR_EDICION_MODAL .modal-body").append(html);
       }
     },
   };
@@ -937,11 +1004,11 @@ ENTABLADOR.crear({
       className: "ENTABLADOR-btn",
     },
     { data: "id", visible: false },
-    { data: "nombre", class: "editable", defaultContent: "" },
-    { data: "edad", class: "editable", defaultContent: "" },
-    { data: "fechaNacimiento", class: "editable", defaultContent: "" },
-    { data: "humano", class: "editable", defaultContent: "" },
-    { data: "archivos", class: "editable", defaultContent: "" },
+    { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
+    { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
+    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
+    { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
+    { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
   ],
   columnDefs: [
     {
@@ -983,7 +1050,7 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
@@ -994,5 +1061,7 @@ ENTABLADOR.crear({
   ]);
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-editable-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-editable-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-editable-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}`;
+style.innerHTML = `.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}`;
 document.head.appendChild(style);
+//click en la primera celda del segundo row
+$("#TABLA tbody tr:eq(3) td:eq(3)").click();
