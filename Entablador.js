@@ -811,10 +811,36 @@ const ENTABLADOR = (function () {
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
       $("#ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
 
-      // var html = `<input type="text" placeholder="info">`;
-      // $("#ENTABLADOR_EDICION_MODAL .modal-body").html(html);
+      // rellenar los datos en el modal
+      var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
+      //poner de primero secondary_key
+      $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).val(secondary_key);
+      for (const key in row) {
+        if (Object.hasOwnProperty.call(row, key)) {
+          var value = row[key];
+          if (key == ENT_TABLA.ENTABLADOR.key || key == ENT_TABLA.ENTABLADOR.secondary_key) {
+            continue;
+          }
+          // detect if it is a checkbox
+          if (inputsTypes[key] == "checkbox") {
+            if (value == undefined || value == "") {
+              value = "undefined";
+            }
+            $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
+          } else if (inputsTypes[key] == "file") {
+            console.error("Falta esto!");
+          } else {
+            $("#ENTABLADOR-" + table_name + "-" + key).val(value);
+          }
+        }
+      }
 
       $("#ENTABLADOR_EDICION_MODAL").modal("show");
+
+      setTimeout(() => {
+        console.warn("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick);
+        $("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick).focus();
+      }, 500);
     },
     eliminarRow: function (el) {
       var tabla_nombre = $(el).closest("table")[0].id;
@@ -855,17 +881,62 @@ const ENTABLADOR = (function () {
         }
       }
     },
-    crearInputModal(input, columna) {
-      if (input == "text") {
-        var div = `
+    crearInputModal(input, titleColumn, realNameColumn, table_name) {
+      // console.log(input, titleColumn, realNameColumn, table_name);
+      var div;
+      var id = "ENTABLADOR-" + table_name + "-" + realNameColumn;
+      if (["text", "number", "date", "datetime-local", "time"].includes(input)) {
+        div = `
         <div class="form-group row">
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-          <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+          <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
+          <div class="col-sm-9">
+            <input type="${input}" class="form-control" id="${id}" placeholder="${titleColumn}">
           </div>
         </div>`;
-      } else if (input == "") {
+      } else if (input == "checkbox") {
+        // $('#ENTABLADOR_EDICION_MODAL[data-table-name="TABLA"] [name="ENTABLADOR-TABLA-humano"]:checked').val();
+        div = `
+        
+  <div class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-3 pt-0">${titleColumn}</legend>
+      <div class="col-sm-9">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-true" value="true" checked>
+          <label class="form-check-label" for="${id}-true">
+            Sí
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-false" value="false">
+          <label class="form-check-label" for="${id}-false">
+            No
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-undefined" value="undefined">
+          <label class="form-check-label" for="${id}-undefined">
+            Sin especificar
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+        `;
+      } else if (input == "file") {
+        div = `
+        <div class="form-group row">
+          <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
+          <div class="col-sm-9">
+            <label class="btn btn-success btn-sm mb-0">Subir más Archivos</label>
+            <div id="${id}-files"></div>
+          </div>
+        </div>`;
+      } else if (input == undefined || input == "") {
+        console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto undefined.");
       }
+      return div;
     },
     crearModal: function (table_name, nombreColumnaClick, row) {
       if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
@@ -873,7 +944,7 @@ const ENTABLADOR = (function () {
         var ENT_TABLA = window[table_name];
         var div = `
       <div id="ENTABLADOR_EDICION_MODAL" data-table-name="${table_name}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lgASDFG">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
@@ -898,55 +969,36 @@ const ENTABLADOR = (function () {
           .aoColumns.map((obj) => obj.data)
           .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 
+        var columnsTitle = ENT_TABLA.settings()
+          .init()
+          .aoColumns.map((obj) => obj.title)
+          .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+        console.log("PRE- ", columnsTitle);
+        // if el on columnsTitle is undefined or "" then use columnsOrder and issue a warning
+        for (let i = 0; i < columnsTitle.length; i++) {
+          if (columnsTitle[i] == undefined || columnsTitle[i] == "") {
+            console.warn("Al crear el modal para la tabla '" + table_name + "', se ha encontrado un título para la columna '" + columnsOrder[i] + "'. Se ha omitido.");
+            columnsTitle[i] = columnsOrder[i];
+          }
+        }
+        // console.log("POST- ", columnsTitle);
         console.log("----------------------------------------------------");
         console.log("inputsTypes", inputsTypes);
         console.log("nombreColumnaClick", nombreColumnaClick);
         console.log("row", row);
         console.log("columnsOrder", columnsOrder);
+        console.log("columnsTitle POST", columnsTitle);
         console.log("----------------------------------------------------");
         // GENERAR TODOS LOS INPUTS DE TODAS LAS COLUMNAS
-        var html = `
-        <div class="form-group row">
-          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-          <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-          <div class="col-sm-10">
-            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-2">Checkbox</div>
-          <div class="col-sm-10">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="gridCheck1">
-              <label class="form-check-label" for="gridCheck1">
-                Example checkbox
-              </label>
-            </div>
-          </div>
-        </div>
-        ----------
-         <br> <br>
-        `;
-        //   for (let i = 0; i < columns.length; i++) {
-        //     const column = columns[i];
-        //     const value = row[column];
-        //     var type = "text";
-        //     if (inputsTypes && inputsTypes[column] && ENTABLADOR._.validInputs.includes(inputsTypes[column])) {
-        //       type = inputsTypes[column];
-        //     }
-        //     var html = `<div class="form-group">
-        //   <label for="ENTABLADOR_${column}" class="col-form-label">${column}</label>
-        //   <input type="${type}" class="form-control" id="ENTABLADOR_${column}" value="${value}">
-        // </div>`;
-        //     $("#ENTABLADOR_EDICION_MODAL .modal-body").append(html);
-        //   }
-        html += this.crearInputModal(input, columna);
+        var html = "";
+        for (let i = 0; i < columnsOrder.length; i++) {
+          html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
+        }
         $("#ENTABLADOR_EDICION_MODAL .modal-body").append(html);
+        // crear event on keyup del input de seccundary_key y ponerlo de titulo
+        $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("keyup", function () {
+          $("#ENTABLADOR_CAMPO").text($(this).val());
+        });
       }
     },
   };
@@ -1055,8 +1107,8 @@ ENTABLADOR.crear({
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "true", archivos: "" },
-    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", humano: "false", archivos: "" },
+    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "" },
+    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "" },
   ]);
 // Add css rule

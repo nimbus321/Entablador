@@ -1,5 +1,6 @@
 # IDEAS
 
+- ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal)
 - en un futuro MUY lejano, hacer para que .addChanges() funcione con arrays.
 - en getNewID() poner una clausula para verificar si el id que esta a punto de poner existe, y si si existe ponerlo recursivo o algo similar
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
@@ -8,6 +9,8 @@
 - cambiar los nombres methods() a ingles en lo posible
 
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
+
+- añadir 'textarea' a los inputs validos. y hacerlo compatible..
 
 # TO-DO
 
