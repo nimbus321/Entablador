@@ -14,6 +14,13 @@
 
 # TO-DO
 
+- probablemente sea mejor idea poner 'columnsTitle' en TABLA.ENTABLADOR. (y similares)
+  var columnsTitle = ENT_TABLA.settings()
+  .init()
+  .aoColumns.map((obj) => obj.title)
+  .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+
+- RESET ALL THE INPUTS
 - cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
 - type_edition modal
 - TRABAJANDO EN: el render de files en el modal --------------------------------------------------------------------------- :838 !

@@ -797,6 +797,7 @@ const ENTABLADOR = (function () {
       return obj;
     },
     prepararModal: function (table_name, nombreColumnaClick, row) {
+      console.log("row", row);
       // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
       if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
@@ -818,11 +819,14 @@ const ENTABLADOR = (function () {
       for (const key in row) {
         if (Object.hasOwnProperty.call(row, key)) {
           var value = row[key];
+          // RESET ALL THE INPUTS - considerar que puede que en inputsTypes no esten todas las columnas
+
           if (key == ENT_TABLA.ENTABLADOR.key || key == ENT_TABLA.ENTABLADOR.secondary_key) {
             continue;
           }
           // detect if it is a checkbox
           if (inputsTypes[key] == "checkbox") {
+            console.log(0, value);
             if (value == undefined || value == "") {
               value = "undefined";
             }
@@ -833,7 +837,7 @@ const ENTABLADOR = (function () {
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
             }
-            console.log("files", files);
+            // console.log("files", files);
             for (let i = 0; i < files.length; i++) {
               // detect if it is an image or a file (make it svg)
               var file = `<div style="position:relative;display: inline-block"><button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button><a href="#" target="_blank" style="cursor: zoom-in;"><img src="${files[i]}" alt="Foto" class="img-thumbnail m-1"></a></div>`;
