@@ -828,8 +828,7 @@ const ENTABLADOR = (function () {
             }
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
           } else if (inputsTypes[key] == "file") {
-            console.error("Falta esto!");
-
+            $("#ENTABLADOR-" + table_name + "-" + key + "-files").html("");
             var files = row[key];
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
@@ -849,7 +848,6 @@ const ENTABLADOR = (function () {
       $("#ENTABLADOR_EDICION_MODAL").modal("show");
 
       setTimeout(() => {
-        console.warn("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick);
         $("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick).focus();
       }, 500);
     },
