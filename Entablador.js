@@ -829,6 +829,17 @@ const ENTABLADOR = (function () {
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
           } else if (inputsTypes[key] == "file") {
             console.error("Falta esto!");
+
+            var files = row[key];
+            if (typeof files == "string") {
+              files = files != "" ? [files] : [];
+            }
+            console.log("files", files);
+            for (let i = 0; i < files.length; i++) {
+              // detect if it is an image or a file (make it svg)
+              var file = `<div style="position:relative;display: inline-block"><button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button><a href="#" target="_blank" style="cursor: zoom-in;"><img src="${files[i]}" alt="Foto" class="img-thumbnail m-1"></a></div>`;
+              $("#ENTABLADOR-" + table_name + "-" + key + "-files").append(file);
+            }
           } else {
             $("#ENTABLADOR-" + table_name + "-" + key).val(value);
           }
@@ -929,8 +940,8 @@ const ENTABLADOR = (function () {
         <div class="form-group row">
           <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
           <div class="col-sm-9">
-            <label class="btn btn-success btn-sm mb-0">Subir más Archivos</label>
-            <div id="${id}-files"></div>
+            <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
+            <label class="btn btn-success btn-sm mb-0 mt-2">Subir más Archivos</label>
           </div>
         </div>`;
       } else if (input == undefined || input == "") {
