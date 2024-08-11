@@ -840,7 +840,13 @@ const ENTABLADOR = (function () {
             // console.log("files", files);
             for (let i = 0; i < files.length; i++) {
               // detect if it is an image or a file (make it svg)
-              var file = `<div style="position:relative;display: inline-block"><button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button><a href="#" target="_blank" style="cursor: zoom-in;"><img src="${files[i]}" alt="Foto" class="img-thumbnail m-1"></a></div>`;
+              var file = `
+              <div style="position:relative;display: inline-block">
+              <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
+              <a href="#" target="_blank" style="cursor: zoom-in;">
+                <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1">
+              </a>
+              </div>`;
               $("#ENTABLADOR-" + table_name + "-" + key + "-files").append(file);
             }
           } else {
@@ -1129,4 +1135,4 @@ var style = document.createElement("style");
 style.innerHTML = `.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}`;
 document.head.appendChild(style);
 //click en la primera celda del segundo row
-$("#TABLA tbody tr:eq(3) td:eq(3)").click();
+$("#TABLA tbody tr:eq(2) td:eq(3)").click();

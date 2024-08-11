@@ -14,6 +14,8 @@
 
 # TO-DO
 
+- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
+
 - probablemente sea mejor idea poner 'columnsTitle' en TABLA.ENTABLADOR. (y similares)
   var columnsTitle = ENT_TABLA.settings()
   .init()
