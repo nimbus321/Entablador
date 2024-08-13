@@ -7,14 +7,9 @@
 - poner importador de excel?
 - crear .edited() que devuelva si la tabla fue editada o no.
 - cambiar los nombres methods() a ingles en lo posible
-
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
 
 - añadir 'textarea' a los inputs validos. y hacerlo compatible..
-
-# TO-DO
-
-- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
 
 - probablemente sea mejor idea poner 'columnsTitle' en TABLA.ENTABLADOR. (y similares)
   var columnsTitle = ENT_TABLA.settings()
@@ -22,8 +17,10 @@
   .aoColumns.map((obj) => obj.title)
   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 
-- RESET ALL THE INPUTS
-- cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
+# TO-DO
+
+- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
+
 - type_edition modal
 - TRABAJANDO EN: el render de files en el modal --------------------------------------------------------------------------- :838 !
 
@@ -31,9 +28,8 @@
 
 # ULTIMOS HECHOS
 
-- .inputsTypes .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
-- mejorar css para que sea display:none el label de subir archivos y el btn de eliminarlos
-- creado npm run minify-css
+- cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
+- RESET ALL THE INPUTS
 
 # FIXED - ON WATCH
 
@@ -41,6 +37,9 @@
 
 # DONE
 
+- .inputsTypes .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
+- mejorar css para que sea display:none el label de subir archivos y el btn de eliminarlos
+- creado npm run minify-css
 - hacer botones de eliminar como primera columna cuando está la opcion de .editar
 - oscurecer un poco la foto de files on hover
 - adaptado para que funcione bien la columna con type file cuando el tipo de edicion es inline

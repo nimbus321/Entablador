@@ -475,6 +475,11 @@ const ENTABLADOR = (function () {
     window[config.id] = NuevaTabla;
     //set click event
     $("#" + config.id + " tbody").on("click", "tr td", function () {
+      //detectar si se hizo click en un anchor element
+      if ($(this).find("a").length > 0) {
+        return;
+      }
+
       //detectar si la tabla tiene la class editable
       if ($(this).closest("table").hasClass("editable")) {
         // console.log("CLICK!!!");
@@ -827,7 +832,7 @@ const ENTABLADOR = (function () {
           var value = row[key];
           // RESET ALL THE INPUTS - considerar que puede que en inputsTypes no esten todas las columnas
 
-          if (key == ENT_TABLA.ENTABLADOR.key || key == ENT_TABLA.ENTABLADOR.secondary_key) {
+          if (key == ENT_TABLA.ENTABLADOR.key /* || key == ENT_TABLA.ENTABLADOR.secondary_key*/) {
             continue;
           }
           // detect if it is a checkbox
@@ -847,11 +852,11 @@ const ENTABLADOR = (function () {
             for (let i = 0; i < files.length; i++) {
               // detect if it is an image or a file (make it svg)
               var file = `
-              <div style="position:relative;display: inline-block">
-              <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
-              <a href="#" target="_blank" style="cursor: zoom-in;">
-                <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1">
-              </a>
+              <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
+                <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
+                <a href="${files[i]}" target="_blank" style="cursor: zoom-in;">
+                  <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1" onerror="ENTABLADOR._.ponerSVG_enImg(this)">
+                </a>
               </div>`;
               $("#ENTABLADOR-" + table_name + "-" + key + "-files").append(file);
             }
@@ -1026,6 +1031,25 @@ const ENTABLADOR = (function () {
         });
       }
     },
+    ponerSVG_enImg: function (that) {
+      console.log("Click!");
+      var SVG = `
+        <a href="${that.src}" target="_blank" class="ENTABLADOR-tabla-anchor text-primary" style="cursor:pointer;margin-right:5px;">
+        ${ENTABLADOR._.SVGs.FileSVG}
+        </div>
+        </a>
+      `;
+      var SVG = `
+        
+              <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
+                <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
+                <a href="${that.src}" target="_blank" style="cursor: zoom-in;">
+                  ${ENTABLADOR._.SVGs.FileSVG}
+                </a>
+              </div>
+      `;
+      $(that).closest(".ENTABLADOR-tabla-anchor").html(SVG);
+    },
   };
   return {
     id,
@@ -1129,10 +1153,10 @@ ENTABLADOR.crear({
   .editable(true)
   .tipoEdicion("modal")
   .add([
-    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://dummyimage.com/210"] },
+    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "" },
+    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "" },
   ]);
