@@ -816,6 +816,12 @@ const ENTABLADOR = (function () {
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
       //poner de primero secondary_key
       $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).val(secondary_key);
+
+      // Reset all the inputs !!!!! slect query all the inputs
+      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
+      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
+      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio'][data-entablador-value='undefined']").prop("checked", true);
+
       for (const key in row) {
         if (Object.hasOwnProperty.call(row, key)) {
           var value = row[key];
@@ -921,19 +927,19 @@ const ENTABLADOR = (function () {
       <legend class="col-form-label col-sm-3 pt-0">${titleColumn}</legend>
       <div class="col-sm-9">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="${id}" id="${id}-true" value="true" checked>
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-true" data-entablador-value="true">
           <label class="form-check-label" for="${id}-true">
             Sí
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="${id}" id="${id}-false" value="false">
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-false" data-entablador-value="false">
           <label class="form-check-label" for="${id}-false">
             No
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="${id}" id="${id}-undefined" value="undefined">
+          <input class="form-check-input" type="radio" name="${id}" id="${id}-undefined" data-entablador-value="undefined">
           <label class="form-check-label" for="${id}-undefined">
             Sin especificar
           </label>
@@ -949,7 +955,7 @@ const ENTABLADOR = (function () {
           <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
           <div class="col-sm-9">
             <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
-            <label class="btn btn-success btn-sm mb-0 mt-2">Subir más Archivos</label>
+            <label class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
           </div>
         </div>`;
       } else if (input == undefined || input == "") {
