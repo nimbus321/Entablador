@@ -483,15 +483,11 @@ const ENTABLADOR = (function () {
 
     window[config.id] = NuevaTabla;
     //set click event
-    $("#" + config.id + " tbody").on("click", "tr td", function () {
-      //detectar si se hizo click en un anchor element
-      if ($(this).find("a").length > 0) {
-        return;
-      }
-
-      //detectar si la tabla tiene la class editable
-      if ($(this).closest("table").hasClass("editable")) {
-        // console.log("CLICK!!!");
+    $("#" + config.id + " tbody").on("click", "tr td", function (e) {
+      // console.log("click en ->", this);
+      var esEditable = $(this).closest("table").hasClass("editable");
+      var wasClickedOnAnchor = !($(e.target).closest("a").length === 0);
+      if (esEditable && !wasClickedOnAnchor) {
         ENTABLADOR._.editTable(window[config.id], this);
       }
     });
@@ -1041,7 +1037,7 @@ const ENTABLADOR = (function () {
       }
     },
     ImgOnError: function (that) {
-      console.log("Click!");
+      // console.log("img onerror event", that.src);
       var has_thumbnail = false;
       if ($(that).hasClass("img-thumbnail")) {
         has_thumbnail = true;

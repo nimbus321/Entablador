@@ -16,28 +16,31 @@
   .init()
   .aoColumns.map((obj) => obj.title)
   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+- considerar el order de la tabla, tal vez poner un span invisible con los valores reales ordenables.
 
 # TO-DO
 
-- tal vez poner this.onerror=null; en el onerror en img's
-- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
-- al hcer click en el campo de archivos con tipo modal, no se abre el modal. (click en el campo pero no en foto obviamente)
-- type_edition modal
-- TRABAJANDO EN: el render de files en el modal --------------------------------------------------------------------------- :855 !
+- REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
+- btn subir archivos en modal
+- btn guardar modal...
 
 # TRABAJANDO EN ELLO
 
-# ULTIMOS HECHOS
+- type_edition modal
 
-- cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
-- RESET ALL THE INPUTS
+# ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
+- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
 - al eliminar una row completa, verificar como hacer con los CAMBIOS
 
 # DONE
 
+- al hcer click en el campo de archivos con tipo modal, no se abre el modal. (click en el campo pero no en foto obviamente)
+- tal vez poner this.onerror=null; en el onerror en img's
+- RESET ALL THE INPUTS
+- cuando esta en type modal y haces click en una foto en la columna de files, evitar que se abra el modal.
 - .inputsTypes .key .secondary_key meterlo en TABLA.ENTABLADOR en vez de la TABLA directamente - falta solo .inputsTypes
 - mejorar css para que sea display:none el label de subir archivos y el btn de eliminarlos
 - creado npm run minify-css
