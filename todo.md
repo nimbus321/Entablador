@@ -10,7 +10,7 @@
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
 
 - añadir 'textarea' a los inputs validos. y hacerlo compatible..
-
+- en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's
 - probablemente sea mejor idea poner 'columnsTitle' en TABLA.ENTABLADOR. (y similares)
   var columnsTitle = ENT_TABLA.settings()
   .init()
@@ -19,10 +19,11 @@
 
 # TO-DO
 
+- tal vez poner this.onerror=null; en el onerror en img's
 - SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
-
+- al hcer click en el campo de archivos con tipo modal, no se abre el modal. (click en el campo pero no en foto obviamente)
 - type_edition modal
-- TRABAJANDO EN: el render de files en el modal --------------------------------------------------------------------------- :838 !
+- TRABAJANDO EN: el render de files en el modal --------------------------------------------------------------------------- :855 !
 
 # TRABAJANDO EN ELLO
 
