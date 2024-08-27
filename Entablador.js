@@ -490,6 +490,7 @@ const ENTABLADOR = (function () {
           $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
 
           // Subir a object del modal
+          Modal_Editor_PreSave[field] = [...Modal_Editor_PreSave[field], ...newContent];
         }
       }).fail(function () {
         if (!fromModal) {
@@ -522,7 +523,7 @@ const ENTABLADOR = (function () {
   var _ = {
     /* VARIABLE GLOBAL DE LA LIBRERÍA */
     CAMBIOS_TABLAS: {},
-    Modal_Editor: {},
+    Modal_Editor_PreSave: {},
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
@@ -942,6 +943,11 @@ const ENTABLADOR = (function () {
     },
     crearInputModal(input, titleColumn, realNameColumn, table_name) {
       // console.log(input, titleColumn, realNameColumn, table_name);
+      if (input == undefined || input == "") {
+        console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto '" + ENTABLADOR._.validInputs[0] + "'.");
+        input = ENTABLADOR._.validInputs[0];
+      }
+
       var div;
       var id = "ENTABLADOR-" + table_name + "-" + realNameColumn;
       if (["text", "number", "date", "datetime-local", "time"].includes(input)) {
@@ -993,8 +999,6 @@ const ENTABLADOR = (function () {
             <button data-field="${realNameColumn}" class="btn btn-success btn-sm mb-0 mt-2" style="display:none;" disabled><div class="spinner-border spinner-border-sm mr-1"></div>Subir Archivos</button>
           </div>
         </div>`;
-      } else if (input == undefined || input == "") {
-        console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto undefined.");
       }
       return div;
     },
@@ -1041,6 +1045,7 @@ const ENTABLADOR = (function () {
             columnsTitle[i] = columnsOrder[i];
           }
         }
+        ENT_TABLA.ENTABLADOR.columnsOrder = columnsOrder;
         // console.log("POST- ", columnsTitle);
         console.log("----------------------------------------------------");
         console.log("inputsTypes", inputsTypes);
@@ -1053,6 +1058,8 @@ const ENTABLADOR = (function () {
         var html = "";
         for (let i = 0; i < columnsOrder.length; i++) {
           html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
+          //poner en ENTABLADOR._.Modal_Editor_PreSave
+          ENTABLADOR._.Modal_Editor_PreSave[columnsOrder[i]] = row[columnsOrder[i]];
         }
         $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
@@ -1087,6 +1094,10 @@ const ENTABLADOR = (function () {
       } else {
         $(that).replaceWith(ENTABLADOR._.SVGs.FileSVG());
       }
+    },
+    guardarCambiosModal: function (table_name) {
+      // actualizar Modal_Editor_PreSave
+      // for
     },
   };
   return {
@@ -1125,7 +1136,6 @@ ENTABLADOR.crear({
     secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
-      edad: "number",
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",

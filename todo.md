@@ -18,16 +18,17 @@
   .aoColumns.map((obj) => obj.title)
   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 - considerar el order de la tabla, tal vez poner un span invisible con los valores reales ordenables.
+- en \_.crearModal quitar todos las cuentas como columnsOrder y ponerlas al crear la tabla. un pro de eso es que tendría siempre columnsOrder en TABLA.ENTABLADOR
 
 # TO-DO
 
 - REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
-- btn guardar modal...
 
 # TRABAJANDO EN ELLO
 
 - type_edition modal
 - btn subir archivos en modal
+- btn guardar modal...
 
 # ULTIMOS HECHOS
 
