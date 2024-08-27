@@ -8,6 +8,7 @@
 - crear .edited() que devuelva si la tabla fue editada o no.
 - cambiar los nombres methods() a ingles en lo posible
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
+- al subir un archivo, poner como previsualización, sin subirlo primero a firestore.
 
 - añadir 'textarea' a los inputs validos. y hacerlo compatible..
 - en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's
@@ -21,22 +22,21 @@
 # TO-DO
 
 - REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
-- btn subir archivos en modal
 - btn guardar modal...
 
 # TRABAJANDO EN ELLO
 
 - type_edition modal
+- btn subir archivos en modal
 
 # ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
-- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
-- al eliminar una row completa, verificar como hacer con los CAMBIOS
-
 # DONE
 
+- SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
+- al eliminar una row completa, verificar como hacer con los CAMBIOS
 - al hcer click en el campo de archivos con tipo modal, no se abre el modal. (click en el campo pero no en foto obviamente)
 - tal vez poner this.onerror=null; en el onerror en img's
 - RESET ALL THE INPUTS

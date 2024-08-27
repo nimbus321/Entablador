@@ -432,51 +432,74 @@ const ENTABLADOR = (function () {
     $("#" + config.id).prepend(fileInput);
     fileInput.on("change", function (event) {
       //detect from which cell the file was uploaded
-      // console.log(ENTABLADOR._.LabelClick);
+      console.log("ENTABLADOR._.LabelClick:", ENTABLADOR._.LabelClick);
       var LabelClick = ENTABLADOR._.LabelClick;
       var rowIndex = LabelClick.row;
       var columnIndex = LabelClick.column;
-      var cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
+      var fromModal = LabelClick.fromModal;
+      var field = LabelClick.field;
 
-      $(cell.node()).find(".uploading").show();
-      console.log(10000, $(cell.node()));
-      $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
+      console.log("fromModal", fromModal);
+      console.log("field", field);
+
+      var cell;
+      if (!fromModal) {
+        cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
+        $(cell.node()).find(".uploading").show();
+        $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
+        // console.log(10000, $(cell.node()));
+      } else {
+        $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide();
+        $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").show();
+      }
+      ENTABLADOR._.LabelClick = null;
 
       var files = event.target.files;
-      // console.log("subiendo..", "(" + files[0].name + " +?)", files);
-      /*
-      $.post(ENT_TABLA.subirArchivoURL, { file: files }, function (data) {
-        console.log("subido", data);
-      });
-      */
       // console.log(files);
       $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
         var newContent = ["https://dummyimage.com/99"];
         console.log("subido", newContent);
-        $(cell.node()).find(".uploading").hide();
-        $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
 
-        var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
-        var oldData = cellDataTables.data();
-        var finalData;
-        if (Array.isArray(oldData)) {
-          finalData = [...oldData, ...newContent];
-        } else if (oldData == "") {
-          finalData = newContent;
+        if (!fromModal) {
+          $(cell.node()).find(".uploading").hide();
+          $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
+
+          var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
+          var oldData = cellDataTables.data();
+          var finalData;
+          if (Array.isArray(oldData)) {
+            finalData = [...oldData, ...newContent];
+          } else if (oldData == "") {
+            finalData = newContent;
+          } else {
+            finalData = [oldData, ...newContent];
+            console.log(finalData);
+          }
+          // console.log("newContent: ", newContent);
+          // console.log("oldData: ", oldData);
+
+          cellDataTables.data(finalData).draw(false);
+
+          var table_name = NuevaTabla.table().node().id;
+          var nombreRow = NuevaTabla.row(rowIndex).data()[NuevaTabla.ENTABLADOR.key];
+          var nombreColumna = NuevaTabla.settings().init().aoColumns[columnIndex].data;
+
+          ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
         } else {
-          finalData = [oldData, ...newContent];
-          console.log(finalData);
+          $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+          $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+
+          // Subir a object del modal
         }
-        // console.log("newContent: ", newContent);
-        // console.log("oldData: ", oldData);
-
-        cellDataTables.data(finalData).draw(false);
-
-        var table_name = NuevaTabla.table().node().id;
-        var nombreRow = NuevaTabla.row(rowIndex).data()[NuevaTabla.ENTABLADOR.key];
-        var nombreColumna = NuevaTabla.settings().init().aoColumns[columnIndex].data;
-
-        ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
+      }).fail(function () {
+        if (!fromModal) {
+          $(cell.node()).find(".uploading").hide();
+          $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
+        } else {
+          $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+          $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+        }
+        alert("Error al subir el archivo. Asegurate tener conexión a internet.");
       });
       event.target.value = "";
     });
@@ -499,6 +522,7 @@ const ENTABLADOR = (function () {
   var _ = {
     /* VARIABLE GLOBAL DE LA LIBRERÍA */
     CAMBIOS_TABLAS: {},
+    Modal_Editor: {},
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
@@ -810,7 +834,7 @@ const ENTABLADOR = (function () {
       console.log("row", row);
       // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
-      if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
+      if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
         ENTABLADOR._.crearModal(table_name, nombreColumnaClick, row);
       }
 
@@ -820,7 +844,7 @@ const ENTABLADOR = (function () {
       }
       var ENT_TABLA = window[table_name];
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
-      $("#ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
+      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
 
       // rellenar los datos en el modal
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
@@ -828,9 +852,9 @@ const ENTABLADOR = (function () {
       $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).val(secondary_key);
 
       // Reset all the inputs !!!!! slect query all the inputs
-      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
-      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
-      $("#ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio'][data-entablador-value='undefined']").prop("checked", true);
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio'][data-entablador-value='undefined']").prop("checked", true);
 
       for (const key in row) {
         if (Object.hasOwnProperty.call(row, key)) {
@@ -871,7 +895,7 @@ const ENTABLADOR = (function () {
         }
       }
 
-      $("#ENTABLADOR_EDICION_MODAL").modal("show");
+      $(".ENTABLADOR_EDICION_MODAL").modal("show");
 
       setTimeout(() => {
         $("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick).focus();
@@ -929,7 +953,7 @@ const ENTABLADOR = (function () {
           </div>
         </div>`;
       } else if (input == "checkbox") {
-        // $('#ENTABLADOR_EDICION_MODAL[data-table-name="TABLA"] [name="ENTABLADOR-TABLA-humano"]:checked').val();
+        // $('.ENTABLADOR_EDICION_MODAL[data-table-name="TABLA"] [name="ENTABLADOR-TABLA-humano"]:checked').val();
         div = `
         
   <div class="form-group">
@@ -965,7 +989,8 @@ const ENTABLADOR = (function () {
           <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
           <div class="col-sm-9">
             <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
-            <label class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
+            <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('log!');ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}' };console.log(ENTABLADOR._.LabelClick)" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
+            <button data-field="${realNameColumn}" class="btn btn-success btn-sm mb-0 mt-2" style="display:none;" disabled><div class="spinner-border spinner-border-sm mr-1"></div>Subir Archivos</button>
           </div>
         </div>`;
       } else if (input == undefined || input == "") {
@@ -974,11 +999,11 @@ const ENTABLADOR = (function () {
       return div;
     },
     crearModal: function (table_name, nombreColumnaClick, row) {
-      if ($('#ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
+      if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
         console.log("no existe modal. creando...");
         var ENT_TABLA = window[table_name];
         var div = `
-      <div id="ENTABLADOR_EDICION_MODAL" data-table-name="${table_name}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lgASDFG">
         <div class="modal-content">
           <div class="modal-header">
@@ -1029,7 +1054,7 @@ const ENTABLADOR = (function () {
         for (let i = 0; i < columnsOrder.length; i++) {
           html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
         }
-        $("#ENTABLADOR_EDICION_MODAL .modal-body").append(html);
+        $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
         $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("keyup", function () {
           $("#ENTABLADOR_CAMPO").text($(this).val());
@@ -1175,7 +1200,7 @@ ENTABLADOR.crear({
   ]);
 // Add css rule
 var style = document.createElement("style");
-style.innerHTML = `.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}`;
+style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
-// $("#TABLA tbody tr:eq(0) td:eq(3)").click();
+$("#TABLA tbody tr:eq(0) td:eq(3)").click();
