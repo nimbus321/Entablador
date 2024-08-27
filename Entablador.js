@@ -432,15 +432,13 @@ const ENTABLADOR = (function () {
     $("#" + config.id).prepend(fileInput);
     fileInput.on("change", function (event) {
       //detect from which cell the file was uploaded
-      console.log("ENTABLADOR._.LabelClick:", ENTABLADOR._.LabelClick);
+      // console.log("ENTABLADOR._.LabelClick:", ENTABLADOR._.LabelClick);
       var LabelClick = ENTABLADOR._.LabelClick;
       var rowIndex = LabelClick.row;
       var columnIndex = LabelClick.column;
       var fromModal = LabelClick.fromModal;
       var field = LabelClick.field;
-
-      console.log("fromModal", fromModal);
-      console.log("field", field);
+      var table_name_Modal = LabelClick.table_name;
 
       var cell;
       if (!fromModal) {
@@ -490,7 +488,10 @@ const ENTABLADOR = (function () {
           $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
 
           // Subir a object del modal
+          var Modal_Editor_PreSave = ENTABLADOR._.Modal_Editor_PreSave;
           Modal_Editor_PreSave[field] = [...Modal_Editor_PreSave[field], ...newContent];
+          //render images on modal
+          ENTABLADOR._.renderImagesOnModal(Modal_Editor_PreSave[field], table_name_Modal, field);
         }
       }).fail(function () {
         if (!fromModal) {
@@ -832,7 +833,7 @@ const ENTABLADOR = (function () {
       return obj;
     },
     prepararModal: function (table_name, nombreColumnaClick, row) {
-      console.log("row", row);
+      // console.log("row", row);
       // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
@@ -867,29 +868,17 @@ const ENTABLADOR = (function () {
           }
           // detect if it is a checkbox
           if (inputsTypes[key] == "checkbox") {
-            console.log(0, value);
+            // console.log(0, value);
             if (value == undefined || value == "") {
               value = "undefined";
             }
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
           } else if (inputsTypes[key] == "file") {
-            $("#ENTABLADOR-" + table_name + "-" + key + "-files").html("");
             var files = row[key];
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
             }
-            // console.log("files", files);
-            for (let i = 0; i < files.length; i++) {
-              // detect if it is an image or a file (make it svg)
-              var file = `
-              <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
-                <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
-                <a href="${files[i]}" target="_blank" style="cursor: zoom-in;">
-                  <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1" onerror="this.onerror=null;ENTABLADOR._.ImgOnError(this)">
-                </a>
-              </div>`;
-              $("#ENTABLADOR-" + table_name + "-" + key + "-files").append(file);
-            }
+            ENTABLADOR._.renderImagesOnModal(files, table_name, key);
           } else {
             $("#ENTABLADOR-" + table_name + "-" + key).val(value);
           }
@@ -995,7 +984,7 @@ const ENTABLADOR = (function () {
           <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
           <div class="col-sm-9">
             <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
-            <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="console.log('log!');ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}' };console.log(ENTABLADOR._.LabelClick)" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
+            <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}', table_name: '${table_name}' };" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
             <button data-field="${realNameColumn}" class="btn btn-success btn-sm mb-0 mt-2" style="display:none;" disabled><div class="spinner-border spinner-border-sm mr-1"></div>Subir Archivos</button>
           </div>
         </div>`;
@@ -1003,6 +992,7 @@ const ENTABLADOR = (function () {
       return div;
     },
     crearModal: function (table_name, nombreColumnaClick, row) {
+      var debug = false;
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
         console.log("no existe modal. creando...");
         var ENT_TABLA = window[table_name];
@@ -1037,7 +1027,7 @@ const ENTABLADOR = (function () {
           .init()
           .aoColumns.map((obj) => obj.title)
           .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
-        console.log("PRE- ", columnsTitle);
+        // console.log("PRE- ", columnsTitle);
         // if el on columnsTitle is undefined or "" then use columnsOrder and issue a warning
         for (let i = 0; i < columnsTitle.length; i++) {
           if (columnsTitle[i] == undefined || columnsTitle[i] == "") {
@@ -1047,13 +1037,15 @@ const ENTABLADOR = (function () {
         }
         ENT_TABLA.ENTABLADOR.columnsOrder = columnsOrder;
         // console.log("POST- ", columnsTitle);
-        console.log("----------------------------------------------------");
-        console.log("inputsTypes", inputsTypes);
-        console.log("nombreColumnaClick", nombreColumnaClick);
-        console.log("row", row);
-        console.log("columnsOrder", columnsOrder);
-        console.log("columnsTitle POST", columnsTitle);
-        console.log("----------------------------------------------------");
+        if (debug) {
+          console.log("----------------------------------------------------");
+          console.log("inputsTypes", inputsTypes);
+          console.log("nombreColumnaClick", nombreColumnaClick);
+          console.log("row", row);
+          console.log("columnsOrder", columnsOrder);
+          console.log("columnsTitle POST", columnsTitle);
+          console.log("----------------------------------------------------");
+        }
         // GENERAR TODOS LOS INPUTS DE TODAS LAS COLUMNAS
         var html = "";
         for (let i = 0; i < columnsOrder.length; i++) {
@@ -1074,30 +1066,45 @@ const ENTABLADOR = (function () {
       if ($(that).hasClass("img-thumbnail")) {
         has_thumbnail = true;
       }
-
-      // var SVG = `
-      //   <a href="${that.src}" target="_blank" class="ENTABLADOR-tabla-anchor text-primary" style="cursor:pointer;margin-right:5px;">
-      //   ${ENTABLADOR._.SVGs.FileSVG(70, 70)}
-      //   </div>
-      //   </a>
-      // `;
-      var SVG = `
-        <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
-          <button onclick="BTN_VISITAS_MODAL_ELIMINAR_FOTOS()" class="eliminarFoto">&times;</button>
-          <a href="${that.src}" target="_blank" style="cursor: zoom-in;">
-            ${ENTABLADOR._.SVGs.FileSVG(has_thumbnail ? 70 : undefined)}
-          </a>
-        </div>
-      `;
       if (has_thumbnail) {
-        $(that).replaceWith(SVG);
+        $(that).replaceWith(ENTABLADOR._.SVGs.FileSVG(has_thumbnail ? 70 : undefined));
       } else {
         $(that).replaceWith(ENTABLADOR._.SVGs.FileSVG());
       }
     },
+    EliminarFileModal: function (file, table_name, column) {
+      var arr = this.Modal_Editor_PreSave[column];
+      this.Modal_Editor_PreSave[column] = arr.filter((arr) => arr != file);
+      this.renderImagesOnModal(false, table_name, column);
+    },
+    renderImagesOnModal: function (files, table_name, column) {
+      if (files == undefined || files == "" || files == false) {
+        files = ENTABLADOR._.Modal_Editor_PreSave[column];
+      }
+      $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("");
+      // console.log("files", files);
+      for (let i = 0; i < files.length; i++) {
+        // detect if it is an image or a file (make it svg)
+        var file = `
+        <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
+          <button onclick="ENTABLADOR._.EliminarFileModal('${files[i]}', '${table_name}', '${column}')" class="eliminarFoto">&times;</button>
+          <a href="${files[i]}" target="_blank" style="cursor: zoom-in;">
+            <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1" onerror="this.onerror=null;ENTABLADOR._.ImgOnError(this)">
+          </a>
+        </div>`;
+        $("#ENTABLADOR-" + table_name + "-" + column + "-files").append(file);
+      }
+      if (files.length == 0) {
+        $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("No hay archivos");
+      }
+    },
     guardarCambiosModal: function (table_name) {
       // actualizar Modal_Editor_PreSave
-      // for
+      for (const key in ENTABLADOR._.Modal_Editor_PreSave) {
+        if (Object.hasOwnProperty.call(ENTABLADOR._.Modal_Editor_PreSave, key)) {
+          // DETECTAR DIFERENCIAS Y GUARDARLAS
+        }
+      }
     },
   };
   return {
@@ -1139,6 +1146,7 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",
+      edad: "number",
     },
   },
   columns: [

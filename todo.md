@@ -1,5 +1,7 @@
 # IDEAS
 
+- cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
+
 - ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal)
 - en un futuro MUY lejano, hacer para que .addChanges() funcione con arrays.
 - en getNewID() poner una clausula para verificar si el id que esta a punto de poner existe, y si si existe ponerlo recursivo o algo similar
@@ -27,15 +29,18 @@
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- btn subir archivos en modal
-- btn guardar modal...
+- btn guardar modal... :1105 "DETECTAR DIFERENCIAS Y GUARDARLAS"
 
 # ULTIMOS HECHOS
+
+- btn subir archivos en modal
+- btn eliminar file modal
 
 # FIXED - ON WATCH
 
 # DONE
 
+- FIX, ImgOnError() en modal duplica svg, y al hacer click en btn eliminar abria tambien el anchor.
 - SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
 - al eliminar una row completa, verificar como hacer con los CAMBIOS
 - al hcer click en el campo de archivos con tipo modal, no se abre el modal. (click en el campo pero no en foto obviamente)
