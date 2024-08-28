@@ -875,10 +875,12 @@ const ENTABLADOR = (function () {
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
           } else if (inputsTypes[key] == "file") {
             var files = row[key];
+
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
             }
             ENTABLADOR._.renderImagesOnModal(files, table_name, key);
+            this.Modal_Editor_PreSave[key] = files;
           } else {
             $("#ENTABLADOR-" + table_name + "-" + key).val(value);
           }
@@ -1009,7 +1011,7 @@ const ENTABLADOR = (function () {
           <div class="modal-body"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" class="btn btn-primary" onclick="ENTABLADOR._.guardarCambiosModal('${table_name}')">Guardar Cambios</button>
           </div>
         </div>
       </div>
@@ -1078,9 +1080,11 @@ const ENTABLADOR = (function () {
       this.renderImagesOnModal(false, table_name, column);
     },
     renderImagesOnModal: function (files, table_name, column) {
-      if (files == undefined || files == "" || files == false) {
+      // console.log(0, "files", files);
+      if (files == undefined || files === "" || files === false) {
         files = ENTABLADOR._.Modal_Editor_PreSave[column];
       }
+      // console.log(1, "files", files);
       $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("");
       // console.log("files", files);
       for (let i = 0; i < files.length; i++) {
@@ -1097,12 +1101,13 @@ const ENTABLADOR = (function () {
       if (files.length == 0) {
         $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("No hay archivos");
       }
+      console.log("elements:", $("#ENTABLADOR-" + table_name + "-" + column + "-files").children().length);
     },
     guardarCambiosModal: function (table_name) {
       // actualizar Modal_Editor_PreSave
       for (const key in ENTABLADOR._.Modal_Editor_PreSave) {
         if (Object.hasOwnProperty.call(ENTABLADOR._.Modal_Editor_PreSave, key)) {
-          // DETECTAR DIFERENCIAS Y GUARDARLAS
+          // DETECTAR DIFERENCIAS Y GUARDARLAS - (actualizar Modal_Editor_PreSave)
         }
       }
     },
@@ -1214,7 +1219,7 @@ ENTABLADOR.crear({
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false", archivos: "https://dummyimage.com/200.png" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false" },
   ]);
 // Add css rule
 var style = document.createElement("style");

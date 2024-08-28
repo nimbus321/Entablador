@@ -24,15 +24,18 @@
 
 # TO-DO
 
+- REESCRIBIR todo el funcionamiento del modal. los pasos teoricos: [0) crear modal 0.1) tener arr con columnas 0.2) crear modal con esas columnas] 3) resetear todas las columnas 4) meter values conocidos.
 - REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
+- BUG: resetear las columnas file en modal, no renderiza cuando la row no tiene inputType file. (se queda con el anterior)
 
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- btn guardar modal... :1105 "DETECTAR DIFERENCIAS Y GUARDARLAS"
+- btn guardar modal... :1110 "DETECTAR DIFERENCIAS Y GUARDARLAS - (actualizar Modal_Editor_PreSave)"
 
 # ULTIMOS HECHOS
 
+- muchos BUGS muy pesados. no hay energía para explicarlos.
 - btn subir archivos en modal
 - btn eliminar file modal
 
