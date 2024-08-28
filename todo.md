@@ -21,27 +21,27 @@
   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 - considerar el order de la tabla, tal vez poner un span invisible con los valores reales ordenables.
 - en \_.crearModal quitar todos las cuentas como columnsOrder y ponerlas al crear la tabla. un pro de eso es que tendría siempre columnsOrder en TABLA.ENTABLADOR
+- sanitanizar el nombre de la tabla misma (ej; 'TABLA')
 
 # TO-DO
 
 - en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
-- REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
-- BUG: resetear las columnas file en modal, no renderiza cuando la row no tiene inputType file. (se queda con el anterior)
 
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- REDISEÑAR como funciona todo el proceso del modal. Ultimo commit antes de -
+- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO...
 
 # ULTIMOS HECHOS
 
-- .modalLarge()
-- si esta opcion de modal y hay abierto ya uno, lo hara inline.
+- on keyup cambiado por input en key_sec del modal
 
 # FIXED - ON WATCH
 
 # DONE
 
+- si esta opcion de modal y hay abierto ya uno, lo hara inline.
+- .modalLarge()
 - TABLA.ENTABLADOR.COLUMNS = [["nombreRealColumna", "titleColumna"], ...] al crear la tabla.
 - muchos BUGS muy pesados. no hay energía para explicarlos.
 - btn subir archivos en modal

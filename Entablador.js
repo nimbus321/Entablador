@@ -1043,44 +1043,47 @@ const ENTABLADOR = (function () {
         $("body").prepend(div);
 
         var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
-        var columnsOrder = ENT_TABLA.settings()
-          .init()
-          .aoColumns.map((obj) => obj.data)
-          .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+        // var columnsOrder = ENT_TABLA.settings()
+        //   .init()
+        //   .aoColumns.map((obj) => obj.data)
+        //   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 
-        var columnsTitle = ENT_TABLA.settings()
-          .init()
-          .aoColumns.map((obj) => obj.title)
-          .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
-        // console.log("PRE- ", columnsTitle);
-        // if el on columnsTitle is undefined or "" then use columnsOrder and issue a warning
-        for (let i = 0; i < columnsTitle.length; i++) {
-          if (columnsTitle[i] == undefined || columnsTitle[i] == "") {
-            console.warn("Al crear el modal para la tabla '" + table_name + "', se ha encontrado un título para la columna '" + columnsOrder[i] + "'. Se ha omitido.");
-            columnsTitle[i] = columnsOrder[i];
-          }
-        }
-        ENT_TABLA.ENTABLADOR.columnsOrder = columnsOrder;
-        // console.log("POST- ", columnsTitle);
+        // var columnsTitle = ENT_TABLA.settings()
+        //   .init()
+        //   .aoColumns.map((obj) => obj.title)
+        //   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
+        // // if el on columnsTitle is undefined or "" then use columnsOrder and issue a warning
+        // for (let i = 0; i < columnsTitle.length; i++) {
+        //   if (columnsTitle[i] == undefined || columnsTitle[i] == "") {
+        //     console.warn("Al crear el modal para la tabla '" + table_name + "', se ha encontrado un título para la columna '" + columnsOrder[i] + "'. Se ha omitido.");
+        //     columnsTitle[i] = columnsOrder[i];
+        //   }
+        // }
+        // ENT_TABLA.ENTABLADOR.columnsOrder = columnsOrder;
+
+        var COLUMNS = ENT_TABLA.ENTABLADOR.COLUMNS;
         if (debug) {
           console.log("----------------------------------------------------");
           console.log("inputsTypes", inputsTypes);
           console.log("nombreColumnaClick", nombreColumnaClick);
           console.log("row", row);
-          console.log("columnsOrder", columnsOrder);
-          console.log("columnsTitle POST", columnsTitle);
+          console.log("row", COLUMNS);
+          // console.log("columnsOrder", columnsOrder);
+          // console.log("columnsTitle POST", columnsTitle);
           console.log("----------------------------------------------------");
         }
         // GENERAR TODOS LOS INPUTS DE TODAS LAS COLUMNAS
         var html = "";
-        for (let i = 0; i < columnsOrder.length; i++) {
-          html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
+        for (let i = 0; i < COLUMNS.length; i++) {
+          var titleColumn = ["", undefined, null].includes(COLUMNS[i][1]) ? COLUMNS[i][0] : COLUMNS[i][1];
+          html += this.crearInputModal(inputsTypes[COLUMNS[i][0]], titleColumn, COLUMNS[i][0], table_name);
+          // html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
           //poner en ENTABLADOR._.Modal_Editor_PreSave
-          ENTABLADOR._.Modal_Editor_PreSave[columnsOrder[i]] = row[columnsOrder[i]];
+          ENTABLADOR._.Modal_Editor_PreSave[COLUMNS[i][0]] = row[COLUMNS[i][0]];
         }
         $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
-        $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("keyup", function () {
+        $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
           $("#ENTABLADOR_CAMPO").text($(this).val());
         });
       }
@@ -1236,7 +1239,7 @@ ENTABLADOR.crear({
 })
   .editable(true)
   .tipoEdicion("modal")
-  .modalLarge(true)
+  // .modalLarge(true)
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
