@@ -24,6 +24,7 @@
 
 # TO-DO
 
+- en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
 - REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
 - BUG: resetear las columnas file en modal, no renderiza cuando la row no tiene inputType file. (se queda con el anterior)
 
@@ -34,12 +35,14 @@
 
 # ULTIMOS HECHOS
 
-- TABLA.ENTABLADOR.COLUMNS = [["nombreRealColumna", "titleColumna"], ...] al crear la tabla.
+- .modalLarge()
+- si esta opcion de modal y hay abierto ya uno, lo hara inline.
 
 # FIXED - ON WATCH
 
 # DONE
 
+- TABLA.ENTABLADOR.COLUMNS = [["nombreRealColumna", "titleColumna"], ...] al crear la tabla.
 - muchos BUGS muy pesados. no hay energía para explicarlos.
 - btn subir archivos en modal
 - btn eliminar file modal

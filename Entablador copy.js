@@ -247,23 +247,6 @@ const ENTABLADOR = (function () {
 
         return this;
       },
-      modalLarge(boolean) {
-        if (boolean == undefined) {
-          return ENT_TABLA.ENTABLADOR.modalLarge ? ENT_TABLA.ENTABLADOR.modalLarge : false;
-        } else if (!(boolean === false || boolean === true)) {
-          console.error(".modalLarge() debe ser un booleano. Valor dado:", boolean);
-          return this;
-        }
-        console.log(ID + " -- modalLarge: " + boolean);
-
-        ENT_TABLA.ENTABLADOR.modalLarge = boolean;
-        // if modal already exists, change the size
-        $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + ID + "']")
-          .find(".modal-dialog")
-          .toggleClass("modal-lg", boolean);
-
-        return this;
-      },
     };
     return instancia;
   }
@@ -740,7 +723,7 @@ const ENTABLADOR = (function () {
       } else if (edition_type == "modal") {
         var row = ENT_TABLA.row(el).data();
         var nombreColumnaClick = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
-        ENTABLADOR._.prepararModal(TablaID, nombreColumnaClick, row, el);
+        ENTABLADOR._.prepararModal(TablaID, nombreColumnaClick, row);
       } // aqui termina el edition_type
     },
     deleteFile: function (event, cell) {
@@ -853,7 +836,7 @@ const ENTABLADOR = (function () {
       }
       return obj;
     },
-    prepararModal: function (table_name, nombreColumnaClick, row, el) {
+    prepararModal: function (table_name, nombreColumnaClick, row) {
       // console.log("row", row);
       // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
@@ -862,9 +845,7 @@ const ENTABLADOR = (function () {
       }
 
       if ($(".modal.show").length > 0) {
-        console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto. Editando 'inline'.");
-        $(el).closest("table").attr("data-edition-type", "inline");
-        ENTABLADOR._.editTable(window[table_name], el);
+        console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto.");
         return;
       }
       var ENT_TABLA = window[table_name];
@@ -1017,29 +998,29 @@ const ENTABLADOR = (function () {
       return div;
     },
     crearModal: function (table_name, nombreColumnaClick, row) {
-      var debug = true;
+      var debug = false;
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
-        console.log("No existe modal para la tabla '" + table_name + "'. Creando...");
+        console.log("no existe modal. creando...");
         var ENT_TABLA = window[table_name];
         var div = `
-          <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog${window[table_name].ENTABLADOR.modalLarge ? " modal-lg" : ""}">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" onclick="ENTABLADOR._.guardarCambiosModal('${table_name}')">Guardar Cambios</button>
-                </div>
-              </div>
-            </div>
+      <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lgASDFG">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          `;
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" onclick="ENTABLADOR._.guardarCambiosModal('${table_name}')">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      `;
         $("body").prepend(div);
 
         var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
@@ -1124,7 +1105,7 @@ const ENTABLADOR = (function () {
       if (files.length == 0) {
         $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("No hay archivos");
       }
-      // console.log("elements:", $("#ENTABLADOR-" + table_name + "-" + column + "-files").children().length);
+      console.log("elements:", $("#ENTABLADOR-" + table_name + "-" + column + "-files").children().length);
     },
     guardarCambiosModal: function (table_name) {
       // actualizar Modal_Editor_PreSave
@@ -1236,7 +1217,6 @@ ENTABLADOR.crear({
 })
   .editable(true)
   .tipoEdicion("modal")
-  .modalLarge(true)
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
