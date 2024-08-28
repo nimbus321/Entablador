@@ -409,16 +409,20 @@ const ENTABLADOR = (function () {
     NuevaTabla.ENTABLADOR.key = config.meta.key;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key;
 
-    // obtener las columnas en orden de acuerdo con opciones.columns. poner solo las que tengan visible=true
-    var orderColumns = opciones.columns.map((column) => column.data);
-    for (let i = 0; i < orderColumns.length; i++) {
-      if (opciones.columns[i].visible == false) {
-        orderColumns.splice(i, 1);
-        i--;
+    // crear NuevaTabla.ENTABLADOR.Columns. poner solo las que tengan visible=true y que no sean null, etc.
+    var columns_pre = opciones.columns.map((column) => column.data);
+    var COLUMNS = [];
+    //expected COLUMNS = [["nombre","Nombre"],["edad","Edad"],["fechaNacimiento","Fecha de Nacimiento"],["humano","Humano"],["archivos","Archivos"]];
+
+    for (let i = columns_pre.length - 1; i >= 0; i--) {
+      if (opciones.columns[i].visible == false || [null, undefined, ""].includes(opciones.columns[i].data)) {
+        columns_pre.splice(i, 1);
+      } else {
+        COLUMNS.unshift([opciones.columns[i].data, opciones.columns[i].title]);
       }
     }
-
-    NuevaTabla.orderColumns = orderColumns;
+    NuevaTabla.ENTABLADOR.COLUMNS = COLUMNS;
+    // console.log(NuevaTabla.ENTABLADOR);
 
     NuevaTabla.ENTABLADOR.inputsTypes = config.meta.inputsTypes;
     $("#" + config.id).on("preDraw.dt", function () {

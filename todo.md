@@ -24,25 +24,25 @@
 
 # TO-DO
 
-- REESCRIBIR todo el funcionamiento del modal. los pasos teoricos: [0) crear modal 0.1) tener arr con columnas 0.2) crear modal con esas columnas] 3) resetear todas las columnas 4) meter values conocidos.
 - REVISAR que todo se haya hecho correctamente en el render del modal. 1) la creacion 2) el reseteo 3) el poner los campos
 - BUG: resetear las columnas file en modal, no renderiza cuando la row no tiene inputType file. (se queda con el anterior)
 
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- btn guardar modal... :1110 "DETECTAR DIFERENCIAS Y GUARDARLAS - (actualizar Modal_Editor_PreSave)"
+- REDISEÑAR como funciona todo el proceso del modal. Ultimo commit antes de -
 
 # ULTIMOS HECHOS
 
-- muchos BUGS muy pesados. no hay energía para explicarlos.
-- btn subir archivos en modal
-- btn eliminar file modal
+- TABLA.ENTABLADOR.COLUMNS = [["nombreRealColumna", "titleColumna"], ...] al crear la tabla.
 
 # FIXED - ON WATCH
 
 # DONE
 
+- muchos BUGS muy pesados. no hay energía para explicarlos.
+- btn subir archivos en modal
+- btn eliminar file modal
 - FIX, ImgOnError() en modal duplica svg, y al hacer click en btn eliminar abria tambien el anchor.
 - SUPER-IDEA - en vez de tartar de detectar si un archivo es una foto o no para poner el icono de pdf o un img, mejor poner un onerror event en el html de img y si da error ponerlo como icono !!!!
 - al eliminar una row completa, verificar como hacer con los CAMBIOS
