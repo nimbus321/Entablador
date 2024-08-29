@@ -41,7 +41,7 @@ const ENTABLADOR = (function () {
       return;
     }
 
-    const instancia = {
+    const instance = {
       id: ID,
       tipoEdicion(type) {
         if (type == undefined) {
@@ -268,7 +268,7 @@ const ENTABLADOR = (function () {
         return this;
       },
     };
-    return instancia;
+    return instance;
   }
   // ########################################################################
   function crear(config) {
@@ -290,9 +290,6 @@ const ENTABLADOR = (function () {
       console.error("Ya existe una tabla con el ID especificado (", config.id, ")");
       return;
     }
-    const instancia = {
-      id: config.id,
-    };
     // ########################################################################
     /*
               .crear({
@@ -512,10 +509,10 @@ const ENTABLADOR = (function () {
           $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
 
           // Subir a object del modal
-          var Modal_Editor_PreSave = ENTABLADOR._.Modal_Editor_PreSave;
-          Modal_Editor_PreSave[field] = [...Modal_Editor_PreSave[field], ...newContent];
+          var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
+          Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
           //render images on modal
-          ENTABLADOR._.renderImagesOnModal(Modal_Editor_PreSave[field], table_name_Modal, field);
+          ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
         }
       }).fail(function () {
         if (!fromModal) {
@@ -542,13 +539,14 @@ const ENTABLADOR = (function () {
     });
 
     // ########################################################################
-    //return instancia;
     return id(config.id);
   }
   var _ = {
-    /* VARIABLE GLOBAL DE LA LIBRERÍA */
+    /*  ##################################################
+        ##         VARIABLE GLOBAL DE LA LIBRERÍA       ##
+        ################################################## */
     CAMBIOS_TABLAS: {},
-    Modal_Editor_PreSave: {},
+    Modal_Editor_Obj: {},
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
@@ -892,7 +890,7 @@ const ENTABLADOR = (function () {
         if (Object.hasOwnProperty.call(inputsTypes, key)) {
           const type = inputsTypes[key];
           if (type == "file") {
-            this.Modal_Editor_PreSave[key] = [];
+            this.Modal_Editor_Obj[key] = [];
             ENTABLADOR._.renderImagesOnModal([], table_name, key);
           }
         }
@@ -921,7 +919,7 @@ const ENTABLADOR = (function () {
               files = files != "" ? [files] : [];
             }
             ENTABLADOR._.renderImagesOnModal(files, table_name, key);
-            this.Modal_Editor_PreSave[key] = files;
+            this.Modal_Editor_Obj[key] = files;
           } else {
             $("#ENTABLADOR-" + table_name + "-" + key).val(value);
           }
@@ -1035,7 +1033,7 @@ const ENTABLADOR = (function () {
       return div;
     },
     crearModal: function (table_name, nombreColumnaClick, row) {
-      var debug = true;
+      var debug = false;
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
         console.log("No existe modal para la tabla '" + table_name + "'. Creando...");
         var ENT_TABLA = window[table_name];
@@ -1100,8 +1098,12 @@ const ENTABLADOR = (function () {
           var titleColumn = ["", undefined, null].includes(COLUMNS[i][1]) ? COLUMNS[i][0] : COLUMNS[i][1];
           html += this.crearInputModal(inputsTypes[COLUMNS[i][0]], titleColumn, COLUMNS[i][0], table_name);
 
-          //poner en ENTABLADOR._.Modal_Editor_PreSave
-          ENTABLADOR._.Modal_Editor_PreSave[COLUMNS[i][0]] = row[COLUMNS[i][0]];
+          //poner en ENTABLADOR._.Modal_Editor_Obj
+          /*
+              MEJOR SOLO PONER LOS FILES, Y CUANDO SE
+              GUARDEN LOS CAMBIOS HACERLO EN TODOS LOS CAMPOS
+          */
+          // ENTABLADOR._.Modal_Editor_Obj[COLUMNS[i][0]] = row[COLUMNS[i][0]];
         }
         $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
@@ -1123,14 +1125,14 @@ const ENTABLADOR = (function () {
       }
     },
     EliminarFileModal: function (file, table_name, column) {
-      var arr = this.Modal_Editor_PreSave[column];
-      this.Modal_Editor_PreSave[column] = arr.filter((arr) => arr != file);
+      var arr = this.Modal_Editor_Obj[column];
+      this.Modal_Editor_Obj[column] = arr.filter((arr) => arr != file);
       this.renderImagesOnModal(false, table_name, column);
     },
     renderImagesOnModal: function (files, table_name, column) {
       // console.log(0, "files", files);
       if (files == undefined || files === "" || files === false) {
-        files = ENTABLADOR._.Modal_Editor_PreSave[column];
+        files = ENTABLADOR._.Modal_Editor_Obj[column];
       }
       // console.log(1, "files", files);
       $("#ENTABLADOR-" + table_name + "-" + column + "-files").html("");
@@ -1152,12 +1154,28 @@ const ENTABLADOR = (function () {
       // console.log("elements:", $("#ENTABLADOR-" + table_name + "-" + column + "-files").children().length);
     },
     guardarCambiosModal: function (table_name) {
-      // actualizar Modal_Editor_PreSave
-      for (const key in ENTABLADOR._.Modal_Editor_PreSave) {
-        if (Object.hasOwnProperty.call(ENTABLADOR._.Modal_Editor_PreSave, key)) {
-          // DETECTAR DIFERENCIAS Y GUARDARLAS - (actualizar Modal_Editor_PreSave)
+      /*  ##################################################
+          ##          actualizar Modal_Editor_Obj         ##
+          ################################################## */
+
+      var ENT_TABLA = window[table_name];
+      var Columns = ENT_TABLA.ENTABLADOR.COLUMNS;
+      var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
+      for (let i = 0; i < Columns.length; i++) {
+        var column = Columns[i][0];
+        if (inputsTypes[column] == "checkbox") {
+          this.Modal_Editor_Obj[column] = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').val();
+        } else if (inputsTypes[column] == "file") {
+        } else {
+          this.Modal_Editor_Obj[column] = $("#ENTABLADOR-" + table_name + "-" + column).val();
         }
       }
+      // console.log("ENTABLADOR._.Modal_Editor_Obj", this.Modal_Editor_Obj);
+
+      /*  ##################################################
+          ##       DETECTAR DIFERENCIAS Y GUARDARLAS      ##
+          ################################################## */
+      var rowOriginal;
     },
   };
   return {

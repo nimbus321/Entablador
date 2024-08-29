@@ -26,7 +26,7 @@
 
 - type_edition modal
 
-- btn guardar modal
+- btn guardar modal <- Trabajando en ello.
 
 # ULTIMOS HECHOS
 
