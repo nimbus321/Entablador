@@ -29,6 +29,8 @@
 
 # ULTIMOS HECHOS
 
+- /DiseñoModal.jpg
+
 # FIXED - ON WATCH
 
 - REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
