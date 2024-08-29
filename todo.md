@@ -23,11 +23,10 @@
 
 # TO-DO
 
-- añadir 'textarea' a los inputs validos. y hacerlo compatible..
-
 # TRABAJANDO EN ELLO
 
-- vivir en paz
+- añadir 'textarea' a los inputs validos. y hacerlo compatible.. | AVANCES
+- editado sutilemente parseBoolean()
 
 # ULTIMOS HECHOS
 

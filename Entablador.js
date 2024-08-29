@@ -558,7 +558,7 @@ const ENTABLADOR = (function () {
     Modal_Editor_Obj: {},
     ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
-    validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
+    validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "textarea"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     mandatoryFields: {},
     LabelClick: null,
@@ -672,18 +672,31 @@ const ENTABLADOR = (function () {
         var input = $(`<input type="text">`).val(originalContent);
         var type_input = "text";
         var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
-        if (inputsTypes && inputsTypes[nombreColumna] && ENTABLADOR._.validInputs.includes(inputsTypes[nombreColumna])) {
+
+        var type_input;
+        if (inputsTypes) {
           type_input = inputsTypes[nombreColumna];
           // console.log("type_input", type_input);
-          if (type_input == "file" || type_input == "image") {
-            return;
-          }
-          if (type_input == "checkbox") {
-            input = $(`<select><option value="undefined">Sin especificar</option><option value="true">Sí</option><option value="false">No</option></select>`).val(ENTABLADOR._.parseBoolean("string", originalContent));
-          } else {
-            input = $(`<input type="${type_input}">`).val(originalContent);
+          if (typeof type_input === "string" && type_input != "") {
+            if (this.validInputs.includes(type_input)) {
+              // console.log(true);
+
+              if (type_input == "file" || type_input == "image") {
+                return;
+              } else if (type_input == "checkbox") {
+                input = $(`<select><option value="undefined">Sin especificar</option><option value="true">Sí</option><option value="false">No</option></select>`).val(ENTABLADOR._.parseBoolean("string", originalContent));
+              } else if (type_input == "textarea") {
+                input = $(`<textarea style="width:100%;">`).val(originalContent);
+              } else {
+                input = $(`<input type="${type_input}">`).val(originalContent);
+              }
+            } else {
+              console.warn("Tipo de input ('" + type_input + "') no válido, puesto por defecto '" + this.validInputs[0] + "'.");
+              type_input = this.validInputs[0];
+            }
           }
         }
+
         cell.empty().html(input);
 
         // Evitar que el clic en el input borre su contenido
@@ -1300,7 +1313,7 @@ const ENTABLADOR = (function () {
             return "true";
           } else if (value === false) {
             return "false";
-          } else if (value === undefined) {
+          } else if (value === undefined || value === "") {
             return "undefined";
           } else if (["true", "false", "undefined"].includes(value)) {
             return value;
@@ -1315,13 +1328,13 @@ const ENTABLADOR = (function () {
             return true;
           } else if (value === "false") {
             return false;
-          } else if (value === "undefined") {
+          } else if (value === "undefined" || value === "") {
             return undefined;
           } else if ([true, false, undefined].includes(value)) {
             return value;
           } else {
             if (value != undefined && debug) {
-              console.warn("En parseBoolean('boolean', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto undefined. Probablemente sea lo esperado, no preocuparse.");
+              console.warn("En parseBoolean('boolean', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto undefined.");
             }
             return undefined;
           }
@@ -1372,6 +1385,7 @@ ENTABLADOR.crear({
       humano: "checkbox",
       archivos: "file",
       edad: "number",
+      notas: "textarea",
     },
   },
   columns: [
@@ -1389,19 +1403,20 @@ ENTABLADOR.crear({
     { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
     { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
+    { data: "notas", title: "Notas", class: "editable", defaultContent: "" },
     { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
     { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
   ],
   columnDefs: [
     {
-      targets: 2,
+      targets: 2, // nombre
       render: function (data, type, row, meta) {
         // return `lel`;
         return data ? data.toUpperCase() : data;
       },
     },
     {
-      targets: 4,
+      targets: 4, // fechaNacimiento
       render: function (data, type, row, meta) {
         // return `lel`;
         //detect if it is a date
@@ -1414,7 +1429,7 @@ ENTABLADOR.crear({
       },
     },
     {
-      targets: 5,
+      targets: 6,
       render: function (data, type, row, meta) {
         // if (row.nombre == "Matthew") {
         //   console.log(data);
@@ -1427,17 +1442,6 @@ ENTABLADOR.crear({
         } else if (value === undefined) {
           return;
         }
-
-        // var resultado;
-        // if (value == undefined) {
-        //   return resultado;
-        // }
-        // if (value) {
-        //   resultado = "si";
-        // }else if (value === false) {
-        //   resultado = "no";
-        // }
-        // return resultado;
       },
     },
   ],
@@ -1459,4 +1463,4 @@ var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
-// $("#TABLA tbody tr:eq(0) td:eq(3)").click();
+$("#TABLA tbody tr:eq(0) td:eq(4)").click();
