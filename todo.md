@@ -26,10 +26,13 @@
 
 # ULTIMOS HECHOS
 
-- type_edition modal
-- btn guardar modal guardarCambiosModal()
+- crear parseBoolean("string"||"boolean", value) y perfeccionarlo. tambien ya implementado en todos los lugares
+- fix'ear los problemas con los checkbox's
 
 # FIXED - ON WATCH
+
+- type_edition modal
+- btn guardar modal guardarCambiosModal()
 
 # DONE
 

@@ -26,7 +26,7 @@ const ENTABLADOR = (function () {
       } else {
         ID = ID.tables().nodes().to$().attr("id");
       }
-    } else if (ID == "") {
+    } else if (ID === "") {
       console.error("No se ha especificado un ID");
       return;
     } else if (document.getElementById(ID) == null) {
@@ -278,7 +278,7 @@ const ENTABLADOR = (function () {
       console.error("No se ha especificado una configuración correctamente");
       return;
     }
-    if (!config.id || typeof config.id != "string" || config.id == "") {
+    if (!config.id || typeof config.id != "string" || config.id === "") {
       console.error("No se ha especificado un ID");
       return;
     }
@@ -497,7 +497,7 @@ const ENTABLADOR = (function () {
           var finalData;
           if (Array.isArray(oldData)) {
             finalData = [...oldData, ...newContent];
-          } else if (oldData == "") {
+          } else if (oldData === "") {
             finalData = newContent;
           } else {
             finalData = [oldData, ...newContent];
@@ -719,10 +719,40 @@ const ENTABLADOR = (function () {
           if (type_input == "number") {
             //replace the letter 'e' with ''
             newContent = newContent.replace(/e/g, "");
+            //make it a number with parseint
+            newContent = parseInt(newContent);
+          } else if (type_input == "checkbox") {
+            // console.log("newContent", newContent);
+            // console.log("originalContent", originalContent);
+
+            //make it a boolean
+            var _ = ENTABLADOR._;
+            newContent = _.parseBoolean("boolean", newContent);
+            // if (newContent === "true") {
+            //   newContent = true;
+            // } else if (newContent === "false") {
+            //   newContent = false;
+            // } else {
+            //   newContent = undefined;
+            // }
+            //make the originalContent a boolean
+            originalContent = _.parseBoolean("boolean", originalContent);
+            // if (originalContent === "true") {
+            //   originalContent = true;
+            // } else if (originalContent === "false") {
+            //   originalContent = false;
+            // } else if (!(originalContent === true || originalContent === false)) {
+            //   originalContent = undefined;
+            // }
+            // console.log("POST newContent", newContent);
+            // console.log("POST originalContent", originalContent);
           }
           //console.log("newContent: ",newContent, "originalContent: ",originalContent);
-
-          if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image") {
+          // var esCheckboxParsed = false;
+          // if (type_input == "checkbox") {
+          //   esCheckboxParsed = true;
+          // }
+          if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image" /* || esCheckboxParsed*/) {
             cell.empty();
             cellDataTables.data(originalContent).draw(false);
             return;
@@ -827,7 +857,7 @@ const ENTABLADOR = (function () {
       return maxID + 1;
     },
     FIRESTORE_TO_TABLE: function (columnKey, json) {
-      if (columnKey == null || columnKey == "") {
+      if (columnKey == null || columnKey === "") {
         console.error("Error: No se ha especificado una tabla");
         return;
       }
@@ -920,7 +950,7 @@ const ENTABLADOR = (function () {
             continue;
           }
           if (inputsTypes[key] == "checkbox") {
-            if (value == undefined || value == "") {
+            if (value == undefined || value === "") {
               value = "undefined";
             }
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
@@ -984,7 +1014,7 @@ const ENTABLADOR = (function () {
     },
     crearInputModal(input, titleColumn, realNameColumn, table_name) {
       // console.log(input, titleColumn, realNameColumn, table_name);
-      if (input == undefined || input == "") {
+      if (input == undefined || input === "") {
         console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto '" + ENTABLADOR._.validInputs[0] + "'.");
         input = ENTABLADOR._.validInputs[0];
       }
@@ -1085,7 +1115,7 @@ const ENTABLADOR = (function () {
         //   .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
         // // if el on columnsTitle is undefined or "" then use columnsOrder and issue a warning
         // for (let i = 0; i < columnsTitle.length; i++) {
-        //   if (columnsTitle[i] == undefined || columnsTitle[i] == "") {
+        //   if (columnsTitle[i] == undefined || columnsTitle[i] === "") {
         //     console.warn("Al crear el modal para la tabla '" + table_name + "', se ha encontrado un título para la columna '" + columnsOrder[i] + "'. Se ha omitido.");
         //     columnsTitle[i] = columnsOrder[i];
         //   }
@@ -1176,14 +1206,20 @@ const ENTABLADOR = (function () {
         var column = Columns[i][0];
         if (inputsTypes[column] == "checkbox") {
           var value = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').attr("data-entablador-value");
-          if (value == "undefined") {
-            value = undefined;
-          }
+
+          // if (value == "undefined") {
+          //   value = undefined;
+          // } else if (value === "true") {
+          //   value = true;
+          // } else if (value === "false") {
+          //   value = false;
+          // }
+          value = this.parseBoolean("boolean", value);
           this.Modal_Editor_Obj[column] = value;
         } else if (inputsTypes[column] != "file") {
           //input normal (text). tener en cuenta que 'file' ya fue guardado en renderImagesOnModal
           var value = $("#ENTABLADOR-" + table_name + "-" + column).val();
-          if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0) {
+          if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0 && value !== "") {
             // es un number
             value = parseInt(value);
           }
@@ -1200,12 +1236,21 @@ const ENTABLADOR = (function () {
       var rowChanged = JSON.parse(JSON.stringify(rowOriginal));
       var keysChanged = [];
 
-      console.log("rowOriginal", rowOriginal);
-      console.log("rowNueva", rowNueva);
+      // console.log("rowOriginal", rowOriginal);
+      // console.log("rowNueva", rowNueva);
 
       //considerar que pueden haber más columnas en rowNueva que en rowOriginal. rowNueva > rowOriginal
       for (const key in rowNueva) {
         if (Object.hasOwnProperty.call(rowNueva, key)) {
+          var esArrayVacio = Array.isArray(rowNueva[key]) && rowNueva[key].length == 0;
+          if ((rowNueva[key] === "" || esArrayVacio) && rowOriginal[key] === undefined && inputsTypes[key] != "checkbox") {
+            continue;
+          }
+          //check if it is a checkbox
+          if (inputsTypes[key] == "checkbox") {
+            rowNueva[key] = this.parseBoolean("boolean", rowNueva[key]);
+            rowOriginal[key] = this.parseBoolean("boolean", rowOriginal[key]);
+          }
           if (rowNueva[key] != rowOriginal[key]) {
             // console.log("TEST X---", key, rowNueva[key], rowOriginal[key]);
             rowChanged[key] = rowNueva[key];
@@ -1223,23 +1268,64 @@ const ENTABLADOR = (function () {
       /*  ##################################################
           ##                AGREGAR CLASSES               ##
           ################################################## */
-      console.log("keysChanged", keysChanged);
+      // console.log("keysChanged", keysChanged);
 
       for (let i = 0; i < keysChanged.length; i++) {
         var key = keysChanged[i];
         // var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find(`td[data-key="${key}"]`);
 
         var columnIndex = TABLA.column(key + ":name").index("visible"); // Obtén el índice de la columna
-        console.log("columnIndex", columnIndex);
 
         var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find("td").eq(columnIndex);
-        console.log(cell);
+        // console.log(cell);
 
         if (cell.find("svg").length < 1) {
           cell.append(ENTABLADOR._.SVGs.EditedSVG);
         }
         cell.addClass("td-editado text-primary font-weight-bold");
         cell.attr("title", "Campo Editado");
+      }
+      // cerrar modal
+      $(".ENTABLADOR_EDICION_MODAL").modal("hide");
+    },
+    parseBoolean: function (expectedValue, value) {
+      if (expectedValue == "string" || expectedValue == "boolean") {
+        if (arguments.length < 2) {
+          console.error("Error: No se ha dado el valor en parseBoolean()");
+          return "ERROR! parseBoolean()";
+        }
+        if (expectedValue == "string") {
+          if (value === true) {
+            return "true";
+          } else if (value === false) {
+            return "false";
+          } else if (value === undefined) {
+            return "undefined";
+          } else if (["true", "false", "undefined"].includes(value)) {
+            return value;
+          } else {
+            console.warn("En parseBoolean('string', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto string 'undefined'.");
+            return "undefined";
+          }
+        } else if (expectedValue == "boolean") {
+          if (value === "true") {
+            return true;
+          } else if (value === "false") {
+            return false;
+          } else if (value === "undefined") {
+            return undefined;
+          } else if ([true, false, undefined].includes(value)) {
+            return value;
+          } else {
+            if (value != undefined) {
+              console.warn("En parseBoolean('boolean', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto undefined. Probablemente sea lo esperado, no preocuparse.");
+            }
+            return undefined;
+          }
+        }
+      } else {
+        console.error("Error: El tipo de dato esperado no es válido. Se esperaba 'string' o 'boolean'. Se ha recibido '" + expectedValue + "'.");
+        return "ERROR! parseBoolean()";
       }
     },
   };
@@ -1317,7 +1403,7 @@ ENTABLADOR.crear({
         // return `lel`;
         //detect if it is a date
         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-        if (data == null || data == "") {
+        if (data == null || data === "") {
           return data;
         }
         var fecha = new Date(data);
@@ -1327,17 +1413,28 @@ ENTABLADOR.crear({
     {
       targets: 5,
       render: function (data, type, row, meta) {
-        var resultado;
-        if (data == "" || data == undefined) {
+        // if (row.nombre == "Matthew") {
+        //   console.log(data);
+        // }
+        var value = ENTABLADOR._.parseBoolean("boolean", data);
+        if (value) {
+          return "si!";
+        } else if (value === false) {
+          return "no!";
+        } else if (value === undefined) {
           return;
         }
-        if (data == "true" || data == true) {
-          resultado = "si";
-        }
-        if (data == "false" || data == false) {
-          resultado = "no";
-        }
-        return resultado;
+
+        // var resultado;
+        // if (value == undefined) {
+        //   return resultado;
+        // }
+        // if (value) {
+        //   resultado = "si";
+        // }else if (value === false) {
+        //   resultado = "no";
+        // }
+        // return resultado;
       },
     },
   ],
@@ -1346,12 +1443,13 @@ ENTABLADOR.crear({
   .tipoEdicion("modal")
   // .modalLarge(true)
   .add([
-    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
-    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: "true", archivos: "https://dummyimage.com/200" },
+    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: false, archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
+    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "false" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true" },
+    { id: 7 },
   ]);
 // Add css rule
 var style = document.createElement("style");
