@@ -679,7 +679,7 @@ const ENTABLADOR = (function () {
             return;
           }
           if (type_input == "checkbox") {
-            input = $(`<select><option value="true">Sí</option><option value="false">No</option></select>`).val(originalContent);
+            input = $(`<select><option value="undefined">Sin especificar</option><option value="true">Sí</option><option value="false">No</option></select>`).val(ENTABLADOR._.parseBoolean("string", originalContent));
           } else {
             input = $(`<input type="${type_input}">`).val(originalContent);
           }
@@ -695,13 +695,13 @@ const ENTABLADOR = (function () {
         // Enfocar en el input recién creado
         input.focus();
         input.on("keydown", function (e) {
+          if (e.key === "Escape") {
+            // console.log("Escape!!!");
+            Cancelled = true;
+            input.blur();
+          }
           if (e.target.tagName === "INPUT") {
             if (e.key === "Enter") {
-              input.blur();
-            }
-            if (e.key === "Escape") {
-              // console.log("Escape!!!");
-              Cancelled = true;
               input.blur();
             }
           }
@@ -754,10 +754,10 @@ const ENTABLADOR = (function () {
           // }
           if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image" /* || esCheckboxParsed*/) {
             cell.empty();
-            cellDataTables.data(originalContent).draw(false);
+            cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", originalContent) : originalContent).draw(false);
             return;
           }
-          cellDataTables.data(newContent).draw(false);
+          cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", newContent) : newContent).draw(false);
 
           cell.append(SVGs.EditedSVG);
           cell.addClass("td-editado text-primary font-weight-bold");
@@ -1289,6 +1289,7 @@ const ENTABLADOR = (function () {
       $(".ENTABLADOR_EDICION_MODAL").modal("hide");
     },
     parseBoolean: function (expectedValue, value) {
+      var debug = false;
       if (expectedValue == "string" || expectedValue == "boolean") {
         if (arguments.length < 2) {
           console.error("Error: No se ha dado el valor en parseBoolean()");
@@ -1304,7 +1305,9 @@ const ENTABLADOR = (function () {
           } else if (["true", "false", "undefined"].includes(value)) {
             return value;
           } else {
-            console.warn("En parseBoolean('string', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto string 'undefined'.");
+            if (debug) {
+              console.warn("En parseBoolean('string', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto string 'undefined'.");
+            }
             return "undefined";
           }
         } else if (expectedValue == "boolean") {
@@ -1317,7 +1320,7 @@ const ENTABLADOR = (function () {
           } else if ([true, false, undefined].includes(value)) {
             return value;
           } else {
-            if (value != undefined) {
+            if (value != undefined && debug) {
               console.warn("En parseBoolean('boolean', value) se dio un valor desconocido ('" + value + "'). Se ha devuelto undefined. Probablemente sea lo esperado, no preocuparse.");
             }
             return undefined;
@@ -1440,7 +1443,7 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  .tipoEdicion("modal")
+  // .tipoEdicion("modal")
   // .modalLarge(true)
   .add([
     { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: false, archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
@@ -1456,4 +1459,4 @@ var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
-$("#TABLA tbody tr:eq(0) td:eq(3)").click();
+// $("#TABLA tbody tr:eq(0) td:eq(3)").click();

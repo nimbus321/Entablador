@@ -20,22 +20,21 @@
 
 # TO-DO
 
-- en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
-
 # TRABAJANDO EN ELLO
+
+- vivir en paz
 
 # ULTIMOS HECHOS
 
-- crear parseBoolean("string"||"boolean", value) y perfeccionarlo. tambien ya implementado en todos los lugares
-- fix'ear los problemas con los checkbox's
-
 # FIXED - ON WATCH
-
-- type_edition modal
-- btn guardar modal guardarCambiosModal()
 
 # DONE
 
+- en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
+- crear parseBoolean("string"||"boolean", value) y perfeccionarlo. tambien ya implementado en todos los lugares
+- fix'ear los problemas con los checkbox's
+- type_edition modal
+- btn guardar modal guardarCambiosModal()
 - /DiseñoModal.jpg
 - REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
 - btn Cambiar tamaño en modal
