@@ -2,7 +2,7 @@
 
 - cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
 
-- ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal)
+- ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal (y antes al crerar la tabla))
 - en un futuro MUY lejano, hacer para que .addChanges() funcione con arrays.
 - en getNewID() poner una clausula para verificar si el id que esta a punto de poner existe, y si si existe ponerlo recursivo o algo similar
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
@@ -14,14 +14,9 @@
 
 - añadir 'textarea' a los inputs validos. y hacerlo compatible..
 - en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's
-- probablemente sea mejor idea poner 'columnsTitle' en TABLA.ENTABLADOR. (y similares)
-  var columnsTitle = ENT_TABLA.settings()
-  .init()
-  .aoColumns.map((obj) => obj.title)
-  .filter((data) => data !== null && data !== undefined && data !== "" && data != ENT_TABLA.ENTABLADOR.key);
 - considerar el order de la tabla, tal vez poner un span invisible con los valores reales ordenables.
-- en \_.crearModal quitar todos las cuentas como columnsOrder y ponerlas al crear la tabla. un pro de eso es que tendría siempre columnsOrder en TABLA.ENTABLADOR
 - sanitanizar el nombre de la tabla misma (ej; 'TABLA')
+- pensar como implementar campos obligatorios
 
 # TO-DO
 
@@ -30,10 +25,12 @@
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO...
+
+- btn guardar modal
 
 # ULTIMOS HECHOS
 
+- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
 - btn Cambiar tamaño en modal
 
 # FIXED - ON WATCH

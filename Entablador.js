@@ -857,22 +857,21 @@ const ENTABLADOR = (function () {
       return obj;
     },
     prepararModal: function (table_name, nombreColumnaClick, row, el) {
-      // console.log("row", row);
-      // console.log(table_name, nombreColumnaClick, row);
       //detect if modal exist
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
         ENTABLADOR._.crearModal(table_name, nombreColumnaClick, row);
       }
-
+      //detect if there is a modal already open
       if ($(".modal.show").length > 0) {
         console.error("No se puede abrir un modal para editar la tabla si ya hay un modal abierto abierto. Editando 'inline'.");
         $(el).closest("table").attr("data-edition-type", "inline");
         ENTABLADOR._.editTable(window[table_name], el);
         return;
       }
+
       var ENT_TABLA = window[table_name];
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
-      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
+      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key ? secondary_key : "Nuevo Registro");
 
       /*
       ##################################################
@@ -1107,7 +1106,7 @@ const ENTABLADOR = (function () {
         $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
         $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
-          $("#ENTABLADOR_CAMPO").text($(this).val());
+          $("#ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Nuevo Registro");
         });
       }
     },
