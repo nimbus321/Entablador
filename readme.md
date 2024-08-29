@@ -1,5 +1,16 @@
 # Entablador.js - DataTables's library
 
+To be able to easily edit and upload changes from the table.
+
+## dependencies on the code
+
+(This needs to be reviewed and rewritten)
+The following things need to be specified on the code.
+
+- the columns
+- 'data' and 'title' on the columns
+- primary key
+
 ## The actual CDN
 
 ```html
