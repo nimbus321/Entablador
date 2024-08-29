@@ -24,19 +24,17 @@
 
 # TRABAJANDO EN ELLO
 
-- type_edition modal
-- btn guardar modal guardarCambiosModal() <- Trabajando en ello. :1160
-
 # ULTIMOS HECHOS
 
-- /DiseñoModal.jpg
+- type_edition modal
+- btn guardar modal guardarCambiosModal()
 
 # FIXED - ON WATCH
 
-- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
-
 # DONE
 
+- /DiseñoModal.jpg
+- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
 - btn Cambiar tamaño en modal
 - on keyup cambiado por input en key_sec del modal
 - si esta opcion de modal y hay abierto ya uno, lo hara inline.

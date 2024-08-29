@@ -323,6 +323,15 @@ const ENTABLADOR = (function () {
     };
     if (config.columns) {
       opciones.columns = config.columns;
+      // agregar name a las columnas que sea lo mismo que data
+      for (let i = 0; i < opciones.columns.length; i++) {
+        var data = opciones.columns[i].data;
+        var name = opciones.columns[i].name;
+        if (name != undefined && name != data) {
+          console.warn("En la tabla '" + config.id + "', la columna '" + data + "' ya tiene un '.name'. Se ha eliminado el '.name' que le fue dado ('" + name + "') y cambiado por su '.data' ('" + data + "').");
+        }
+        opciones.columns[i].name = data;
+      }
     }
     //console.log("opciones:", opciones);
     //console.log("config:", config);
@@ -1206,21 +1215,10 @@ const ENTABLADOR = (function () {
         }
       }
 
-      // var newData = {
-      //   columna1: "Nuevo valor 1",
-      //   id: 123456789,
-      //   nombre: "uuf",
-      // };
-      // // Actualizar la fila con los nuevos datos
-      // var row = ENT_TABLA.row(this.ultimoTdClickeadoPorModal.closest("tr"));
-      // row.data(newData);
-
-      // var el = this.ultimoTdClickeadoPorModal;
-      // var cell = $(el);
-      // var indexCelda = ENT_TABLA.cell(el).index().column;
-      // var indexRow = ENT_TABLA.row(cell).index();
-      // var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
-      // cellDataTables.data("lel").draw(false);
+      // poner rowChanged en la tabla
+      var tr = $(this.ultimoTdClickeadoPorModal).closest("tr");
+      var row = ENT_TABLA.row(tr);
+      row.data(rowChanged);
 
       /*  ##################################################
           ##                AGREGAR CLASSES               ##
@@ -1229,8 +1227,17 @@ const ENTABLADOR = (function () {
 
       for (let i = 0; i < keysChanged.length; i++) {
         var key = keysChanged[i];
-        var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find(`td[data-key="${key}"]`);
-        cell.append(ENTABLADOR._.SVGs.EditedSVG);
+        // var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find(`td[data-key="${key}"]`);
+
+        var columnIndex = TABLA.column(key + ":name").index("visible"); // Obtén el índice de la columna
+        console.log("columnIndex", columnIndex);
+
+        var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find("td").eq(columnIndex);
+        console.log(cell);
+
+        if (cell.find("svg").length < 1) {
+          cell.append(ENTABLADOR._.SVGs.EditedSVG);
+        }
         cell.addClass("td-editado text-primary font-weight-bold");
         cell.attr("title", "Campo Editado");
       }
