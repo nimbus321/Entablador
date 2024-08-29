@@ -1050,7 +1050,7 @@ const ENTABLADOR = (function () {
                 <div class="modal-body"></div>
                 <div class="modal-footer" style="justify-content: space-between;">
                   <div>
-                    <button type="button" class="btn btn-info" onclick="ENTABLADOR.id('${table_name}').modalLarge('cambiar')">Cambiar tamaño</button>
+                    <button type="button" class="btn btn-info" onclick="ENTABLADOR.id('${table_name}').modalLarge('cambiar')">Cambiar Tamaño</button>
                   </div>
                   <div style="justify-content: flex-end">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
