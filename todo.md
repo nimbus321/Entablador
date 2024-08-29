@@ -25,18 +25,17 @@
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-
-- btn guardar modal <- Trabajando en ello.
+- btn guardar modal <- Trabajando en ello. :1179
 
 # ULTIMOS HECHOS
 
-- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
-- btn Cambiar tamaño en modal
-
 # FIXED - ON WATCH
+
+- REDISEÑAR como funciona todo el proceso del modal. - EN PROCESO... ( YA LISTO? )
 
 # DONE
 
+- btn Cambiar tamaño en modal
 - on keyup cambiado por input en key_sec del modal
 - si esta opcion de modal y hay abierto ya uno, lo hara inline.
 - .modalLarge()

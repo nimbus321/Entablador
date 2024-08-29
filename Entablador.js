@@ -1166,6 +1166,7 @@ const ENTABLADOR = (function () {
         if (inputsTypes[column] == "checkbox") {
           this.Modal_Editor_Obj[column] = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').val();
         } else if (inputsTypes[column] == "file") {
+          continue; //ya se ha guardado en renderImagesOnModal
         } else {
           this.Modal_Editor_Obj[column] = $("#ENTABLADOR-" + table_name + "-" + column).val();
         }
