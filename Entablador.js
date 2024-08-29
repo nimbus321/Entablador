@@ -547,6 +547,7 @@ const ENTABLADOR = (function () {
         ################################################## */
     CAMBIOS_TABLAS: {},
     Modal_Editor_Obj: {},
+    ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
@@ -741,6 +742,7 @@ const ENTABLADOR = (function () {
       } else if (edition_type == "modal") {
         var row = ENT_TABLA.row(el).data();
         var nombreColumnaClick = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+        this.ultimoTdClickeadoPorModal = el;
         ENTABLADOR._.prepararModal(TablaID, nombreColumnaClick, row, el);
       } // aqui termina el edition_type
     },
@@ -1035,7 +1037,7 @@ const ENTABLADOR = (function () {
     crearModal: function (table_name, nombreColumnaClick, row) {
       var debug = false;
       if ($('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"]').length < 1) {
-        console.log("No existe modal para la tabla '" + table_name + "'. Creando...");
+        // console.log("No existe modal para la tabla '" + table_name + "'. Creando...");
         var ENT_TABLA = window[table_name];
         var div = `
           <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1164,11 +1166,19 @@ const ENTABLADOR = (function () {
       for (let i = 0; i < Columns.length; i++) {
         var column = Columns[i][0];
         if (inputsTypes[column] == "checkbox") {
-          this.Modal_Editor_Obj[column] = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').val();
-        } else if (inputsTypes[column] == "file") {
-          continue; //ya se ha guardado en renderImagesOnModal
-        } else {
-          this.Modal_Editor_Obj[column] = $("#ENTABLADOR-" + table_name + "-" + column).val();
+          var value = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').attr("data-entablador-value");
+          if (value == "undefined") {
+            value = undefined;
+          }
+          this.Modal_Editor_Obj[column] = value;
+        } else if (inputsTypes[column] != "file") {
+          //input normal (text). tener en cuenta que 'file' ya fue guardado en renderImagesOnModal
+          var value = $("#ENTABLADOR-" + table_name + "-" + column).val();
+          if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0) {
+            // es un number
+            value = parseInt(value);
+          }
+          this.Modal_Editor_Obj[column] = value;
         }
       }
       // console.log("ENTABLADOR._.Modal_Editor_Obj", this.Modal_Editor_Obj);
@@ -1176,7 +1186,54 @@ const ENTABLADOR = (function () {
       /*  ##################################################
           ##       DETECTAR DIFERENCIAS Y GUARDARLAS      ##
           ################################################## */
-      var rowOriginal;
+      var rowOriginal = ENT_TABLA.row(this.ultimoTdClickeadoPorModal).data();
+      var rowNueva = this.Modal_Editor_Obj;
+      var rowChanged = JSON.parse(JSON.stringify(rowOriginal));
+      var keysChanged = [];
+
+      console.log("rowOriginal", rowOriginal);
+      console.log("rowNueva", rowNueva);
+
+      //considerar que pueden haber más columnas en rowNueva que en rowOriginal. rowNueva > rowOriginal
+      for (const key in rowNueva) {
+        if (Object.hasOwnProperty.call(rowNueva, key)) {
+          if (rowNueva[key] != rowOriginal[key]) {
+            // console.log("TEST X---", key, rowNueva[key], rowOriginal[key]);
+            rowChanged[key] = rowNueva[key];
+            keysChanged.push(key);
+            ENTABLADOR._.addChanges(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], key, rowNueva[key]);
+          }
+        }
+      }
+
+      // var newData = {
+      //   columna1: "Nuevo valor 1",
+      //   id: 123456789,
+      //   nombre: "uuf",
+      // };
+      // // Actualizar la fila con los nuevos datos
+      // var row = ENT_TABLA.row(this.ultimoTdClickeadoPorModal.closest("tr"));
+      // row.data(newData);
+
+      // var el = this.ultimoTdClickeadoPorModal;
+      // var cell = $(el);
+      // var indexCelda = ENT_TABLA.cell(el).index().column;
+      // var indexRow = ENT_TABLA.row(cell).index();
+      // var cellDataTables = ENT_TABLA.cell({ row: indexRow, column: indexCelda });
+      // cellDataTables.data("lel").draw(false);
+
+      /*  ##################################################
+          ##                AGREGAR CLASSES               ##
+          ################################################## */
+      console.log("keysChanged", keysChanged);
+
+      for (let i = 0; i < keysChanged.length; i++) {
+        var key = keysChanged[i];
+        var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find(`td[data-key="${key}"]`);
+        cell.append(ENTABLADOR._.SVGs.EditedSVG);
+        cell.addClass("td-editado text-primary font-weight-bold");
+        cell.attr("title", "Campo Editado");
+      }
     },
   };
   return {

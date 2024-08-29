@@ -25,7 +25,7 @@
 # TRABAJANDO EN ELLO
 
 - type_edition modal
-- btn guardar modal <- Trabajando en ello. :1179
+- btn guardar modal guardarCambiosModal() <- Trabajando en ello. :1160
 
 # ULTIMOS HECHOS
 
