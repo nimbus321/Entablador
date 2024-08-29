@@ -250,12 +250,15 @@ const ENTABLADOR = (function () {
       modalLarge(boolean) {
         if (boolean == undefined) {
           return ENT_TABLA.ENTABLADOR.modalLarge ? ENT_TABLA.ENTABLADOR.modalLarge : false;
-        } else if (!(boolean === false || boolean === true)) {
+        } else if (!(boolean === false || boolean === true || boolean === "cambiar")) {
           console.error(".modalLarge() debe ser un booleano. Valor dado:", boolean);
           return this;
         }
-        console.log(ID + " -- modalLarge: " + boolean);
+        if (boolean === "cambiar") {
+          boolean = !ENT_TABLA.ENTABLADOR.modalLarge;
+        }
 
+        console.log("Tabla '" + ID + "' cambiado modalLarge: " + boolean);
         ENT_TABLA.ENTABLADOR.modalLarge = boolean;
         // if modal already exists, change the size
         $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + ID + "']")
@@ -871,34 +874,50 @@ const ENTABLADOR = (function () {
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
       $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key);
 
-      // rellenar los datos en el modal
+      /*
+      ##################################################
+      ##                RESETEAR MODAL                ##
+      ##################################################
+      Considerar que si no está especificado en inputsTypes, se pondrá como "text"
+      */
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
-      //poner de primero secondary_key
-      $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).val(secondary_key);
 
-      // Reset all the inputs !!!!! slect query all the inputs
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio'][data-entablador-value='undefined']").prop("checked", true);
+      // $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] select").val("");
+      // $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR-files").html(""); //Probablemente innecesario. Fail safe.
 
+      for (const key in inputsTypes) {
+        // OJO, uso inputsTypes y no .COLUMNAS porque si no está en inputsTypes, se mostrará como "text"
+        if (Object.hasOwnProperty.call(inputsTypes, key)) {
+          const type = inputsTypes[key];
+          if (type == "file") {
+            this.Modal_Editor_PreSave[key] = [];
+            ENTABLADOR._.renderImagesOnModal([], table_name, key);
+          }
+        }
+      }
+
+      /*
+      ##################################################
+      ##                RELLENAR MODAL                ##
+      ##################################################
+      */
       for (const key in row) {
         if (Object.hasOwnProperty.call(row, key)) {
           var value = row[key];
-          // RESET ALL THE INPUTS - considerar que puede que en inputsTypes no esten todas las columnas
-
-          if (key == ENT_TABLA.ENTABLADOR.key /* || key == ENT_TABLA.ENTABLADOR.secondary_key*/) {
+          if (key == ENT_TABLA.ENTABLADOR.key) {
+            // porque es oculta y no editable
             continue;
           }
-          // detect if it is a checkbox
           if (inputsTypes[key] == "checkbox") {
-            // console.log(0, value);
             if (value == undefined || value == "") {
               value = "undefined";
             }
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
           } else if (inputsTypes[key] == "file") {
             var files = row[key];
-
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
             }
@@ -1006,7 +1025,7 @@ const ENTABLADOR = (function () {
       } else if (input == "file") {
         div = `
         <div class="form-group row">
-          <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
+          <div for="${id}" class="col-sm-3 col-form-label">${titleColumn}</div>
           <div class="col-sm-9">
             <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
             <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}', table_name: '${table_name}' };" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
@@ -1032,10 +1051,14 @@ const ENTABLADOR = (function () {
                   </button>
                 </div>
                 <div class="modal-body"></div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" onclick="ENTABLADOR._.guardarCambiosModal('${table_name}')">Guardar Cambios</button>
-                </div>
+                <div class="modal-footer" style="justify-content: space-between;">
+                  <div>
+                    <button type="button" class="btn btn-info" onclick="ENTABLADOR.id('${table_name}').modalLarge('cambiar')">Cambiar tamaño</button>
+                  </div>
+                  <div style="justify-content: flex-end">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="ENTABLADOR._.guardarCambiosModal('${table_name}')">Guardar Cambios</button>
+                  </div>
               </div>
             </div>
           </div>
@@ -1077,7 +1100,7 @@ const ENTABLADOR = (function () {
         for (let i = 0; i < COLUMNS.length; i++) {
           var titleColumn = ["", undefined, null].includes(COLUMNS[i][1]) ? COLUMNS[i][0] : COLUMNS[i][1];
           html += this.crearInputModal(inputsTypes[COLUMNS[i][0]], titleColumn, COLUMNS[i][0], table_name);
-          // html += this.crearInputModal(inputsTypes[columnsOrder[i]], columnsTitle[i], columnsOrder[i], table_name);
+
           //poner en ENTABLADOR._.Modal_Editor_PreSave
           ENTABLADOR._.Modal_Editor_PreSave[COLUMNS[i][0]] = row[COLUMNS[i][0]];
         }

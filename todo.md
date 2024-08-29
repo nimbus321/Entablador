@@ -34,12 +34,13 @@
 
 # ULTIMOS HECHOS
 
-- on keyup cambiado por input en key_sec del modal
+- btn Cambiar tamaño en modal
 
 # FIXED - ON WATCH
 
 # DONE
 
+- on keyup cambiado por input en key_sec del modal
 - si esta opcion de modal y hay abierto ya uno, lo hara inline.
 - .modalLarge()
 - TABLA.ENTABLADOR.COLUMNS = [["nombreRealColumna", "titleColumna"], ...] al crear la tabla.
