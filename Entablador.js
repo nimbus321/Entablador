@@ -869,7 +869,7 @@ const ENTABLADOR = (function () {
 
       var ENT_TABLA = window[table_name];
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
-      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key ? secondary_key : "Nuevo Registro");
+      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key ? secondary_key : "Editando");
 
       /*
       ##################################################
@@ -1108,7 +1108,7 @@ const ENTABLADOR = (function () {
         $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
         $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
-          $("#ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Nuevo Registro");
+          $("#ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Editando");
         });
       }
     },
