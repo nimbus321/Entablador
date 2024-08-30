@@ -700,7 +700,7 @@ const ENTABLADOR = (function () {
               } else if (type_input == "checkbox") {
                 input = $(`<select><option value="undefined">Sin especificar</option><option value="true">Sí</option><option value="false">No</option></select>`).val(ENTABLADOR._.parseBoolean("string", originalContent));
               } else if (type_input == "textarea") {
-                input = $(`<textarea style="width:100%;">`).val(originalContent);
+                input = $(`<textarea style="width:100%;" rows="5">`).val(originalContent);
               } else {
                 input = $(`<input type="${type_input}">`).val(originalContent);
               }
@@ -1497,7 +1497,7 @@ ENTABLADOR.crear({
       fechaNacimiento: "2000-12-10",
       humano: false,
       notas:
-        "if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
       archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
     },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
