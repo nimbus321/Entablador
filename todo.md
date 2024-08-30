@@ -1,5 +1,6 @@
 # IDEAS
 
+- meter más opciones de campos, por ejemplo (multiple opcion(dando las opciones)), (lista)
 - cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
 
 - pensar en todas las cosas que ya son obligatorias, ej; titles.
@@ -25,15 +26,17 @@
 
 # TRABAJANDO EN ELLO
 
-- añadir 'textarea' a los inputs validos. y hacerlo compatible.. | AVANCES
-- editado sutilemente parseBoolean()
+- CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; a) se abra un modal b) se agranda el campo hasta que se haga click otra vez c) se agranda el campo hasta que se quite el :hover d) se muestre todo sin hacer ningun cambio
 
 # ULTIMOS HECHOS
+
+- añadir 'textarea' a los inputs validos. y hacerlo compatible.. | incline y modal ya estan pero falta el lado de mostrarlo al no-edicion.
 
 # FIXED - ON WATCH
 
 # DONE
 
+- editado sutilemente parseBoolean()
 - en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
 - crear parseBoolean("string"||"boolean", value) y perfeccionarlo. tambien ya implementado en todos los lugares
 - fix'ear los problemas con los checkbox's

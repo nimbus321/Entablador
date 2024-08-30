@@ -61,3 +61,48 @@ table:not([data-edition-type="inline"]) label[for="ENTABLADOR_FILE_UPLOADER"] {
 a.ENTABLADOR-tabla-anchor img:hover {
   filter: brightness(80%);
 }
+td.ENTABLADOR-textarea {
+  max-width: 400px;
+}
+/* td.ENTABLADOR-textarea div.ENTABLADOR-container {
+  max-height: 100px;
+  overflow: overlay;
+  overflow: hidden;
+  margin-bottom: 40px;
+  position: relative;
+} */
+/* td.ENTABLADOR-textarea div.ENTABLADOR-container:after {
+  content: "Click para ver más";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: auto;
+  background-color: rgba(0, 204, 255, 0.5);
+} */
+td.ENTABLADOR-textarea/* > div.ENTABLADOR-activeFade */ {
+  position: relative;
+  overflow: hidden;
+}
+td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
+  max-height: 100px;
+  overflow: hidden;
+
+  mask-image: linear-gradient(to bottom, black, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: -ms-linear-gradient(top, black, transparent);
+}
+
+td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span {
+  cursor: pointer;
+}
+td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
+  display: block !important;
+  color: white !important;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  padding: 5px;
+  text-align: center;
+}

@@ -428,7 +428,17 @@ const ENTABLADOR = (function () {
         }
       }
     }
+    opciones.drawCallback = function () {
+      $(".ENTABLADOR-fade").each(function () {
+        // detect if the height is higher than 100px
+        // console.log("height", $(this).height());
+        $(this)
+          .parent()
+          .toggleClass("ENTABLADOR-activeFade", $(this).height() >= 100);
+      });
+    };
     var NuevaTabla = new DataTable("#" + config.id, opciones);
+
     //poner el attr data-edition-type
     NuevaTabla.table().node().setAttribute("data-edition-type", "inline");
     NuevaTabla.ENTABLADOR = {};
@@ -449,8 +459,9 @@ const ENTABLADOR = (function () {
     }
     NuevaTabla.ENTABLADOR.COLUMNS = COLUMNS;
     // console.log(NuevaTabla.ENTABLADOR);
+    var inputsTypes = config.meta.inputsTypes;
+    NuevaTabla.ENTABLADOR.inputsTypes = inputsTypes;
 
-    NuevaTabla.ENTABLADOR.inputsTypes = config.meta.inputsTypes;
     $("#" + config.id).on("preDraw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
     });
@@ -563,6 +574,9 @@ const ENTABLADOR = (function () {
     mandatoryFields: {},
     LabelClick: null,
     SVGs: SVGs,
+    textareaShowMore: function (el) {
+      console.log("Falta hacer esto!");
+    },
     sanitize: function (input) {
       if (typeof input !== "string") {
         console.warn("sanitize() -> input is not a string. Returning the same input.");
@@ -934,6 +948,7 @@ const ENTABLADOR = (function () {
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
 
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] textarea").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio'][data-entablador-value='undefined']").prop("checked", true);
       // $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] select").val("");
@@ -1040,6 +1055,14 @@ const ENTABLADOR = (function () {
           <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
           <div class="col-sm-9">
             <input type="${input}" class="form-control" id="${id}" placeholder="${titleColumn}">
+          </div>
+        </div>`;
+      } else if (input == "textarea") {
+        div = `
+        <div class="form-group row">
+          <label for="${id}" class="col-sm-3 col-form-label">${titleColumn}</label>
+          <div class="col-sm-9">
+            <textarea class="form-control" id="${id}" placeholder="${titleColumn}" rows="5"></textarea>
           </div>
         </div>`;
       } else if (input == "checkbox") {
@@ -1403,7 +1426,7 @@ ENTABLADOR.crear({
     { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
     { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
-    { data: "notas", title: "Notas", class: "editable", defaultContent: "" },
+    { data: "notas", title: "Notas", class: "editable ENTABLADOR-textarea", defaultContent: "" },
     { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
     { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
   ],
@@ -1444,18 +1467,44 @@ ENTABLADOR.crear({
         }
       },
     },
+    {
+      targets: 5, // notas
+      render: function (data, type, row, meta) {
+        // return `lel`;
+
+        return `<div>
+                  <div class='ENTABLADOR-fade'>
+                    ${data ? data : ""}
+                  </div>
+                  <div class="ENTABLADOR-seeMore" style="display:none;">
+                    <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
+                      Click para ver más
+                    </a>
+                  </div>
+                </div>`;
+      },
+    },
   ],
 })
   .editable(true)
   // .tipoEdicion("modal")
   // .modalLarge(true)
   .add([
-    { id: 1, nombre: "Caliope", edad: 30, fechaNacimiento: "2000-12-10", humano: false, archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"] },
+    {
+      id: 1,
+      nombre: "Caliope",
+      edad: 30,
+      fechaNacimiento: "2000-12-10",
+      humano: false,
+      notas:
+        "if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {if (typeof type_input === 'string' && type_input != '') {",
+      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+    },
     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "" },
     { id: 7 },
   ]);
 // Add css rule
@@ -1463,4 +1512,4 @@ var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
-$("#TABLA tbody tr:eq(0) td:eq(4)").click();
+// $("#TABLA tbody tr:eq(0) td:eq(4)").click();
