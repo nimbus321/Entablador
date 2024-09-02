@@ -59,6 +59,25 @@ const ENTABLADOR = (function () {
         // ENT_TABLA.table().node().classList.toggle("editable", state);
         return this;
       },
+      longTextareaBehavior(type) {
+        /*
+          a) 'modal'. se abra un modal
+          b) 'buttons'. btn's "click ver más", "click ver menos"
+          d) 'see all'. se muestre todo sin hacer ningun cambio
+        */
+        if (type == undefined) {
+          return ENT_TABLA.table().node().getAttribute("data-long-textarea-behavior");
+          // poner el normal al crear la tabla
+        }
+        var longTextareaBehavior = ENTABLADOR._.longTextareaBehavior;
+        if (!longTextareaBehavior.includes(type)) {
+          console.error("Tipo de lectura de un textarea largo no válido. Tipos válidos:", longTextareaBehavior);
+          return this;
+        }
+        ENT_TABLA.table().node().setAttribute("data-long-textarea-behavior", type);
+
+        return this;
+      },
       editable(boolean) {
         if (typeof boolean == "undefined") {
           return ENT_TABLA.table().node().classList.contains("editable");
@@ -438,9 +457,10 @@ const ENTABLADOR = (function () {
       });
     };
     var NuevaTabla = new DataTable("#" + config.id, opciones);
-
+    // console.log("this", this);
     //poner el attr data-edition-type
-    NuevaTabla.table().node().setAttribute("data-edition-type", "inline");
+    NuevaTabla.table().node().setAttribute("data-edition-type", this._.editTypes[0]);
+    NuevaTabla.table().node().setAttribute("data-long-textarea-behavior", this._.longTextareaBehavior[0]);
     NuevaTabla.ENTABLADOR = {};
     NuevaTabla.ENTABLADOR.key = config.meta.key;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key;
@@ -569,6 +589,7 @@ const ENTABLADOR = (function () {
     Modal_Editor_Obj: {},
     ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
+    longTextareaBehavior: ["buttons", "modal", "see all"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "textarea"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     mandatoryFields: {},

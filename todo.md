@@ -24,6 +24,9 @@
 
 # TO-DO
 
+- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
+- tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
+
 # TRABAJANDO EN ELLO
 
 - CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra;

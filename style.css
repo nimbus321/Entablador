@@ -64,27 +64,12 @@ a.ENTABLADOR-tabla-anchor img:hover {
 td.ENTABLADOR-textarea {
   max-width: 400px;
 }
-/* td.ENTABLADOR-textarea div.ENTABLADOR-container {
-  max-height: 100px;
-  overflow: overlay;
-  overflow: hidden;
-  margin-bottom: 40px;
-  position: relative;
-} */
-/* td.ENTABLADOR-textarea div.ENTABLADOR-container:after {
-  content: "Click para ver más";
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  height: auto;
-  background-color: rgba(0, 204, 255, 0.5);
-} */
-td.ENTABLADOR-textarea/* > div.ENTABLADOR-activeFade */ {
+
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea {
   position: relative;
   overflow: hidden;
 }
-td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
   max-height: 100px;
   overflow: hidden;
 
@@ -93,10 +78,10 @@ td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
   mask-image: -ms-linear-gradient(top, black, transparent);
 }
 
-td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span {
   cursor: pointer;
 }
-td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
   display: block !important;
   color: white !important;
   position: absolute;
@@ -106,7 +91,7 @@ td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
   padding: 5px;
   text-align: center;
 }
-.ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess {
+table[data-long-textarea-behavior="buttons"] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess {
   display: inline-block !important;
   text-align: center;
   color: white !important;
