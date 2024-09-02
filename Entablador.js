@@ -575,7 +575,14 @@ const ENTABLADOR = (function () {
     LabelClick: null,
     SVGs: SVGs,
     textareaShowMore: function (el) {
-      console.log("Falta hacer esto!");
+      var activeFadeDiv = $(el).closest(".ENTABLADOR-activeFade").removeClass("ENTABLADOR-activeFade").addClass("ENTABLADOR-seeLess-container");
+      // meter anchor que diga "ver menos"
+      // var anchor = `<a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();" style="display:block;text-align:center;">Ver menos</a>`;
+      // activeFadeDiv.children(".ENTABLADOR-fade").append(anchor);
+    },
+    textareaShowLess: function (el) {
+      var container = $(el).parent().parent().addClass("ENTABLADOR-activeFade");
+      console.log(container);
     },
     sanitize: function (input) {
       if (typeof input !== "string") {
@@ -1472,9 +1479,12 @@ ENTABLADOR.crear({
       render: function (data, type, row, meta) {
         // return `lel`;
 
-        return `<div>
+        return `<div class="ENTABLADOR-fade-container">
                   <div class='ENTABLADOR-fade'>
                     ${data ? data : ""}
+                    <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                      Ver menos
+                    </a>
                   </div>
                   <div class="ENTABLADOR-seeMore" style="display:none;">
                     <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">

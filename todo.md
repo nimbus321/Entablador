@@ -26,10 +26,14 @@
 
 # TRABAJANDO EN ELLO
 
-- CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; a) se abra un modal b) se agranda el campo hasta que se haga click otra vez c) se agranda el campo hasta que se quite el :hover d) se muestre todo sin hacer ningun cambio
+- CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra;
+  a) 'modal'. se abra un modal
+  b) 'buttons'. btn's "click ver más", "click ver menos"
+  d) 'none|see all'. se muestre todo sin hacer ningun cambio
 
 # ULTIMOS HECHOS
 
+- expandir cuando se da click a "click para ver más"
 - añadir 'textarea' a los inputs validos. y hacerlo compatible.. | incline y modal ya estan pero falta el lado de mostrarlo al no-edicion.
 
 # FIXED - ON WATCH
