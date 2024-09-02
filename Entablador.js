@@ -1017,7 +1017,7 @@ const ENTABLADOR = (function () {
 
       var ENT_TABLA = window[table_name];
       var secondary_key = row[ENT_TABLA.ENTABLADOR.secondary_key];
-      $(".ENTABLADOR_EDICION_MODAL #ENTABLADOR_CAMPO").text(secondary_key ? secondary_key : "Editando");
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR_CAMPO").text(secondary_key ? secondary_key : "Editando");
 
       /*
       ##################################################
@@ -1075,7 +1075,7 @@ const ENTABLADOR = (function () {
         }
       }
 
-      $(".ENTABLADOR_EDICION_MODAL").modal("show");
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] ").modal("show");
 
       setTimeout(() => {
         $("#ENTABLADOR-" + table_name + "-" + nombreColumnaClick).focus();
@@ -1199,7 +1199,7 @@ const ENTABLADOR = (function () {
             <div class="modal-dialog${window[table_name].ENTABLADOR.modalLarge ? " modal-lg" : ""}">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Editar Datos | <span id="ENTABLADOR_CAMPO" class="text-uppercase font-wight-bold text-primary">-</span></h5>
+                  <h5 class="modal-title">Editar Datos | <span class="ENTABLADOR_CAMPO text-uppercase font-wight-bold text-primary">-</span></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -1262,10 +1262,12 @@ const ENTABLADOR = (function () {
           */
           // ENTABLADOR._.Modal_Editor_Obj[COLUMNS[i][0]] = row[COLUMNS[i][0]];
         }
-        $(".ENTABLADOR_EDICION_MODAL .modal-body").append(html);
+        $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
         $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
-          $("#ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Editando");
+          console.log("sii");
+
+          $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Editando");
         });
       }
     },
@@ -1379,7 +1381,7 @@ const ENTABLADOR = (function () {
       // poner rowChanged en la tabla
       var tr = $(this.ultimoTdClickeadoPorModal).closest("tr");
       var row = ENT_TABLA.row(tr);
-      row.data(rowChanged);
+      row.data(rowChanged).draw(false);
 
       /*  ##################################################
           ##                AGREGAR CLASSES               ##
@@ -1402,7 +1404,7 @@ const ENTABLADOR = (function () {
         cell.attr("title", "Campo Editado");
       }
       // cerrar modal
-      $(".ENTABLADOR_EDICION_MODAL").modal("hide");
+      $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] ").modal("hide");
     },
     parseBoolean: function (expectedValue, value) {
       var debug = false;
@@ -1572,7 +1574,7 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   // .modalLarge(true)
   .longTextareaBehavior("modal")
   .add([

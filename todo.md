@@ -29,10 +29,12 @@
 
 # TRABAJANDO EN ELLO
 
-- ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.
+- verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's
 
 # ULTIMOS HECHOS
 
+- al editar textarea con modal, se pone todo el parrafo sin diferenciar si longTextareaBehavior("modal||buttons")
+- ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.
 - CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; | .longTextareaBehavior()
   a) 'modal'. se abra un modal
   b) 'buttons'. btn's "click ver más", "click ver menos"
