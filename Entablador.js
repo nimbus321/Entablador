@@ -596,14 +596,66 @@ const ENTABLADOR = (function () {
     LabelClick: null,
     SVGs: SVGs,
     textareaShowMore: function (el) {
-      var activeFadeDiv = $(el).closest(".ENTABLADOR-activeFade").removeClass("ENTABLADOR-activeFade").addClass("ENTABLADOR-seeLess-container");
-      // meter anchor que diga "ver menos"
-      // var anchor = `<a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();" style="display:block;text-align:center;">Ver menos</a>`;
-      // activeFadeDiv.children(".ENTABLADOR-fade").append(anchor);
+      //detectar si esta en modal o buttons
+      var type = $(el).closest("table").attr("data-long-textarea-behavior");
+      if (type == "buttons") {
+        $(el).closest(".ENTABLADOR-activeFade").removeClass("ENTABLADOR-activeFade").addClass("ENTABLADOR-seeLess-container");
+      } else if (type == "modal") {
+        this.prepararTextareaModal(el);
+      } else {
+        console.error("Tipo de lectura de un textarea largo no válido (" + type + "). Tipos válidos:", longTextareaBehavior);
+      }
+    },
+    prepararTextareaModal: function (el) {
+      //detectar si hay un modal creado
+      var table_name = $(el).closest("table").attr("id");
+      var modalCreado = $(".ENTABLADOR_EDICION_TEXTAREA_MODAL[data-table-name='" + table_name + "']").length > 0;
+      if (!modalCreado) {
+        // CREAR MODAL
+        var modal = `
+          <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_TEXTAREA_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog xxxxxxmodal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="ENTABLADOR_TEXTAREA_CAMPO modal-title xxxxxtext-uppercase font-wight-bold text-primary"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        $("body").append(modal);
+      }
+      // poner el contenido del textarea en el modal
+      var ENT_TABLA = window[table_name];
+
+      var row = ENT_TABLA.row($(el).closest("td")).data();
+      var secondary_key = ENT_TABLA.ENTABLADOR.secondary_key;
+      var sec_key_value = secondary_key ? (row[secondary_key] ? row[secondary_key] : false) : false;
+
+      var colIndex = ENT_TABLA.cell($(el).closest("td")).index().column;
+      var cellHeader = ENT_TABLA.settings().init().columns[colIndex];
+      var nombreColumna = typeof cellHeader.title == "string" && cellHeader.title !== "" ? cellHeader.title : cellHeader.data;
+
+      // console.log("row", row);
+      // console.log("nombreColumna", nombreColumna);
+
+      var textareaContent = ENT_TABLA.cell($(el).closest("td")).data();
+      var modalHeader = sec_key_value ? sec_key_value + " | " + nombreColumna : nombreColumna;
+      $(".ENTABLADOR_EDICION_TEXTAREA_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR_TEXTAREA_CAMPO").text(modalHeader);
+      $(".ENTABLADOR_EDICION_TEXTAREA_MODAL[data-table-name='" + table_name + "'] .modal-body").text(textareaContent);
+      //open modal
+      $(".ENTABLADOR_EDICION_TEXTAREA_MODAL[data-table-name='" + table_name + "']").modal("show");
     },
     textareaShowLess: function (el) {
       var container = $(el).closest(".ENTABLADOR-fade-container").addClass("ENTABLADOR-activeFade");
-      console.log(container);
+      // console.log(container);
     },
     sanitize: function (input) {
       if (typeof input !== "string") {
@@ -1522,6 +1574,7 @@ ENTABLADOR.crear({
   .editable(true)
   // .tipoEdicion("modal")
   // .modalLarge(true)
+  .longTextareaBehavior("modal")
   .add([
     {
       id: 1,

@@ -29,12 +29,14 @@
 
 # TRABAJANDO EN ELLO
 
-- CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra;
-  a) 'modal'. se abra un modal
-  b) 'buttons'. btn's "click ver más", "click ver menos"
-  d) 'none|see all'. se muestre todo sin hacer ningun cambio
+- ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.
 
 # ULTIMOS HECHOS
+
+- CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; | .longTextareaBehavior()
+  a) 'modal'. se abra un modal
+  b) 'buttons'. btn's "click ver más", "click ver menos"
+  d) 'see all'. se muestre todo sin hacer ningun cambio
 
 - FIX. cuando se elimina row, el texto "ver menos" se ponía en rojo
 - expandir cuando se da click a "click para ver más"

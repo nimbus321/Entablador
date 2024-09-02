@@ -65,11 +65,13 @@ td.ENTABLADOR-textarea {
   max-width: 400px;
 }
 
-table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea,
+table[data-long-textarea-behavior="modal"] td.ENTABLADOR-textarea {
   position: relative;
   overflow: hidden;
 }
-table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade,
+table[data-long-textarea-behavior="modal"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade {
   max-height: 100px;
   overflow: hidden;
 
@@ -78,10 +80,12 @@ table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLAD
   mask-image: -ms-linear-gradient(top, black, transparent);
 }
 
-table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span,
+table[data-long-textarea-behavior="modal"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade > span {
   cursor: pointer;
 }
-table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
+table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore,
+table[data-long-textarea-behavior="modal"] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
   display: block !important;
   color: white !important;
   position: absolute;
@@ -91,7 +95,8 @@ table[data-long-textarea-behavior="buttons"] td.ENTABLADOR-textarea div.ENTABLAD
   padding: 5px;
   text-align: center;
 }
-table[data-long-textarea-behavior="buttons"] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess {
+table[data-long-textarea-behavior="buttons"] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess,
+table[data-long-textarea-behavior="modal"] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess {
   display: inline-block !important;
   text-align: center;
   color: white !important;
