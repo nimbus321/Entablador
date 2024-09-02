@@ -581,7 +581,7 @@ const ENTABLADOR = (function () {
       // activeFadeDiv.children(".ENTABLADOR-fade").append(anchor);
     },
     textareaShowLess: function (el) {
-      var container = $(el).parent().parent().addClass("ENTABLADOR-activeFade");
+      var container = $(el).closest(".ENTABLADOR-fade-container").addClass("ENTABLADOR-activeFade");
       console.log(container);
     },
     sanitize: function (input) {
@@ -1482,9 +1482,11 @@ ENTABLADOR.crear({
         return `<div class="ENTABLADOR-fade-container">
                   <div class='ENTABLADOR-fade'>
                     ${data ? data : ""}
-                    <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
-                      Ver menos
-                    </a>
+                    <div>
+                      <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                        Ver menos
+                      </a>
+                    </div>
                   </div>
                   <div class="ENTABLADOR-seeMore" style="display:none;">
                     <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">

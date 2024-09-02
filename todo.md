@@ -33,6 +33,7 @@
 
 # ULTIMOS HECHOS
 
+- FIX. cuando se elimina row, el texto "ver menos" se ponía en rojo
 - expandir cuando se da click a "click para ver más"
 - añadir 'textarea' a los inputs validos. y hacerlo compatible.. | incline y modal ya estan pero falta el lado de mostrarlo al no-edicion.
 

@@ -107,5 +107,8 @@ td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore {
   text-align: center;
 }
 .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess {
-  display: block !important;
+  display: inline-block !important;
+  text-align: center;
+  color: white !important;
+  width: 100%;
 }
