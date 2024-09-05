@@ -372,8 +372,21 @@ const ENTABLADOR = (function () {
       if (config.meta.key) {
         opciones.key = config.meta.key;
       }
-      if (config.meta.secondary_key) {
-        opciones.secondary_key = config.meta.secondary_key;
+      var secondary_key = config.meta.secondary_key;
+      if (secondary_key) {
+        //detect if secondary_key is on the columns
+        var secondary_key_exists = false;
+        for (let i = 0; i < opciones.columns.length; i++) {
+          if (opciones.columns[i].data == secondary_key) {
+            secondary_key_exists = true;
+            break;
+          }
+        }
+        if (!secondary_key_exists) {
+          console.warn("La columna especificada como secondary key '" + secondary_key + "' no existe en las columnas de la tabla '" + config.id + "'.");
+        }
+
+        opciones.secondary_key = secondary_key;
       }
     }
     // detect if there are files in the table
@@ -695,6 +708,8 @@ const ENTABLADOR = (function () {
       return input.trim();
     },
     addChanges: function (table_name, nombreRow, nombreColumna, value, soloCrearID = false) {
+      // console.log("input addChanges() ->", table_name, nombreRow, nombreColumna, value, soloCrearID);
+
       // nombreColumna = table.settings().init().aoColumns[columnIndex].data;
       // nombreRow = table.row(rowIndex).data()[table.key];
       // var table_name = table.table().node().id;
@@ -886,8 +901,11 @@ const ENTABLADOR = (function () {
           var table_name = ENT_TABLA.table().node().id;
           var nombreRow = ENT_TABLA.row(indexRow).data()[ENT_TABLA.ENTABLADOR.key];
           var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+          // console.log(1000, "nombreRow", nombreRow);
+          // console.log(2000, "ENT_TABLA.row(indexRow).data()", ENT_TABLA.row(indexRow).data());
 
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
+          // console.log("----->", table_name, nombreRow, nombreColumna, newContent);
 
           row[nombreColumna] = newContent;
           //console.log("nombreColumna",nombreColumna)
@@ -1275,11 +1293,11 @@ const ENTABLADOR = (function () {
         }
         $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .modal-body").append(html);
         // crear event on keyup del input de seccundary_key y ponerlo de titulo
-        $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
-          console.log("sii");
-
-          $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Editando");
-        });
+        if (ENT_TABLA.ENTABLADOR.secondary_key) {
+          $("#ENTABLADOR-" + table_name + "-" + ENT_TABLA.ENTABLADOR.secondary_key).on("input", function () {
+            $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] .ENTABLADOR_CAMPO").text($(this).val() ? $(this).val() : "Editando");
+          });
+        }
       }
     },
     ImgOnError: function (that) {
@@ -1621,15 +1639,15 @@ document.head.appendChild(style);
 ENTABLADOR.crear({
   id: "TABLA2",
   meta: {
-    key: "id",
-    secondary_key: "nombre",
+    key: "id2",
+    secondary_key: "nombre2",
     inputsTypes: {
-      nombre: "text",
-      fechaNacimiento: "date",
-      humano: "checkbox",
-      archivos: "file",
-      edad: "number",
-      notas: "textarea",
+      nombre2: "text",
+      fechaNacimiento2: "date",
+      humano2: "checkbox",
+      archivos2: "file",
+      edad2: "number",
+      notas2: "textarea",
     },
   },
   columns: [
@@ -1643,13 +1661,13 @@ ENTABLADOR.crear({
       width: "20px",
       className: "ENTABLADOR-btn",
     },
-    { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
-    { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
-    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
-    { data: "notas", title: "Notas", class: "editable ENTABLADOR-textarea", defaultContent: "" },
-    { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
-    { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
+    { data: "id2", visible: false },
+    { data: "nombre2", title: "Nombre2", class: "editable", defaultContent: "" },
+    { data: "edad2", title: "Edad2", class: "editable", defaultContent: "" },
+    { data: "fechaNacimiento2", title: "Fecha de Nacimiento2", class: "editable", defaultContent: "" },
+    { data: "notas2", title: "Notas2", class: "editable ENTABLADOR-textarea", defaultContent: "" },
+    { data: "humano2", title: "Humano2", class: "editable", defaultContent: "" },
+    { data: "archivos2", title: "Archivos2", class: "editable", defaultContent: "" },
   ],
   columnDefs: [
     {
@@ -1718,19 +1736,19 @@ ENTABLADOR.crear({
   // .longTextareaBehavior("modal")
   .add([
     {
-      id: 1,
-      nombre: "Caliope2",
-      edad: 30,
-      fechaNacimiento: "2000-12-10",
-      humano: false,
-      notas:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+      id2: 1,
+      nombre2: "Caliope2",
+      edad2: 22,
+      fechaNacimiento2: "2222-12-22",
+      humano2: false,
+      notas2:
+        "2Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+      archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
     },
-    { id: 2, nombre: "Matthew2", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
-    { id: 3, nombre: "Lucien's2", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id: 4, nombre: "John Dee2", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-    { id: 5, nombre: "Morpheus2", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian2", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "" },
-    { id: 7 },
+    { id2: 2, nombre2: "Matthew2", edad2: 2, fechaNacimiento2: "2010-11-23", humano2: true, archivos2: "https://dummyimage.com/200" },
+    { id2: 3, nombre2: "Lucien's2", edad2: 35, fechaNacimiento2: "1992-02-17", humano2: "false", archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+    { id2: 4, nombre2: "John Dee2", edad2: 30, fechaNacimiento2: "2000-04-28", humano2: "", archivos2: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+    { id2: 5, nombre2: "Morpheus2", edad2: 25, fechaNacimiento2: "2000-08-04", archivos2: "" },
+    { id2: 6, nombre2: "Corinthian2", edad2: 40, fechaNacimiento2: "2000-01-12", humano2: "true", notas2: "" },
+    { id2: 7 },
   ]);

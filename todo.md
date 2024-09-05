@@ -31,12 +31,13 @@
 # TRABAJANDO EN ELLO
 
 - verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's
+- mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class.
 
 # ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
-- si subo archivo en una tabla, se pone en otra - ESTE COMMIT> probablemente muy desordenado. mucho sueño...
+- si subo archivo en una tabla, se pone en otra - > probablemente muy desordenado. mucho sueño...
 
 # DONE
 
