@@ -5,7 +5,7 @@
 const ENTABLADOR = (function () {
   var SVGs = {
     EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
-    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator-filled</title><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="scheduler" fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z" id="Combined-Shape"></path></g></g></svg>`,
+    NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator-filled</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>`,
     // FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" class="" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RemoveFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" class="" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -438,7 +438,7 @@ const ENTABLADOR = (function () {
                     html += crearElement(data);
                   }
                 }
-                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex}, ENT_TABLA: ${config.id} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
                 return html;
               },
             });
@@ -488,84 +488,93 @@ const ENTABLADOR = (function () {
     $("#" + config.id).on("draw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
     });
+
     //prepend input file to table
-    var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
-    $("#" + config.id).prepend(fileInput);
-    fileInput.on("change", function (event) {
-      //detect from which cell the file was uploaded
-      // console.log("ENTABLADOR._.LabelClick:", ENTABLADOR._.LabelClick);
-      var LabelClick = ENTABLADOR._.LabelClick;
-      var rowIndex = LabelClick.row;
-      var columnIndex = LabelClick.column;
-      var fromModal = LabelClick.fromModal;
-      var field = LabelClick.field;
-      var table_name_Modal = LabelClick.table_name;
+    if ($("input#ENTABLADOR_FILE_UPLOADER").length == 0) {
+      var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
+      $("#" + config.id).prepend(fileInput);
+      fileInput.on("change", function (event) {
+        //detect from which cell the file was uploaded
+        // console.log("ENTABLADOR._.LabelClick:", ENTABLADOR._.LabelClick);
+        var LabelClick = ENTABLADOR._.LabelClick;
+        // console.log("LabelClick", LabelClick);
 
-      var cell;
-      if (!fromModal) {
-        cell = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
-        $(cell.node()).find(".uploading").show();
-        $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").hide();
-        // console.log(10000, $(cell.node()));
-      } else {
-        $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide();
-        $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").show();
-      }
-      ENTABLADOR._.LabelClick = null;
+        var rowIndex = LabelClick.row;
+        var columnIndex = LabelClick.column;
+        var fromModal = LabelClick.fromModal;
+        var field = LabelClick.field;
+        var table_name_Modal = LabelClick.table_name;
+        var ENT_TABLA = LabelClick.ENT_TABLA;
 
-      var files = event.target.files;
-      // console.log(files);
-      $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
-        var newContent = ["https://dummyimage.com/99"];
-        console.log("subido", newContent);
-
+        var cell;
         if (!fromModal) {
-          $(cell.node()).find(".uploading").hide();
-          $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
+          cell = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
+          $(cell.node()).find(".uploading").show();
+          $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").hide();
+          // console.log(10000, $(cell.node()));
+        } else {
+          $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide();
+          $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").show();
+        }
+        ENTABLADOR._.LabelClick = null;
 
-          var cellDataTables = NuevaTabla.cell({ row: rowIndex, column: columnIndex });
-          var oldData = cellDataTables.data();
-          var finalData;
-          if (Array.isArray(oldData)) {
-            finalData = [...oldData, ...newContent];
-          } else if (oldData === "") {
-            finalData = newContent;
+        var files = event.target.files;
+        // console.log(files);
+        $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
+          var newContent = ["https://dummyimage.com/99"];
+          console.log("subido", newContent);
+          var cellDataTables = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
+
+          if (!fromModal) {
+            $(cell.node()).find(".uploading").hide();
+            $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
+
+            var oldData = cellDataTables.data();
+            var finalData;
+            if (Array.isArray(oldData)) {
+              finalData = [...oldData, ...newContent];
+            } else if (oldData === "") {
+              finalData = newContent;
+            } else {
+              finalData = [oldData, ...newContent];
+              console.log(finalData);
+            }
+            // console.log("newContent: ", newContent);
+            // console.log("oldData: ", oldData);
+
+            cellDataTables.data(finalData).draw(false);
+
+            var table_name = ENT_TABLA.table().node().id;
+
+            var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
+            var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
+
+            ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
           } else {
-            finalData = [oldData, ...newContent];
-            console.log(finalData);
+            $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+            $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+
+            // Subir a object del modal
+            var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
+            Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
+            //render images on modal
+            ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
+
+            // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
           }
-          // console.log("newContent: ", newContent);
-          // console.log("oldData: ", oldData);
-
-          cellDataTables.data(finalData).draw(false);
-
-          var table_name = NuevaTabla.table().node().id;
-          var nombreRow = NuevaTabla.row(rowIndex).data()[NuevaTabla.ENTABLADOR.key];
-          var nombreColumna = NuevaTabla.settings().init().aoColumns[columnIndex].data;
-
-          ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
-        } else {
-          $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-          $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-
-          // Subir a object del modal
-          var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
-          Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
-          //render images on modal
-          ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
-        }
-      }).fail(function () {
-        if (!fromModal) {
-          $(cell.node()).find(".uploading").hide();
-          $(cell.node()).find("[for=ENTABLADOR_FILE_UPLOADER]").show();
-        } else {
-          $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-          $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-        }
-        alert("Error al subir el archivo. Asegurate tener conexión a internet.");
+        }).fail(function () {
+          if (!fromModal) {
+            $(cell.node()).find(".uploading").hide();
+            $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
+          } else {
+            $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+            $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+          }
+          alert("Error al subir el archivo. Asegurate tener conexión a internet.");
+        });
+        event.target.value = "";
       });
-      event.target.value = "";
-    });
+    }
 
     window[config.id] = NuevaTabla;
     //set click event
@@ -1218,7 +1227,9 @@ const ENTABLADOR = (function () {
           </div>
           `;
         $("body").prepend(div);
-
+        $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "']").on("hidden.bs.modal", function () {
+          ENTABLADOR._.ultimoTdClickeadoPorModal = null;
+        });
         var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
         // var columnsOrder = ENT_TABLA.settings()
         //   .init()
@@ -1289,6 +1300,8 @@ const ENTABLADOR = (function () {
       this.renderImagesOnModal(false, table_name, column);
     },
     renderImagesOnModal: function (files, table_name, column) {
+      // console.log("renderImagesOnModal ->", files, table_name, column);
+
       // console.log(0, "files", files);
       if (files == undefined || files === "" || files === false) {
         files = ENTABLADOR._.Modal_Editor_Obj[column];
@@ -1405,6 +1418,7 @@ const ENTABLADOR = (function () {
       }
       // cerrar modal
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] ").modal("hide");
+      console.log(this.ultimoTdClickeadoPorModal);
     },
     parseBoolean: function (expectedValue, value) {
       var debug = false;
@@ -1601,3 +1615,122 @@ style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD *
 document.head.appendChild(style);
 
 // $("#TABLA tbody tr:eq(0) td:eq(4)").click();
+
+//-- ----- - - -- - - - -- - --
+
+ENTABLADOR.crear({
+  id: "TABLA2",
+  meta: {
+    key: "id",
+    secondary_key: "nombre",
+    inputsTypes: {
+      nombre: "text",
+      fechaNacimiento: "date",
+      humano: "checkbox",
+      archivos: "file",
+      edad: "number",
+      notas: "textarea",
+    },
+  },
+  columns: [
+    {
+      data: null,
+      defaultContent: `
+      <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
+      <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
+      `,
+      orderable: false,
+      width: "20px",
+      className: "ENTABLADOR-btn",
+    },
+    { data: "id", visible: false },
+    { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
+    { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
+    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
+    { data: "notas", title: "Notas", class: "editable ENTABLADOR-textarea", defaultContent: "" },
+    { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
+    { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
+  ],
+  columnDefs: [
+    {
+      targets: 2, // nombre
+      render: function (data, type, row, meta) {
+        // return `lel`;
+        return data ? data.toUpperCase() : data;
+      },
+    },
+    {
+      targets: 4, // fechaNacimiento
+      render: function (data, type, row, meta) {
+        // return `lel`;
+        //detect if it is a date
+        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+        if (data == null || data === "") {
+          return data;
+        }
+        var fecha = new Date(data);
+        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+      },
+    },
+    {
+      targets: 6,
+      render: function (data, type, row, meta) {
+        // if (row.nombre == "Matthew") {
+        //   console.log(data);
+        // }
+        var value = ENTABLADOR._.parseBoolean("boolean", data);
+        if (value) {
+          return "si!";
+        } else if (value === false) {
+          return "no!";
+        } else if (value === undefined) {
+          return;
+        }
+      },
+    },
+    {
+      targets: 5, // notas
+      render: function (data, type, row, meta) {
+        // return `lel`;
+
+        return `<div class="ENTABLADOR-fade-container">
+                  <div class='ENTABLADOR-fade'>
+                    ${data ? data : ""}
+                    <div>
+                      <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                        Ver menos
+                      </a>
+                    </div>
+                  </div>
+                  <div class="ENTABLADOR-seeMore" style="display:none;">
+                    <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
+                      Click para ver más
+                    </a>
+                  </div>
+                </div>`;
+      },
+    },
+  ],
+})
+  .editable(true)
+  // .tipoEdicion("modal")
+  // .modalLarge(true)
+  // .longTextareaBehavior("modal")
+  .add([
+    {
+      id: 1,
+      nombre: "Caliope2",
+      edad: 30,
+      fechaNacimiento: "2000-12-10",
+      humano: false,
+      notas:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+    },
+    { id: 2, nombre: "Matthew2", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
+    { id: 3, nombre: "Lucien's2", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+    { id: 4, nombre: "John Dee2", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+    { id: 5, nombre: "Morpheus2", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
+    { id: 6, nombre: "Corinthian2", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "" },
+    { id: 7 },
+  ]);

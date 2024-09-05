@@ -3,6 +3,7 @@
 - meter más opciones de campos, por ejemplo (multiple opcion(dando las opciones)), (lista)
 - cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
 
+- ojo, si en input fecha pongo una fecha con 32 dias pero que el mes no tiene esa cantidad de dias, devuelve ""
 - pensar en todas las cosas que ya son obligatorias, ej; titles.
 - ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal (y antes al crerar la tabla))
 - en un futuro MUY lejano, hacer para que .addChanges() funcione con arrays.
@@ -33,6 +34,12 @@
 
 # ULTIMOS HECHOS
 
+# FIXED - ON WATCH
+
+- si subo archivo en una tabla, se pone en otra - ESTE COMMIT> probablemente muy desordenado. mucho sueño...
+
+# DONE
+
 - al editar textarea con modal, se pone todo el parrafo sin diferenciar si longTextareaBehavior("modal||buttons")
 - ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.
 - CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; | .longTextareaBehavior()
@@ -43,11 +50,6 @@
 - FIX. cuando se elimina row, el texto "ver menos" se ponía en rojo
 - expandir cuando se da click a "click para ver más"
 - añadir 'textarea' a los inputs validos. y hacerlo compatible.. | incline y modal ya estan pero falta el lado de mostrarlo al no-edicion.
-
-# FIXED - ON WATCH
-
-# DONE
-
 - editado sutilemente parseBoolean()
 - en tipo edicion 'inline', en checkbox, falta poner una opcion de 'no especificado'
 - crear parseBoolean("string"||"boolean", value) y perfeccionarlo. tambien ya implementado en todos los lugares
