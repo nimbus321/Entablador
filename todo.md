@@ -34,6 +34,7 @@
 
 # ULTIMOS HECHOS
 
+- .attr("title", "Archivos Editados") en td-editado de file
 - añadir td-editado a la columna de files para que salga el svg | ADAPTADO con MUY especificas css rules
 - mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class. | decidí ponerlo con ::after
 

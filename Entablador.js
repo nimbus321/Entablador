@@ -557,7 +557,7 @@ const ENTABLADOR = (function () {
 
             cellDataTables.data(finalData).draw(false);
             // añadir class .td-editado
-            $(cell.node()).addClass("td-editado");
+            $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
 
             var table_name = ENT_TABLA.table().node().id;
 
@@ -954,7 +954,7 @@ const ENTABLADOR = (function () {
         }
       }
       // añadir class .td-editado
-      $(cellDataTables.node()).addClass("td-editado");
+      $(cellDataTables.node()).addClass("td-editado").attr("title", "Archivos Editados");
 
       // añadir cambios a CAMBIOS_TABLAS
       var table_name = window[tablaName].table().node().id;
