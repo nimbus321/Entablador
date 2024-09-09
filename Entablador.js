@@ -4,7 +4,7 @@
 
 const ENTABLADOR = (function () {
   var SVGs = {
-    EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
+    // EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
     NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><title>new-indicator-filled</title><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>`,
     // FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" class="" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -465,7 +465,7 @@ const ENTABLADOR = (function () {
         // detect if the height is higher than 100px
         // console.log("height", $(this).height());
         $(this)
-          .parent()
+          .closest(".ENTABLADOR-fade-container")
           .toggleClass("ENTABLADOR-activeFade", $(this).height() >= 100);
       });
     };
@@ -550,12 +550,14 @@ const ENTABLADOR = (function () {
               finalData = newContent;
             } else {
               finalData = [oldData, ...newContent];
-              console.log(finalData);
+              // console.log(finalData);
             }
             // console.log("newContent: ", newContent);
             // console.log("oldData: ", oldData);
 
             cellDataTables.data(finalData).draw(false);
+            // añadir class .td-editado
+            $(cell.node()).addClass("td-editado");
 
             var table_name = ENT_TABLA.table().node().id;
 
@@ -890,7 +892,7 @@ const ENTABLADOR = (function () {
           }
           cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", newContent) : newContent).draw(false);
 
-          cell.append(SVGs.EditedSVG);
+          // cell.append(SVGs.EditedSVG);
           cell.addClass("td-editado text-primary font-weight-bold");
           cell.attr("title", "Campo Editado");
 
@@ -930,7 +932,7 @@ const ENTABLADOR = (function () {
       // console.log(link);
 
       //remove link from array
-      console.log("cellDataTables.data()", cellDataTables.data());
+      // console.log("cellDataTables.data()", cellDataTables.data());
       var data = cellDataTables.data();
       var newContent;
 
@@ -951,6 +953,8 @@ const ENTABLADOR = (function () {
           }
         }
       }
+      // añadir class .td-editado
+      $(cellDataTables.node()).addClass("td-editado");
 
       // añadir cambios a CAMBIOS_TABLAS
       var table_name = window[tablaName].table().node().id;
@@ -1428,9 +1432,9 @@ const ENTABLADOR = (function () {
         var cell = $(this.ultimoTdClickeadoPorModal).closest("tr").find("td").eq(columnIndex);
         // console.log(cell);
 
-        if (cell.find("svg").length < 1) {
-          cell.append(ENTABLADOR._.SVGs.EditedSVG);
-        }
+        // if (cell.find("svg").length < 1) {
+        //   cell.append(ENTABLADOR._.SVGs.EditedSVG);
+        // }
         cell.addClass("td-editado text-primary font-weight-bold");
         cell.attr("title", "Campo Editado");
       }
@@ -1586,13 +1590,17 @@ ENTABLADOR.crear({
       render: function (data, type, row, meta) {
         // return `lel`;
 
-        return `<div class="ENTABLADOR-fade-container">
-                  <div class='ENTABLADOR-fade'>
-                    ${data ? data : ""}
-                    <div>
-                      <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
-                        Ver menos
-                      </a>
+        return `<div class="ENTABLADOR-fade-container" style="display: inline-block;">
+                  <div>
+                    <div class='ENTABLADOR-fade'>
+                      <div class="ENTABLADOR-textarea-data">
+                        <span>${data ? data : ""}</span>
+                      </div>
+                      <div style="">
+                        <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                          Ver menos
+                        </a>
+                      </div>
                     </div>
                   </div>
                   <div class="ENTABLADOR-seeMore" style="display:none;">
@@ -1606,9 +1614,9 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  .tipoEdicion("modal")
+  // .tipoEdicion("modal")
   // .modalLarge(true)
-  .longTextareaBehavior("modal")
+  // .longTextareaBehavior("modal")
   .add([
     {
       id: 1,
@@ -1636,119 +1644,119 @@ document.head.appendChild(style);
 
 //-- ----- - - -- - - - -- - --
 
-ENTABLADOR.crear({
-  id: "TABLA2",
-  meta: {
-    key: "id2",
-    secondary_key: "nombre2",
-    inputsTypes: {
-      nombre2: "text",
-      fechaNacimiento2: "date",
-      humano2: "checkbox",
-      archivos2: "file",
-      edad2: "number",
-      notas2: "textarea",
-    },
-  },
-  columns: [
-    {
-      data: null,
-      defaultContent: `
-      <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
-      <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
-      `,
-      orderable: false,
-      width: "20px",
-      className: "ENTABLADOR-btn",
-    },
-    { data: "id2", visible: false },
-    { data: "nombre2", title: "Nombre2", class: "editable", defaultContent: "" },
-    { data: "edad2", title: "Edad2", class: "editable", defaultContent: "" },
-    { data: "fechaNacimiento2", title: "Fecha de Nacimiento2", class: "editable", defaultContent: "" },
-    { data: "notas2", title: "Notas2", class: "editable ENTABLADOR-textarea", defaultContent: "" },
-    { data: "humano2", title: "Humano2", class: "editable", defaultContent: "" },
-    { data: "archivos2", title: "Archivos2", class: "editable", defaultContent: "" },
-  ],
-  columnDefs: [
-    {
-      targets: 2, // nombre
-      render: function (data, type, row, meta) {
-        // return `lel`;
-        return data ? data.toUpperCase() : data;
-      },
-    },
-    {
-      targets: 4, // fechaNacimiento
-      render: function (data, type, row, meta) {
-        // return `lel`;
-        //detect if it is a date
-        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-        if (data == null || data === "") {
-          return data;
-        }
-        var fecha = new Date(data);
-        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-      },
-    },
-    {
-      targets: 6,
-      render: function (data, type, row, meta) {
-        // if (row.nombre == "Matthew") {
-        //   console.log(data);
-        // }
-        var value = ENTABLADOR._.parseBoolean("boolean", data);
-        if (value) {
-          return "si!";
-        } else if (value === false) {
-          return "no!";
-        } else if (value === undefined) {
-          return;
-        }
-      },
-    },
-    {
-      targets: 5, // notas
-      render: function (data, type, row, meta) {
-        // return `lel`;
+// ENTABLADOR.crear({
+//   id: "TABLA2",
+//   meta: {
+//     key: "id2",
+//     secondary_key: "nombre2",
+//     inputsTypes: {
+//       nombre2: "text",
+//       fechaNacimiento2: "date",
+//       humano2: "checkbox",
+//       archivos2: "file",
+//       edad2: "number",
+//       notas2: "textarea",
+//     },
+//   },
+//   columns: [
+//     {
+//       data: null,
+//       defaultContent: `
+//       <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
+//       <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
+//       `,
+//       orderable: false,
+//       width: "20px",
+//       className: "ENTABLADOR-btn",
+//     },
+//     { data: "id2", visible: false },
+//     { data: "nombre2", title: "Nombre2", class: "editable", defaultContent: "" },
+//     { data: "edad2", title: "Edad2", class: "editable", defaultContent: "" },
+//     { data: "fechaNacimiento2", title: "Fecha de Nacimiento2", class: "editable", defaultContent: "" },
+//     { data: "notas2", title: "Notas2", class: "editable ENTABLADOR-textarea", defaultContent: "" },
+//     { data: "humano2", title: "Humano2", class: "editable", defaultContent: "" },
+//     { data: "archivos2", title: "Archivos2", class: "editable", defaultContent: "" },
+//   ],
+//   columnDefs: [
+//     {
+//       targets: 2, // nombre
+//       render: function (data, type, row, meta) {
+//         // return `lel`;
+//         return data ? data.toUpperCase() : data;
+//       },
+//     },
+//     {
+//       targets: 4, // fechaNacimiento
+//       render: function (data, type, row, meta) {
+//         // return `lel`;
+//         //detect if it is a date
+//         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+//         if (data == null || data === "") {
+//           return data;
+//         }
+//         var fecha = new Date(data);
+//         return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+//       },
+//     },
+//     {
+//       targets: 6,
+//       render: function (data, type, row, meta) {
+//         // if (row.nombre == "Matthew") {
+//         //   console.log(data);
+//         // }
+//         var value = ENTABLADOR._.parseBoolean("boolean", data);
+//         if (value) {
+//           return "si!";
+//         } else if (value === false) {
+//           return "no!";
+//         } else if (value === undefined) {
+//           return;
+//         }
+//       },
+//     },
+//     {
+//       targets: 5, // notas
+//       render: function (data, type, row, meta) {
+//         // return `lel`;
 
-        return `<div class="ENTABLADOR-fade-container">
-                  <div class='ENTABLADOR-fade'>
-                    ${data ? data : ""}
-                    <div>
-                      <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
-                        Ver menos
-                      </a>
-                    </div>
-                  </div>
-                  <div class="ENTABLADOR-seeMore" style="display:none;">
-                    <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
-                      Click para ver más
-                    </a>
-                  </div>
-                </div>`;
-      },
-    },
-  ],
-})
-  .editable(true)
-  // .tipoEdicion("modal")
-  // .modalLarge(true)
-  // .longTextareaBehavior("modal")
-  .add([
-    {
-      id2: 1,
-      nombre2: "Caliope2",
-      edad2: 22,
-      fechaNacimiento2: "2222-12-22",
-      humano2: false,
-      notas2:
-        "2Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-      archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
-    },
-    { id2: 2, nombre2: "Matthew2", edad2: 2, fechaNacimiento2: "2010-11-23", humano2: true, archivos2: "https://dummyimage.com/200" },
-    { id2: 3, nombre2: "Lucien's2", edad2: 35, fechaNacimiento2: "1992-02-17", humano2: "false", archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id2: 4, nombre2: "John Dee2", edad2: 30, fechaNacimiento2: "2000-04-28", humano2: "", archivos2: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-    { id2: 5, nombre2: "Morpheus2", edad2: 25, fechaNacimiento2: "2000-08-04", archivos2: "" },
-    { id2: 6, nombre2: "Corinthian2", edad2: 40, fechaNacimiento2: "2000-01-12", humano2: "true", notas2: "" },
-    { id2: 7 },
-  ]);
+//         return `<div class="ENTABLADOR-fade-container">
+//                   <div class='ENTABLADOR-fade'>
+//                     ${data ? data : ""}
+//                     <div>
+//                       <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+//                         Ver menos
+//                       </a>
+//                     </div>
+//                   </div>
+//                   <div class="ENTABLADOR-seeMore" style="display:none;">
+//                     <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
+//                       Click para ver más
+//                     </a>
+//                   </div>
+//                 </div>`;
+//       },
+//     },
+//   ],
+// })
+//   .editable(true)
+//   // .tipoEdicion("modal")
+//   // .modalLarge(true)
+//   // .longTextareaBehavior("modal")
+//   .add([
+//     {
+//       id2: 1,
+//       nombre2: "Caliope2",
+//       edad2: 22,
+//       fechaNacimiento2: "2222-12-22",
+//       humano2: false,
+//       notas2:
+//         "2Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+//       archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+//     },
+//     { id2: 2, nombre2: "Matthew2", edad2: 2, fechaNacimiento2: "2010-11-23", humano2: true, archivos2: "https://dummyimage.com/200" },
+//     { id2: 3, nombre2: "Lucien's2", edad2: 35, fechaNacimiento2: "1992-02-17", humano2: "false", archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+//     { id2: 4, nombre2: "John Dee2", edad2: 30, fechaNacimiento2: "2000-04-28", humano2: "", archivos2: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+//     { id2: 5, nombre2: "Morpheus2", edad2: 25, fechaNacimiento2: "2000-08-04", archivos2: "" },
+//     { id2: 6, nombre2: "Corinthian2", edad2: 40, fechaNacimiento2: "2000-01-12", humano2: "true", notas2: "" },
+//     { id2: 7 },
+//   ]);

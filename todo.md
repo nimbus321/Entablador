@@ -30,18 +30,20 @@
 
 # TRABAJANDO EN ELLO
 
-- verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
-- mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class.
 - verificar que funcione bien (o en caso contrario implementarlo) el funcionamiento de pasar la primary key, sacar errores si no hay, etc.
 
 # ULTIMOS HECHOS
 
+- añadir td-editado a la columna de files para que salga el svg | ADAPTADO con MUY especificas css rules
+- mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class. | decidí ponerlo con ::after
+
 # FIXED - ON WATCH
 
-- si subo archivo en una tabla, se pone en otra - > probablemente muy desordenado. mucho sueño...
+- |ON WATCH| verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
 
 # DONE
 
+- FIX | si subo archivo en una tabla, se pone en otra - > probablemente muy desordenado. mucho sueño...
 - al editar textarea con modal, se pone todo el parrafo sin diferenciar si longTextareaBehavior("modal||buttons")
 - ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.
 - CREAR OPCION: al mostrar (no editar) un campo textarea que ocurra; | .longTextareaBehavior()
