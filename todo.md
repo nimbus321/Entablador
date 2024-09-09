@@ -2,7 +2,7 @@
 
 - meter más opciones de campos, por ejemplo (multiple opcion(dando las opciones)), (lista)
 - cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
-
+- agregar un UNDO btn. guardar los valores ultimos en .\_
 - ojo, si en input fecha pongo una fecha con 32 dias pero que el mes no tiene esa cantidad de dias, devuelve ""
 - pensar en todas las cosas que ya son obligatorias, ej; titles.
 - ojo, estoy basandome en que hay un 'title' declarado en las columnas al crear la tabla. es un requirement? (lo uso al editar con modal (y antes al crerar la tabla))
@@ -25,25 +25,28 @@
 
 # TO-DO
 
+- pensar mejor si lo mejor es usar parseint para parsear numeros, que pasa si usan comas o puntos como separadores. o si usan decimales.
 - crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
 - tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
 
 # TRABAJANDO EN ELLO
 
 - verificar que funcione bien (o en caso contrario implementarlo) el funcionamiento de pasar la primary key, sacar errores si no hay, etc.
+- (arriba) previniendo que se edite el campo si el row[key] es undefined. console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key
+- (arriba) tal vez de alguna manera agregar un primary_key con un value generado auto? no se si es posible teniendo solo el row o algo asi, probablemente si.
 
 # ULTIMOS HECHOS
 
-- .attr("title", "Archivos Editados") en td-editado de file
-- añadir td-editado a la columna de files para que salga el svg | ADAPTADO con MUY especificas css rules
-- mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class. | decidí ponerlo con ::after
+- si row[key] == undefined, prevenir editar. | HECHO SOLO EN INLINE y no completo|
 
 # FIXED - ON WATCH
 
-- |ON WATCH| verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
-
 # DONE
 
+- |ON WATCH| verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
+- .attr("title", "Archivos Editados") en td-editado de file
+- añadir td-editado a la columna de files para que salga el svg | ADAPTADO con MUY especificas css rules
+- mirar si se puede usar un ::after para el svg de td-editado en vez de poner un svg real dentro. hay varios bugs, checar como revisa si ponerlo o quitar el svg en base a si está ya dentro. tal vez ponerle una class al svg y testear si hay un child con esa class. | decidí ponerlo con ::after
 - FIX | si subo archivo en una tabla, se pone en otra - > probablemente muy desordenado. mucho sueño...
 - al editar textarea con modal, se pone todo el parrafo sin diferenciar si longTextareaBehavior("modal||buttons")
 - ENTABLADOR_CAMPO del modal de editar normal, probablemente esté configurado con id, cosa que trae problemas de varias tablas. hay que convertirlo en class.

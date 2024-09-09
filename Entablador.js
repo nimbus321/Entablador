@@ -371,6 +371,8 @@ const ENTABLADOR = (function () {
     if (config.meta) {
       if (config.meta.key) {
         opciones.key = config.meta.key;
+      } else {
+        console.warn("No se ha especificado una key en la tabla '" + config.id + "'. Las funciones de edición no funcionarán correctamente.");
       }
       var secondary_key = config.meta.secondary_key;
       if (secondary_key) {
@@ -518,6 +520,16 @@ const ENTABLADOR = (function () {
         var field = LabelClick.field;
         var table_name_Modal = LabelClick.table_name;
         var ENT_TABLA = LabelClick.ENT_TABLA;
+        var table_name = ENT_TABLA.table().node().id;
+
+        var cellDataTables = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
+
+        var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
+        if (nombreRow == undefined) {
+          var row = ENT_TABLA.row(rowIndex).data();
+          console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+          return;
+        }
 
         var cell;
         if (!fromModal) {
@@ -536,7 +548,6 @@ const ENTABLADOR = (function () {
         $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
           var newContent = ["https://dummyimage.com/99"];
           console.log("subido", newContent);
-          var cellDataTables = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
 
           if (!fromModal) {
             $(cell.node()).find(".uploading").hide();
@@ -558,8 +569,6 @@ const ENTABLADOR = (function () {
             cellDataTables.data(finalData).draw(false);
             // añadir class .td-editado
             $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
-
-            var table_name = ENT_TABLA.table().node().id;
 
             var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
             var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
@@ -597,8 +606,14 @@ const ENTABLADOR = (function () {
       // console.log("click en ->", this);
       var esEditable = $(this).closest("table").hasClass("editable");
       var wasClickedOnAnchor = !($(e.target).closest("a").length === 0);
+      var hasPrimaryKey = config.meta && config.meta.key && config.meta.key != "" && config.meta.key != undefined ? true : false;
       if (esEditable && !wasClickedOnAnchor) {
-        ENTABLADOR._.editTable(window[config.id], this);
+        if (hasPrimaryKey) {
+          ENTABLADOR._.editTable(window[config.id], this);
+        } else {
+          console.error("Se trató de editar la tabla '" + config.id + "' pero no se ha especificado una key en la configuración.");
+          alert("Error. No se puede editar la tabla por error de configuración.");
+        }
       }
     });
 
@@ -711,7 +726,10 @@ const ENTABLADOR = (function () {
     },
     addChanges: function (table_name, nombreRow, nombreColumna, value, soloCrearID = false) {
       // console.log("input addChanges() ->", table_name, nombreRow, nombreColumna, value, soloCrearID);
-
+      if (nombreRow == undefined) {
+        console.error("addChanges() -> The row's name is undefined. Table: '" + table_name + "'. Value: ", value);
+        return;
+      }
       // nombreColumna = table.settings().init().aoColumns[columnIndex].data;
       // nombreRow = table.row(rowIndex).data()[table.key];
       // var table_name = table.table().node().id;
@@ -817,6 +835,15 @@ const ENTABLADOR = (function () {
           }
         }
 
+        var table_name = ENT_TABLA.table().node().id;
+        var nombreRow = ENT_TABLA.row(indexRow).data()[ENT_TABLA.ENTABLADOR.key];
+        var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
+
+        if (nombreRow == undefined) {
+          console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+          return;
+        }
+
         cell.empty().html(input);
 
         // Evitar que el clic en el input borre su contenido
@@ -855,63 +882,25 @@ const ENTABLADOR = (function () {
             //make it a number with parseint
             newContent = parseInt(newContent);
           } else if (type_input == "checkbox") {
-            // console.log("newContent", newContent);
-            // console.log("originalContent", originalContent);
-
             //make it a boolean
             var _ = ENTABLADOR._;
             newContent = _.parseBoolean("boolean", newContent);
-            // if (newContent === "true") {
-            //   newContent = true;
-            // } else if (newContent === "false") {
-            //   newContent = false;
-            // } else {
-            //   newContent = undefined;
-            // }
-            //make the originalContent a boolean
             originalContent = _.parseBoolean("boolean", originalContent);
-            // if (originalContent === "true") {
-            //   originalContent = true;
-            // } else if (originalContent === "false") {
-            //   originalContent = false;
-            // } else if (!(originalContent === true || originalContent === false)) {
-            //   originalContent = undefined;
-            // }
-            // console.log("POST newContent", newContent);
-            // console.log("POST originalContent", originalContent);
           }
-          //console.log("newContent: ",newContent, "originalContent: ",originalContent);
-          // var esCheckboxParsed = false;
-          // if (type_input == "checkbox") {
-          //   esCheckboxParsed = true;
-          // }
           if (Cancelled || newContent == originalContent || type_input == "file" || type_input == "image" /* || esCheckboxParsed*/) {
             cell.empty();
             cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", originalContent) : originalContent).draw(false);
             return;
           }
+
           cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", newContent) : newContent).draw(false);
 
-          // cell.append(SVGs.EditedSVG);
           cell.addClass("td-editado text-primary font-weight-bold");
           cell.attr("title", "Campo Editado");
-
-          // console.log("row", row);
-          var id = row.id;
-
-          // añadir cambios a CAMBIOS_TABLAS
-          var table_name = ENT_TABLA.table().node().id;
-          var nombreRow = ENT_TABLA.row(indexRow).data()[ENT_TABLA.ENTABLADOR.key];
-          var nombreColumna = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
-          // console.log(1000, "nombreRow", nombreRow);
-          // console.log(2000, "ENT_TABLA.row(indexRow).data()", ENT_TABLA.row(indexRow).data());
-
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
           // console.log("----->", table_name, nombreRow, nombreColumna, newContent);
 
           row[nombreColumna] = newContent;
-          //console.log("nombreColumna",nombreColumna)
-          //console.log("row",row);
           ENT_TABLA.draw();
         });
       } else if (edition_type == "modal") {
@@ -925,14 +914,20 @@ const ENTABLADOR = (function () {
       event.preventDefault();
 
       var tablaName = $(event.target).closest("table").attr("id");
-      var cellDataTables = window[tablaName].cell(cell);
+      var ENT_TABLA = window[tablaName];
+      var cellDataTables = ENT_TABLA.cell(cell);
       var link = $(event.target).closest("a").attr("href");
 
-      // console.log(cellDataTables.data());
-      // console.log(link);
+      var table_name = ENT_TABLA.table().node().id;
+      var nombreRow = ENT_TABLA.row(cell.row).data()[ENT_TABLA.ENTABLADOR.key];
+      var nombreColumna = ENT_TABLA.settings().init().aoColumns[cell.column].data;
 
-      //remove link from array
-      // console.log("cellDataTables.data()", cellDataTables.data());
+      if (nombreRow == undefined) {
+        var row = ENT_TABLA.row(cell.row).data();
+        console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+        return;
+      }
+
       var data = cellDataTables.data();
       var newContent;
 
@@ -953,15 +948,9 @@ const ENTABLADOR = (function () {
           }
         }
       }
+      ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
       // añadir class .td-editado
       $(cellDataTables.node()).addClass("td-editado").attr("title", "Archivos Editados");
-
-      // añadir cambios a CAMBIOS_TABLAS
-      var table_name = window[tablaName].table().node().id;
-      var nombreRow = window[tablaName].row(cell.row).data()[window[tablaName].ENTABLADOR.key];
-      var nombreColumna = window[tablaName].settings().init().aoColumns[cell.column].data;
-
-      ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
     },
     getNewID: function (objects, tableID, extraData) {
       // tablaDatos, tableID, extraData
@@ -1440,7 +1429,7 @@ const ENTABLADOR = (function () {
       }
       // cerrar modal
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] ").modal("hide");
-      console.log(this.ultimoTdClickeadoPorModal);
+      // console.log(this.ultimoTdClickeadoPorModal);
     },
     parseBoolean: function (expectedValue, value) {
       var debug = false;
@@ -1518,8 +1507,8 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   meta: {
-    key: "id",
-    secondary_key: "nombre",
+    key: "ids",
+    // secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
       fechaNacimiento: "date",
@@ -1641,122 +1630,3 @@ style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD *
 document.head.appendChild(style);
 
 // $("#TABLA tbody tr:eq(0) td:eq(4)").click();
-
-//-- ----- - - -- - - - -- - --
-
-// ENTABLADOR.crear({
-//   id: "TABLA2",
-//   meta: {
-//     key: "id2",
-//     secondary_key: "nombre2",
-//     inputsTypes: {
-//       nombre2: "text",
-//       fechaNacimiento2: "date",
-//       humano2: "checkbox",
-//       archivos2: "file",
-//       edad2: "number",
-//       notas2: "textarea",
-//     },
-//   },
-//   columns: [
-//     {
-//       data: null,
-//       defaultContent: `
-//       <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
-//       <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
-//       `,
-//       orderable: false,
-//       width: "20px",
-//       className: "ENTABLADOR-btn",
-//     },
-//     { data: "id2", visible: false },
-//     { data: "nombre2", title: "Nombre2", class: "editable", defaultContent: "" },
-//     { data: "edad2", title: "Edad2", class: "editable", defaultContent: "" },
-//     { data: "fechaNacimiento2", title: "Fecha de Nacimiento2", class: "editable", defaultContent: "" },
-//     { data: "notas2", title: "Notas2", class: "editable ENTABLADOR-textarea", defaultContent: "" },
-//     { data: "humano2", title: "Humano2", class: "editable", defaultContent: "" },
-//     { data: "archivos2", title: "Archivos2", class: "editable", defaultContent: "" },
-//   ],
-//   columnDefs: [
-//     {
-//       targets: 2, // nombre
-//       render: function (data, type, row, meta) {
-//         // return `lel`;
-//         return data ? data.toUpperCase() : data;
-//       },
-//     },
-//     {
-//       targets: 4, // fechaNacimiento
-//       render: function (data, type, row, meta) {
-//         // return `lel`;
-//         //detect if it is a date
-//         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-//         if (data == null || data === "") {
-//           return data;
-//         }
-//         var fecha = new Date(data);
-//         return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-//       },
-//     },
-//     {
-//       targets: 6,
-//       render: function (data, type, row, meta) {
-//         // if (row.nombre == "Matthew") {
-//         //   console.log(data);
-//         // }
-//         var value = ENTABLADOR._.parseBoolean("boolean", data);
-//         if (value) {
-//           return "si!";
-//         } else if (value === false) {
-//           return "no!";
-//         } else if (value === undefined) {
-//           return;
-//         }
-//       },
-//     },
-//     {
-//       targets: 5, // notas
-//       render: function (data, type, row, meta) {
-//         // return `lel`;
-
-//         return `<div class="ENTABLADOR-fade-container">
-//                   <div class='ENTABLADOR-fade'>
-//                     ${data ? data : ""}
-//                     <div>
-//                       <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
-//                         Ver menos
-//                       </a>
-//                     </div>
-//                   </div>
-//                   <div class="ENTABLADOR-seeMore" style="display:none;">
-//                     <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
-//                       Click para ver más
-//                     </a>
-//                   </div>
-//                 </div>`;
-//       },
-//     },
-//   ],
-// })
-//   .editable(true)
-//   // .tipoEdicion("modal")
-//   // .modalLarge(true)
-//   // .longTextareaBehavior("modal")
-//   .add([
-//     {
-//       id2: 1,
-//       nombre2: "Caliope2",
-//       edad2: 22,
-//       fechaNacimiento2: "2222-12-22",
-//       humano2: false,
-//       notas2:
-//         "2Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-//       archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
-//     },
-//     { id2: 2, nombre2: "Matthew2", edad2: 2, fechaNacimiento2: "2010-11-23", humano2: true, archivos2: "https://dummyimage.com/200" },
-//     { id2: 3, nombre2: "Lucien's2", edad2: 35, fechaNacimiento2: "1992-02-17", humano2: "false", archivos2: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-//     { id2: 4, nombre2: "John Dee2", edad2: 30, fechaNacimiento2: "2000-04-28", humano2: "", archivos2: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-//     { id2: 5, nombre2: "Morpheus2", edad2: 25, fechaNacimiento2: "2000-08-04", archivos2: "" },
-//     { id2: 6, nombre2: "Corinthian2", edad2: 40, fechaNacimiento2: "2000-01-12", humano2: "true", notas2: "" },
-//     { id2: 7 },
-//   ]);
