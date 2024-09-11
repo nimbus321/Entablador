@@ -13,6 +13,7 @@
 - cambiar los nombres methods() a ingles en lo posible
 - verificar si todas las .class tienen prefijo ENTABLADOR- o similar, tambien posiblemente renombrar
 - al subir un archivo, poner como previsualización, sin subirlo primero a firestore.
+- tal vez hacer todos los SVG's unos ::after. no estoy seguro si es lo mejor para otros.
 
 - en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's
 
@@ -32,7 +33,12 @@
 
 # TRABAJANDO EN ELLO
 
+- mejorar uploadData() -> CAMBIOS_TABLA RAROS -> ENTABLADOR.id("TABLA").uploadData([{id:10,nombre:"moi",edad:10,fecha:"10-10-2000",humano:false}])
+- uploadData() -> asegurarse que detecta el primry_key y lo saca del object.
+
 # ULTIMOS HECHOS
+
+- implementar NewSVG como ::after (asi como hice con EditedSVG)
 
 # FIXED - ON WATCH
 
