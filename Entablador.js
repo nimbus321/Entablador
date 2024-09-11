@@ -910,6 +910,13 @@ const ENTABLADOR = (function () {
         var row = ENT_TABLA.row(el).data();
         var nombreColumnaClick = ENT_TABLA.settings().init().aoColumns[indexCelda].data;
         this.ultimoTdClickeadoPorModal = el;
+
+        var nombreRow = row[ENT_TABLA.ENTABLADOR.key];
+        if (nombreRow == undefined) {
+          console.error("En la tabla '" + TablaID + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+          alert("No se puede editar esta fila por un error en la configuración de la tabla. Hablar con soporte.");
+          return;
+        }
         ENTABLADOR._.prepararModal(TablaID, nombreColumnaClick, row, el);
       } // aqui termina el edition_type
     },
@@ -1511,7 +1518,7 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   meta: {
-    key: "idxx",
+    key: "idz",
     // secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
@@ -1607,7 +1614,7 @@ ENTABLADOR.crear({
   ],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([

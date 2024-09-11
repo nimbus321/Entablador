@@ -1,5 +1,6 @@
 # IDEAS
 
+- tal vez agregar un primary_key con un value generado auto cuando row[key] == undefined al editar.
 - meter más opciones de campos, por ejemplo (multiple opcion(dando las opciones)), (lista)
 - cosa a tener en cuenta: cuando abro modal y hago focus fuera de la pantalla (ej;dev tools) y le doy click dentro del modal (ej; btn subir archivos) sube la pantalla a donde se supone que se hace focus.
 - agregar un UNDO btn. guardar los valores ultimos en .\_
@@ -31,18 +32,15 @@
 
 # TRABAJANDO EN ELLO
 
-- verificar que funcione bien (o en caso contrario implementarlo) el funcionamiento de pasar la primary key, sacar errores si no hay, etc.
-- (arriba) previniendo que se edite el campo si el row[key] es undefined. console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key
-- (arriba) tal vez de alguna manera agregar un primary_key con un value generado auto? no se si es posible teniendo solo el row o algo asi, probablemente si.
+- si .editable(false) hacer que de oculte el btn de eliminar row.
 
 # ULTIMOS HECHOS
-
-- si row[key] == undefined, prevenir editar. | HECHO SOLO EN INLINE y no completo|
 
 # FIXED - ON WATCH
 
 # DONE
 
+- si row[key] == undefined, prevenir editar. | HECHO TODO |
 - |ON WATCH| verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
 - .attr("title", "Archivos Editados") en td-editado de file
 - añadir td-editado a la columna de files para que salga el svg | ADAPTADO con MUY especificas css rules
