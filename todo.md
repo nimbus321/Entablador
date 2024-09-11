@@ -38,12 +38,13 @@
 
 # ULTIMOS HECHOS
 
-- implementar NewSVG como ::after (asi como hice con EditedSVG)
+- actualizado README.md | Falta MUCHO aún
 
 # FIXED - ON WATCH
 
 # DONE
 
+- implementar NewSVG como ::after (asi como hice con EditedSVG)
 - al crear la tabla hacer que de oculte el btn de eliminar row.
 - si row[key] == undefined, prevenir editar. | HECHO TODO |
 - |ON WATCH| verificar que se pueda hacer bien con varias tablas a la vez. tener especial cuidado con los modals, seleccionar siempre con sus .[table="etc"] y no verificar que no se hayan usado id's | $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").hide(); <-- ojo con esos.
