@@ -528,6 +528,8 @@ const ENTABLADOR = (function () {
         if (nombreRow == undefined) {
           var row = ENT_TABLA.row(rowIndex).data();
           console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+          event.target.value = "";
+          alert("No se puede editar esta fila por un error en la configuración de la tabla. Hablar con soporte.");
           return;
         }
 
@@ -841,6 +843,7 @@ const ENTABLADOR = (function () {
 
         if (nombreRow == undefined) {
           console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+          alert("No se puede editar esta fila por un error en la configuración de la tabla. Hablar con soporte.");
           return;
         }
 
@@ -925,6 +928,7 @@ const ENTABLADOR = (function () {
       if (nombreRow == undefined) {
         var row = ENT_TABLA.row(cell.row).data();
         console.error("En la tabla '" + table_name + "', el row que se trató de editar no tiene la primary_key ('" + ENT_TABLA.ENTABLADOR.key + "').\nRow:", row);
+        alert("No se puede editar esta fila por un error en la configuración de la tabla. Hablar con soporte.");
         return;
       }
 
@@ -1507,7 +1511,7 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   meta: {
-    key: "ids",
+    key: "idxx",
     // secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
