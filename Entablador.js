@@ -37,6 +37,8 @@ const ENTABLADOR = (function () {
 
     var ENT_TABLA = window[ID];
     if (ENT_TABLA instanceof Element) {
+      console.log(ENT_TABLA);
+
       console.error("Aún no has creado la tabla! '#" + ID + "' es solo un elemento HTML");
       return;
     }
@@ -90,7 +92,6 @@ const ENTABLADOR = (function () {
           .columns.map((obj) => obj.className)
           .indexOf("ENTABLADOR-btn");
         ENT_TABLA.column(columnKeyIndex).visible(boolean);
-
         return this;
       },
       guardar(boolean) {
@@ -479,6 +480,12 @@ const ENTABLADOR = (function () {
     NuevaTabla.ENTABLADOR = {};
     NuevaTabla.ENTABLADOR.key = config.meta.key;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key;
+
+    var columnKeyIndex = NuevaTabla.settings()
+      .init()
+      .columns.map((obj) => obj.className)
+      .indexOf("ENTABLADOR-btn");
+    NuevaTabla.column(columnKeyIndex).visible(false);
 
     // crear NuevaTabla.ENTABLADOR.Columns. poner solo las que tengan visible=true y que no sean null, etc.
     var columns_pre = opciones.columns.map((column) => column.data);
@@ -1613,7 +1620,7 @@ ENTABLADOR.crear({
     },
   ],
 })
-  .editable(true)
+  // .editable(true)
   .tipoEdicion("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
