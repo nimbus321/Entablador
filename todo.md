@@ -30,6 +30,7 @@
 - pensar mejor si lo mejor es usar parseint para parsear numeros, que pasa si usan comas o puntos como separadores. o si usan decimales.
 - crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
 - tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
+- crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien
 
 # TRABAJANDO EN ELLO
 
