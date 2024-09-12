@@ -27,22 +27,23 @@
 
 # TO-DO
 
-- pensar mejor si lo mejor es usar parseint para parsear numeros, que pasa si usan comas o puntos como separadores. o si usan decimales.
-- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
-- tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
-- crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien
+- crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
 
 # TRABAJANDO EN ELLO
 
-# ULTIMOS HECHOS
+- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
+- tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
+- (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
 
-- mejorar uploadData() -> CAMBIOS_TABLA RAROS -> ENTABLADOR.id("TABLA").uploadData([{id:10,nombre:"moi",edad:10,fecha:"10-10-2000",humano:false}])
-- uploadData() -> asegurarse que detecta el primry_key y lo saca del object.
+# ULTIMOS HECHOS
 
 # FIXED - ON WATCH
 
 # DONE
 
+- |creado extractNumberFromString()| pensar mejor si lo mejor es usar parseint para parsear numeros, que pasa si usan comas o puntos como separadores. o si usan decimales.
+- mejorar uploadData() -> CAMBIOS_TABLA RAROS -> ENTABLADOR.id("TABLA").uploadData([{id:10,nombre:"moi",edad:10,fecha:"10-10-2000",humano:false}])
+- uploadData() -> asegurarse que detecta el primry_key y lo saca del object.
 - implementar NewSVG como ::after (asi como hice con EditedSVG)
 - al crear la tabla hacer que de oculte el btn de eliminar row.
 - si row[key] == undefined, prevenir editar. | HECHO TODO |
@@ -57,7 +58,6 @@
   a) 'modal'. se abra un modal
   b) 'buttons'. btn's "click ver más", "click ver menos"
   d) 'see all'. se muestre todo sin hacer ningun cambio
-
 - FIX. cuando se elimina row, el texto "ver menos" se ponía en rojo
 - expandir cuando se da click a "click para ver más"
 - añadir 'textarea' a los inputs validos. y hacerlo compatible.. | incline y modal ya estan pero falta el lado de mostrarlo al no-edicion.
