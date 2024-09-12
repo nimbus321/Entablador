@@ -33,12 +33,10 @@
 
 # TRABAJANDO EN ELLO
 
-- mejorar uploadData() -> CAMBIOS_TABLA RAROS -> ENTABLADOR.id("TABLA").uploadData([{id:10,nombre:"moi",edad:10,fecha:"10-10-2000",humano:false}])
-- uploadData() -> asegurarse que detecta el primry_key y lo saca del object.
-
 # ULTIMOS HECHOS
 
-- actualizado README.md | Falta MUCHO aún
+- mejorar uploadData() -> CAMBIOS_TABLA RAROS -> ENTABLADOR.id("TABLA").uploadData([{id:10,nombre:"moi",edad:10,fecha:"10-10-2000",humano:false}])
+- uploadData() -> asegurarse que detecta el primry_key y lo saca del object.
 
 # FIXED - ON WATCH
 

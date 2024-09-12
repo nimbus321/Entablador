@@ -168,11 +168,7 @@ const ENTABLADOR = (function () {
             COLUMNA2: "VALOR",
             COLUMNA3: "VALOR",
           },
-          ID2: {
-            COLUMNA1: "VALOR",
-            COLUMNA2: "VALOR",
-            COLUMNA3: "VALOR",
-          }
+          ID2: ...
         }
         */
         /* EXPECTED VALUE FOR  data:
@@ -196,25 +192,29 @@ const ENTABLADOR = (function () {
             return this;
           }
           //check if it has the key specified
-          if (data[i][ENT_TABLA.key] == undefined) {
+          // console.log(0, ENT_TABLA);
+          var primary_key = ENT_TABLA.ENTABLADOR.key;
+
+          if (data[i][primary_key] == undefined) {
             if (dontForceAutoID) {
-              console.error(".uploadData() -> value of the key '" + ENT_TABLA.key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
+              console.error(".uploadData() -> value of the key '" + primary_key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
               return this;
             } else {
-              data[i][ENT_TABLA.key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), ENT_TABLA.key, data);
+              data[i][primary_key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), primary_key, data);
             }
           } else {
             //check if the key already exists in the table
             var existeID_enTabla = ENT_TABLA.rows()
               .data()
               .toArray()
-              .some((row) => row[ENT_TABLA.key] == data[i][ENT_TABLA.key]);
+              .some((row) => row[primary_key] == data[i][primary_key]);
             if (existeID_enTabla) {
-              console.error(".uploadData() -> '" + ENT_TABLA.key + ": " + data[i][ENT_TABLA.key] + "' already exists in the table.\nData:", data);
+              console.error(".uploadData() -> '" + primary_key + ": " + data[i][primary_key] + "' already exists in the table.\nData:", data);
               return this;
             }
           }
 
+          console.log(data[i][primary_key]);
           //check mandatoryFields
           var mandatoryFields = ENTABLADOR._.mandatoryFields[ENT_TABLA.table().node().id];
           mandatoryFields = mandatoryFields ? mandatoryFields : [];
@@ -234,7 +234,7 @@ const ENTABLADOR = (function () {
           .find("td")
           .each(function () {
             if ($(this).text() != "") {
-              console.log($(this));
+              // console.log($(this));
               var isTextarea = $(this).hasClass("ENTABLADOR-textarea");
               if (isTextarea && $(this).find(".ENTABLADOR-textarea-data span").text() === "") {
                 return;
@@ -245,10 +245,10 @@ const ENTABLADOR = (function () {
 
         //añadir cambios a CAMBIOS_TABLAS
         var data = JSON.parse(JSON.stringify(data));
-        console.log("data", data);
+        // console.log("data", data);
         for (let i = 0; i < data.length; i++) {
           var row = data[i];
-          var columnKey = ENT_TABLA.key;
+          var columnKey = primary_key;
           var columnKey_data = row[columnKey];
           delete row[columnKey];
           //detect if it is an empty object
