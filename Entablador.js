@@ -896,7 +896,7 @@ const ENTABLADOR = (function () {
             //replace the letter 'e' with ''
             newContent = newContent.replace(/e/g, "");
             //make it a number with parseint
-            newContent = parseInt(newContent);
+            newContent = extractNumberFromString(newContent);
           } else if (type_input == "checkbox") {
             //make it a boolean
             var _ = ENTABLADOR._;
@@ -1387,7 +1387,7 @@ const ENTABLADOR = (function () {
           var value = $("#ENTABLADOR-" + table_name + "-" + column).val();
           if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0 && value !== "") {
             // es un number
-            value = parseInt(value);
+            value = extractNumberFromString(value);
           }
           this.Modal_Editor_Obj[column] = value;
         }
@@ -1497,6 +1497,12 @@ const ENTABLADOR = (function () {
         console.error("Error: El tipo de dato esperado no es válido. Se esperaba 'string' o 'boolean'. Se ha recibido '" + expectedValue + "'.");
         return "ERROR! parseBoolean()";
       }
+    },
+    extractNumberFromString: function (input) {
+      return parseInt(input.toString().replace(/\D/g, ""), 10);
+    },
+    isNumeric: function (input) {
+      return /^\d{1,3}(?:,\d{3})*(?:\.\d+)?$/.test(input);
     },
   };
   return {
