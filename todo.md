@@ -33,6 +33,7 @@
 
 - crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?) + OPCION (autoRender)
 - (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
+- +ENTABLADOR.\_.createAutoRender
 
 # ULTIMOS HECHOS
 

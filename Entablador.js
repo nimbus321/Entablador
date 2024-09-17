@@ -401,7 +401,7 @@ const ENTABLADOR = (function () {
     }
 
     // ########################################################################
-    //
+    //  CREAR AUTO RENDER'S
     // ########################################################################
 
     // detect if there are files in the table
@@ -421,6 +421,7 @@ const ENTABLADOR = (function () {
                   console.warn("La columna '" + columnaNombre + "' ya tiene una definición en columnDefs. Se ha eliminado la definición.");
                   opciones.columnDefs.splice(j, 1);
                   j--;
+                  // keep in mind that is the target is an array, it will not be removed. is this the desired behavior? I think so?
                 }
               }
 
@@ -431,48 +432,23 @@ const ENTABLADOR = (function () {
           // console.log("antes", opciones.columnDefs.length);
           // console.log("hayFile", hayFile);
           if (hayFile) {
-            opciones.columnDefs.push({
-              targets: columnINDEX,
-              render: function (data, type, row, meta) {
-                // console.log("data", data);
-                var rowIndex = meta.row;
-                var columnIndex = meta.col;
-                // console.log("rowIndex", rowIndex);
-                // console.log("columnIndex", columnIndex);
+            var nombreColumna = opciones.columns[columnINDEX].data;
 
-                var html = `<div style="display:flex; justify-content: space-between;"><div>`;
-                var SVGs = ENTABLADOR._.SVGs;
-                var RemoveFileSVG = SVGs.RemoveFileSVG;
-                // var FileSVG = SVGs.FileSVG;
-                var AddFileSVG = SVGs.AddFileSVG;
-                if (data != null && data != "") {
-                  function crearElement(data, archivo) {
-                    // return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;">${FileSVG()}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div class="mr-1">${RemoveFileSVG}</div></div></a>`;
-                    return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" style="cursor:pointer;margin-right:5px;" class="ENTABLADOR-tabla-anchor"><img src="${
-                      Array.isArray(data) ? archivo : data
-                    }" alt="Cargando..." class="" style="height:20px;width:20px;" onerror="this.onerror=null;ENTABLADOR._.ImgOnError(this)"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
-                  }
-
-                  if (Array.isArray(data)) {
-                    data.forEach((archivo) => {
-                      //detect if it is an image
-                      // if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                      //   html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
-                      // } else {
-                      html += crearElement(data, archivo);
-                      // }
-                    });
-                  } else {
-                    html += crearElement(data);
-                  }
-                }
-                html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex}, ENT_TABLA: ${config.id} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
-                return html;
-              },
-            });
+            var renderBlacklist = config.renderBlacklist ? config.renderBlacklist : [];
+            if (!renderBlacklist.includes(nombreColumna)) {
+              opciones.columnDefs.push(ENTABLADOR._.createAutoRender("file", columnINDEX, config, nombreColumna));
+            }
           }
           // console.log("despues", opciones.columnDefs.length);
         }
+      }
+    } else {
+      if (config.autoRender) {
+        console.warn("On table '" + config.id + "' autoRender has been ignored, it does not have any effect if meta.inputsTypes is not defined.");
+      }
+      var renderBlacklist = config.renderBlacklist;
+      if (renderBlacklist && Array.isArray(renderBlacklist) && renderBlacklist.length > 0) {
+        console.warn("On table '" + config.id + "' renderBlacklist has been ignored, it does not have any effect if meta.inputsTypes is not defined.");
       }
     }
 
@@ -500,8 +476,9 @@ const ENTABLADOR = (function () {
     NuevaTabla.table().node().setAttribute("data-edition-type", this._.editTypes[0]);
     NuevaTabla.table().node().setAttribute("data-long-textarea-behavior", this._.longTextareaBehavior[0]);
     NuevaTabla.ENTABLADOR = {};
-    NuevaTabla.ENTABLADOR.key = config.meta.key ? config.meta.key : null;
-    NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key ? config.meta.secondary_key : null;
+    NuevaTabla.ENTABLADOR.key = config.meta && config.meta.key ? config.meta.key : null;
+    NuevaTabla.ENTABLADOR.secondary_key = config.meta && config.meta.secondary_key ? config.meta.secondary_key : null;
+    NuevaTabla.ENTABLADOR.inputsTypes = config.meta && config.meta.inputsTypes;
 
     var columnKeyIndex = NuevaTabla.settings()
       .init()
@@ -509,7 +486,11 @@ const ENTABLADOR = (function () {
       .indexOf("ENTABLADOR-btn");
     NuevaTabla.column(columnKeyIndex).visible(false);
 
-    // crear NuevaTabla.ENTABLADOR.Columns. poner solo las que tengan visible=true y que no sean null, etc.
+    // ########################################################################
+    // CREAR NuevaTabla.ENTABLADOR.Columns
+    // ########################################################################
+
+    // poner solo las que tengan visible=true y que no sean null, etc.
     var columns_pre = opciones.columns.map((column) => column.data);
     var COLUMNS = [];
     //expected COLUMNS = [["nombre","Nombre"],["edad","Edad"],...];
@@ -522,8 +503,10 @@ const ENTABLADOR = (function () {
       }
     }
     NuevaTabla.ENTABLADOR.COLUMNS = COLUMNS;
-    // console.log(NuevaTabla.ENTABLADOR);
-    NuevaTabla.ENTABLADOR.inputsTypes = config.meta.inputsTypes;
+
+    // ########################################################################
+    // HIDE TOOLTIP ON DRAW AND SHOW ON PRE-DRAW
+    // ########################################################################
 
     $("#" + config.id).on("preDraw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
@@ -670,6 +653,50 @@ const ENTABLADOR = (function () {
     mandatoryFields: {},
     LabelClick: null,
     SVGs: SVGs,
+    createAutoRender: function (type_input, indexTarget, config) {
+      if (type_input == "file") {
+        return {
+          targets: indexTarget,
+          render: function (data, type, row, meta) {
+            // console.log("data", data);
+            var rowIndex = meta.row;
+            var columnIndex = meta.col;
+            // console.log("rowIndex", rowIndex);
+            // console.log("columnIndex", columnIndex);
+
+            var html = `<div style="display:flex; justify-content: space-between;"><div>`;
+            var SVGs = ENTABLADOR._.SVGs;
+            var RemoveFileSVG = SVGs.RemoveFileSVG;
+            // var FileSVG = SVGs.FileSVG;
+            var AddFileSVG = SVGs.AddFileSVG;
+            if (data != null && data != "") {
+              function crearElement(data, archivo) {
+                // return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;">${FileSVG()}<div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div class="mr-1">${RemoveFileSVG}</div></div></a>`;
+                return `<a href="${Array.isArray(data) ? archivo : data}" target="_blank" style="cursor:pointer;margin-right:5px;" class="ENTABLADOR-tabla-anchor"><img src="${
+                  Array.isArray(data) ? archivo : data
+                }" alt="Cargando..." class="" style="height:20px;width:20px;" onerror="this.onerror=null;ENTABLADOR._.ImgOnError(this)"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
+              }
+
+              if (Array.isArray(data)) {
+                data.forEach((archivo) => {
+                  //detect if it is an image
+                  // if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                  //   html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
+                  // } else {
+                  html += crearElement(data, archivo);
+                  // }
+                });
+              } else {
+                html += crearElement(data);
+              }
+            }
+            html += `</div><div><label class="mb-0" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ row: ${rowIndex}, column: ${columnIndex}, ENT_TABLA: ${config.id} };">${AddFileSVG}</label><span class="uploading" style="display: none;"><div class="spinner-border text-primary spinner-border-sm mr-1"></div></div></span>`;
+            return html;
+          },
+        };
+      } else if (type_input == "textarea") {
+      }
+    },
     textareaShowMore: function (el) {
       //detectar si esta en modal o buttons
       var type = $(el).closest("table").attr("data-long-textarea-behavior");
@@ -1558,7 +1585,7 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   autoRender: true,
-  renderBlacklist: ["archivos"],
+  renderBlacklist: ["archivosx"],
   meta: {
     key: "id",
     // secondary_key: "nombre",
@@ -1594,14 +1621,12 @@ ENTABLADOR.crear({
     {
       targets: 2, // nombre
       render: function (data, type, row, meta) {
-        // return `lel`;
         return data ? data.toUpperCase() : data;
       },
     },
     {
       targets: 4, // fechaNacimiento
       render: function (data, type, row, meta) {
-        // return `lel`;
         //detect if it is a date
         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
         if (data == null || data === "") {
