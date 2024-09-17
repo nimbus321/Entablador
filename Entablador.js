@@ -326,6 +326,10 @@ const ENTABLADOR = (function () {
                   autoWidth: false
               })
             */
+
+    // ########################################################################
+    // METER { type: "locale-compare", targets: "_all" }
+    // ########################################################################
     if (config.columnDefs) {
       columnDefs = config.columnDefs;
       var hayLocaleCompare = false;
@@ -341,12 +345,20 @@ const ENTABLADOR = (function () {
     } else {
       columnDefs = [{ type: "locale-compare", targets: "_all" }];
     }
+
+    // ########################################################################
+    // Meter otras opciones simples
+    // ########################################################################
     var opciones = {
       language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
       autoWidth: config.autoWidth || false,
       columnDefs: columnDefs,
       order: config.order || [[1, "asc"]],
     };
+
+    // ########################################################################
+    // METER COLUMNAS       &&       COLUMNAS NAME = DATA
+    // ########################################################################
     if (config.columns) {
       opciones.columns = config.columns;
       // agregar name a las columnas que sea lo mismo que data
@@ -362,19 +374,9 @@ const ENTABLADOR = (function () {
     //console.log("opciones:", opciones);
     //console.log("config:", config);
 
-    /* ########################################################################
-      GENERAR Automaticamente la columna de input 'file'
-      .meta({
-        key: "id",
-        inputsTypes: {
-          nombre: "text",
-          edad: "number",
-          fechaNacimiento: "date",
-          humano: "checkbox",
-          archivos: "file",
-        },
-      })
-    */
+    // ########################################################################
+    // METER primary y secondary key
+    // ########################################################################
     if (config.meta) {
       if (config.meta.key) {
         opciones.key = config.meta.key;
@@ -394,10 +396,14 @@ const ENTABLADOR = (function () {
         if (!secondary_key_exists) {
           console.warn("La columna especificada como secondary key '" + secondary_key + "' no existe en las columnas de la tabla '" + config.id + "'.");
         }
-
         opciones.secondary_key = secondary_key;
       }
     }
+
+    // ########################################################################
+    //
+    // ########################################################################
+
     // detect if there are files in the table
     if (config.meta && config.meta.inputsTypes) {
       for (var columnaNombre in config.meta.inputsTypes) {
@@ -469,6 +475,11 @@ const ENTABLADOR = (function () {
         }
       }
     }
+
+    // ########################################################################
+    // Crear funcionamiento de ENTABLADOR-fade en textarea
+    // ########################################################################
+
     opciones.drawCallback = function () {
       $(".ENTABLADOR-fade").each(function () {
         // detect if the height is higher than 100px
@@ -478,14 +489,19 @@ const ENTABLADOR = (function () {
           .toggleClass("ENTABLADOR-activeFade", $(this).height() >= 100);
       });
     };
+
+    // ########################################################################
+    // CREAR TABLA
     var NuevaTabla = new DataTable("#" + config.id, opciones);
+    // ########################################################################
+
     // console.log("this", this);
     //poner el attr data-edition-type
     NuevaTabla.table().node().setAttribute("data-edition-type", this._.editTypes[0]);
     NuevaTabla.table().node().setAttribute("data-long-textarea-behavior", this._.longTextareaBehavior[0]);
     NuevaTabla.ENTABLADOR = {};
-    NuevaTabla.ENTABLADOR.key = config.meta.key;
-    NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key;
+    NuevaTabla.ENTABLADOR.key = config.meta.key ? config.meta.key : null;
+    NuevaTabla.ENTABLADOR.secondary_key = config.meta.secondary_key ? config.meta.secondary_key : null;
 
     var columnKeyIndex = NuevaTabla.settings()
       .init()
@@ -496,7 +512,7 @@ const ENTABLADOR = (function () {
     // crear NuevaTabla.ENTABLADOR.Columns. poner solo las que tengan visible=true y que no sean null, etc.
     var columns_pre = opciones.columns.map((column) => column.data);
     var COLUMNS = [];
-    //expected COLUMNS = [["nombre","Nombre"],["edad","Edad"],["fechaNacimiento","Fecha de Nacimiento"],["humano","Humano"],["archivos","Archivos"]];
+    //expected COLUMNS = [["nombre","Nombre"],["edad","Edad"],...];
 
     for (let i = columns_pre.length - 1; i >= 0; i--) {
       if (opciones.columns[i].visible == false || [null, undefined, ""].includes(opciones.columns[i].data)) {
@@ -507,8 +523,7 @@ const ENTABLADOR = (function () {
     }
     NuevaTabla.ENTABLADOR.COLUMNS = COLUMNS;
     // console.log(NuevaTabla.ENTABLADOR);
-    var inputsTypes = config.meta.inputsTypes;
-    NuevaTabla.ENTABLADOR.inputsTypes = inputsTypes;
+    NuevaTabla.ENTABLADOR.inputsTypes = config.meta.inputsTypes;
 
     $("#" + config.id).on("preDraw.dt", function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip("hide");
@@ -517,7 +532,9 @@ const ENTABLADOR = (function () {
       $("#" + config.id + '[data-toggle="tooltip"]').tooltip();
     });
 
-    //prepend input file to table
+    // ########################################################################
+    // PREPEND INPUT FILE TO TABLE        &&        SET EVENT
+    // ########################################################################
     if ($("input#ENTABLADOR_FILE_UPLOADER").length == 0) {
       var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
       $("#" + config.id).prepend(fileInput);
@@ -616,7 +633,11 @@ const ENTABLADOR = (function () {
     }
 
     window[config.id] = NuevaTabla;
-    //set click event
+
+    // ########################################################################
+    // SET CLICK EVENT
+    // ########################################################################
+
     $("#" + config.id + " tbody").on("click", "tr td", function (e) {
       // console.log("click en ->", this);
       var esEditable = $(this).closest("table").hasClass("editable");
@@ -1536,6 +1557,8 @@ ENTABLADOR.crear({
 */
 ENTABLADOR.crear({
   id: "TABLA",
+  autoRender: true,
+  renderBlacklist: ["archivos"],
   meta: {
     key: "id",
     // secondary_key: "nombre",

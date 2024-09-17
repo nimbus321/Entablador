@@ -31,8 +31,7 @@
 
 # TRABAJANDO EN ELLO
 
-- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?)
-- tal vez poner una opcion para saber si hacer automaticamente el render detectando el type de la columna o no. (mirar arriba)
+- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?) + OPCION (autoRender)
 - (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
 
 # ULTIMOS HECHOS
