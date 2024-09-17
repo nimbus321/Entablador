@@ -481,7 +481,6 @@ const ENTABLADOR = (function () {
         }
         if (Array.isArray(targets)) {
           for (var j = 0; j < targets.length; j++) {
-            // createTarget()
             opciones.columnDefs[i].targets[j] = createTarget(targets[j]);
           }
         } else {
@@ -489,6 +488,9 @@ const ENTABLADOR = (function () {
         }
       }
       opciones.columns.unshift(obj);
+      if (opciones.order && Array.isArray(opciones.order) && Array.isArray(opciones.order[0]) && typeof opciones.order[0][0] == "number") {
+        opciones.order[0][0]++;
+      }
     }
 
     // ########################################################################
@@ -1007,7 +1009,7 @@ const ENTABLADOR = (function () {
             //replace the letter 'e' with ''
             newContent = newContent.replace(/e/g, "");
             //make it a number with parseint
-            newContent = extractNumberFromString(newContent);
+            newContent = ENTABLADOR._.extractNumberFromString(newContent);
           } else if (type_input == "checkbox") {
             //make it a boolean
             var _ = ENTABLADOR._;
@@ -1498,7 +1500,7 @@ const ENTABLADOR = (function () {
           var value = $("#ENTABLADOR-" + table_name + "-" + column).val();
           if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0 && value !== "") {
             // es un number
-            value = extractNumberFromString(value);
+            value = this.extractNumberFromString(value);
           }
           this.Modal_Editor_Obj[column] = value;
         }
@@ -1648,7 +1650,7 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   // autoRender: false,
-  renderBlacklist: ["archivos"],
+  // renderBlacklist: ["archivos"],
   createButtons: true,
   meta: {
     key: "id",
@@ -1703,7 +1705,6 @@ ENTABLADOR.crear({
         }
       },
     },
-    // ENTABLADOR._.createAutoRender("textarea", 5),
   ],
 })
   .editable(true)
@@ -1733,4 +1734,4 @@ var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
-// $("#TABLA tbody tr:eq(0) td:eq(4)").click();
+// $("#TABLA tbody tr:eq(1) td:eq(6)").click();

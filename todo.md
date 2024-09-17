@@ -1,3 +1,7 @@
+# A TENER EN CUENTA
+
+- si se pone createButtons: true, y el orden está en otra forma que no sea order: [[0,"asc|desc"]], el usuario tiene que manualmente sumarle 1
+
 # IDEAS
 
 - tal vez agregar un primary_key con un value generado auto cuando row[key] == undefined al editar.
@@ -31,10 +35,11 @@
 
 # TRABAJANDO EN ELLO
 
-- agregar class'es cuando se hace el render automatico. (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
-
 # ULTIMOS HECHOS
 
+- hacer +1 en el target del order
+- |DECIDIDO no arreglarlo, porque si se puso en blacklist seguramente se dio un render personalizado y en ese caso seguro que se prefiere que no funcione el click en el td| (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
+- agregar class'es cuando se hace el render automatico.
 - | +opciones.autoRender (ignora files)| crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea
 - | +opciones.renderBlacklist[] | (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
 - +ENTABLADOR.\_.createAutoRender
