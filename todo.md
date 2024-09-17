@@ -27,6 +27,7 @@
 
 # TO-DO
 
+- agregar class'es cuando se hace el render automatico. (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
 - crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
 
 # TRABAJANDO EN ELLO
@@ -36,6 +37,8 @@
 - +ENTABLADOR.\_.createAutoRender
 
 # ULTIMOS HECHOS
+
+- mejorados mucho los AUTO RENDER's
 
 # FIXED - ON WATCH
 

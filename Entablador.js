@@ -357,8 +357,7 @@ const ENTABLADOR = (function () {
       order: config.order || [[1, "asc"]],
     };
     // autoRender's default value = true
-    var autoRender = config.autoRender;
-    autoRender = autoRender === undefined ? true : autoRender;
+    config.autoRender = config.autoRender === undefined ? true : config.autoRender;
 
     // ########################################################################
     // METER COLUMNAS       &&       COLUMNAS NAME = DATA
@@ -411,12 +410,16 @@ const ENTABLADOR = (function () {
     // detect if there are files in the table
     if (config.meta && config.meta.inputsTypes) {
       for (var columnaNombre in config.meta.inputsTypes) {
-        if (config.meta.inputsTypes[columnaNombre] == "file") {
-          var hayFile = false;
+        var colValue = config.meta.inputsTypes[columnaNombre];
+        var blacklist = config.renderBlacklist && Array.isArray(config.renderBlacklist) ? config.renderBlacklist : [];
+        console.log("ufff pre", config.autoRender);
+        if ((colValue == "file" || (colValue == "textarea" && config.autoRender)) && !blacklist.includes(columnaNombre)) {
+          console.log("rendering", columnaNombre, colValue);
           //loop through config.columns
           for (var i = 0; i < opciones.columns.length; i++) {
             if (opciones.columns[i].data == columnaNombre) {
               var columnINDEX = i;
+              console.log([columnaNombre, colValue, columnINDEX]);
               // search through columnDefs
               for (var j = 0; j < opciones.columnDefs.length; j++) {
                 if (opciones.columnDefs[j].targets == columnINDEX) {
@@ -428,18 +431,9 @@ const ENTABLADOR = (function () {
                   // keep in mind that is the target is an array, it will not be removed. is this the desired behavior? I think so?
                 }
               }
-
-              hayFile = true;
+              opciones.columnDefs.push(ENTABLADOR._.createAutoRender(colValue, columnINDEX, config, columnaNombre));
             }
           }
-          if (hayFile) {
-            var nombreColumna = opciones.columns[columnINDEX].data;
-            var renderBlacklist = config.renderBlacklist ? config.renderBlacklist : [];
-            if (!renderBlacklist.includes(nombreColumna)) {
-              opciones.columnDefs.push(ENTABLADOR._.createAutoRender("file", columnINDEX, config, nombreColumna));
-            }
-          }
-          // console.log("despues", opciones.columnDefs.length);
         }
       }
     } else {
@@ -1608,7 +1602,7 @@ ENTABLADOR.crear({
 */
 ENTABLADOR.crear({
   id: "TABLA",
-  autoRender: true,
+  // autoRender: false,
   renderBlacklist: ["archivosx"],
   meta: {
     key: "id",
@@ -1673,7 +1667,7 @@ ENTABLADOR.crear({
         }
       },
     },
-    ENTABLADOR._.createAutoRender("textarea", 5),
+    // ENTABLADOR._.createAutoRender("textarea", 5),
   ],
 })
   .editable(true)
