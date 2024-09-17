@@ -330,6 +330,7 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // METER { type: "locale-compare", targets: "_all" }
     // ########################################################################
+    var columnDefs;
     if (config.columnDefs) {
       columnDefs = config.columnDefs;
       var hayLocaleCompare = false;
@@ -355,6 +356,9 @@ const ENTABLADOR = (function () {
       columnDefs: columnDefs,
       order: config.order || [[1, "asc"]],
     };
+    // autoRender's default value = true
+    var autoRender = config.autoRender;
+    autoRender = autoRender === undefined ? true : autoRender;
 
     // ########################################################################
     // METER COLUMNAS       &&       COLUMNAS NAME = DATA
@@ -428,12 +432,8 @@ const ENTABLADOR = (function () {
               hayFile = true;
             }
           }
-          // console.log("columnINDEX", columnINDEX);
-          // console.log("antes", opciones.columnDefs.length);
-          // console.log("hayFile", hayFile);
           if (hayFile) {
             var nombreColumna = opciones.columns[columnINDEX].data;
-
             var renderBlacklist = config.renderBlacklist ? config.renderBlacklist : [];
             if (!renderBlacklist.includes(nombreColumna)) {
               opciones.columnDefs.push(ENTABLADOR._.createAutoRender("file", columnINDEX, config, nombreColumna));
@@ -695,6 +695,30 @@ const ENTABLADOR = (function () {
           },
         };
       } else if (type_input == "textarea") {
+        return {
+          targets: indexTarget,
+          render: function (data, type, row, meta) {
+            return `<div class="ENTABLADOR-fade-container" style="display: inline-block;">
+                      <div>
+                        <div class='ENTABLADOR-fade'>
+                          <div class="ENTABLADOR-textarea-data">
+                            <span style="line-break: anywhere;">${data ? data : ""}</span>
+                          </div>
+                          <div>
+                            <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                              Ver menos
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ENTABLADOR-seeMore" style="display:none;">
+                        <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
+                          Click para ver más
+                        </a>
+                      </div>
+                    </div>`;
+          },
+        };
       }
     },
     textareaShowMore: function (el) {
@@ -1637,11 +1661,8 @@ ENTABLADOR.crear({
       },
     },
     {
-      targets: 6,
+      targets: 6, // humano
       render: function (data, type, row, meta) {
-        // if (row.nombre == "Matthew") {
-        //   console.log(data);
-        // }
         var value = ENTABLADOR._.parseBoolean("boolean", data);
         if (value) {
           return "si!";
@@ -1652,32 +1673,7 @@ ENTABLADOR.crear({
         }
       },
     },
-    {
-      targets: 5, // notas
-      render: function (data, type, row, meta) {
-        // return `lel`;
-
-        return `<div class="ENTABLADOR-fade-container" style="display: inline-block;">
-                  <div>
-                    <div class='ENTABLADOR-fade'>
-                      <div class="ENTABLADOR-textarea-data">
-                        <span>${data ? data : ""}</span>
-                      </div>
-                      <div style="">
-                        <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
-                          Ver menos
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="ENTABLADOR-seeMore" style="display:none;">
-                    <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
-                      Click para ver más
-                    </a>
-                  </div>
-                </div>`;
-      },
-    },
+    ENTABLADOR._.createAutoRender("textarea", 5),
   ],
 })
   .editable(true)
