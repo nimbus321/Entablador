@@ -358,10 +358,12 @@ const ENTABLADOR = (function () {
     };
     // autoRender's default value = true
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
+    // createDefaultContent's default value = true
+    config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
 
-    // ########################################################################
-    // METER COLUMNAS       &&       COLUMNAS NAME = DATA
-    // ########################################################################
+    // ##########################################################################################
+    // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
+    // ##########################################################################################
     if (config.columns) {
       opciones.columns = config.columns;
       // agregar name a las columnas que sea lo mismo que data
@@ -372,6 +374,12 @@ const ENTABLADOR = (function () {
           console.warn("En la tabla '" + config.id + "', la columna '" + data + "' ya tiene un '.name'. Se ha eliminado el '.name' que le fue dado ('" + name + "') y cambiado por su '.data' ('" + data + "').");
         }
         opciones.columns[i].name = data;
+
+        if (config.createDefaultContent) {
+          if (opciones.columns[i].defaultContent == undefined) {
+            opciones.columns[i].defaultContent = "";
+          }
+        }
       }
     }
     //console.log("opciones:", opciones);
@@ -1649,6 +1657,7 @@ ENTABLADOR.crear({
 */
 ENTABLADOR.crear({
   id: "TABLA",
+  // createDefaultContent: false,
   // autoRender: false,
   // renderBlacklist: ["archivos"],
   createButtons: true,
@@ -1666,12 +1675,12 @@ ENTABLADOR.crear({
   },
   columns: [
     { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
-    { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
-    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
-    { data: "notas", title: "Notas", class: "editable", defaultContent: "" },
-    { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
-    { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
+    { data: "nombre", title: "Nombre", class: "editable" },
+    { data: "edad", title: "Edad", class: "editable" },
+    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+    { data: "notas", title: "Notas", class: "editable" },
+    { data: "humano", title: "Humano", class: "editable" },
+    { data: "archivos", title: "Archivos", class: "editable" },
   ],
   columnDefs: [
     {

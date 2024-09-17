@@ -37,6 +37,7 @@
 
 # ULTIMOS HECHOS
 
+- crear defaultContent auto + opcion
 - hacer +1 en el target del order
 - |DECIDIDO no arreglarlo, porque si se puso en blacklist seguramente se dio un render personalizado y en ese caso seguro que se prefiere que no funcione el click en el td| (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
 - agregar class'es cuando se hace el render automatico.
