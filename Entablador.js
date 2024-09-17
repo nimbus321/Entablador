@@ -412,20 +412,29 @@ const ENTABLADOR = (function () {
       for (var columnaNombre in config.meta.inputsTypes) {
         var colValue = config.meta.inputsTypes[columnaNombre];
         var blacklist = config.renderBlacklist && Array.isArray(config.renderBlacklist) ? config.renderBlacklist : [];
-        console.log("ufff pre", config.autoRender);
         if ((colValue == "file" || (colValue == "textarea" && config.autoRender)) && !blacklist.includes(columnaNombre)) {
-          console.log("rendering", columnaNombre, colValue);
+          // console.log("rendering", columnaNombre, colValue);
           //loop through config.columns
           for (var i = 0; i < opciones.columns.length; i++) {
             if (opciones.columns[i].data == columnaNombre) {
               var columnINDEX = i;
-              console.log([columnaNombre, colValue, columnINDEX]);
+
+              // add classes to the column
+              if (colValue == "textarea") {
+                classNames = opciones.columns[i].class;
+                if (classNames == undefined || classNames == "" || classNames == "ENTABLADOR-textarea") {
+                  opciones.columns[i].class = "ENTABLADOR-textarea";
+                } else {
+                  opciones.columns[i].class += " ENTABLADOR-textarea";
+                }
+              }
+
               // search through columnDefs
               for (var j = 0; j < opciones.columnDefs.length; j++) {
                 if (opciones.columnDefs[j].targets == columnINDEX) {
                   // remove element from the array and issue a warning
                   // be aware that it can be many elements with the same target
-                  console.warn("La columna '" + columnaNombre + "' ya tiene una definición en columnDefs. Se ha eliminado la definición.");
+                  console.warn("Al crear la tabla '" + config.id + "', la columna '" + columnaNombre + "' ya tiene una definición en columnDefs. Se ha eliminado la definición.");
                   opciones.columnDefs.splice(j, 1);
                   j--;
                   // keep in mind that is the target is an array, it will not be removed. is this the desired behavior? I think so?
@@ -444,6 +453,42 @@ const ENTABLADOR = (function () {
       if (renderBlacklist && Array.isArray(renderBlacklist) && renderBlacklist.length > 0) {
         console.warn("On table '" + config.id + "' renderBlacklist has been ignored, it does not have any effect if meta.inputsTypes is not defined.");
       }
+    }
+
+    // ########################################################################
+    // Crear buttons column
+    // ########################################################################
+    if (config.createButtons) {
+      var obj = {
+        data: null,
+        defaultContent: `
+        <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
+        <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
+        `,
+        orderable: false,
+        width: "20px",
+        className: "ENTABLADOR-btn",
+      };
+      for (var i = 0; i < opciones.columnDefs.length; i++) {
+        var targets = opciones.columnDefs[i].targets;
+        function createTarget(targets) {
+          if (typeof targets == "number") {
+            if (targets >= 0) {
+              return targets + 1;
+            }
+          }
+          return targets;
+        }
+        if (Array.isArray(targets)) {
+          for (var j = 0; j < targets.length; j++) {
+            // createTarget()
+            opciones.columnDefs[i].targets[j] = createTarget(targets[j]);
+          }
+        } else {
+          opciones.columnDefs[i].targets = createTarget(targets);
+        }
+      }
+      opciones.columns.unshift(obj);
     }
 
     // ########################################################################
@@ -1603,7 +1648,8 @@ ENTABLADOR.crear({
 ENTABLADOR.crear({
   id: "TABLA",
   // autoRender: false,
-  renderBlacklist: ["archivosx"],
+  renderBlacklist: ["archivos"],
+  createButtons: true,
   meta: {
     key: "id",
     // secondary_key: "nombre",
@@ -1617,33 +1663,23 @@ ENTABLADOR.crear({
     },
   },
   columns: [
-    {
-      data: null,
-      defaultContent: `
-      <div class="ENTABLADOR-eliminarRow" title="Eliminar" onclick="ENTABLADOR._.eliminarRow(this)" style="margin: 0px 5px;width: fit-content;">${ENTABLADOR._.SVGs.RemoveFileSVG}</div>
-      <div class="ENTABLADOR-restoreRow" title="Recuperar" onclick="ENTABLADOR._.restoreRow(this)" style="margin: 0px 5px;width: fit-content; cursor:pointer; display: none;">${ENTABLADOR._.SVGs.RestoreSVG}</div>
-      `,
-      orderable: false,
-      width: "20px",
-      className: "ENTABLADOR-btn",
-    },
     { data: "id", visible: false },
     { data: "nombre", title: "Nombre", class: "editable", defaultContent: "" },
     { data: "edad", title: "Edad", class: "editable", defaultContent: "" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable", defaultContent: "" },
-    { data: "notas", title: "Notas", class: "editable ENTABLADOR-textarea", defaultContent: "" },
+    { data: "notas", title: "Notas", class: "editable", defaultContent: "" },
     { data: "humano", title: "Humano", class: "editable", defaultContent: "" },
     { data: "archivos", title: "Archivos", class: "editable", defaultContent: "" },
   ],
   columnDefs: [
     {
-      targets: 2, // nombre
+      targets: 1, // nombre
       render: function (data, type, row, meta) {
         return data ? data.toUpperCase() : data;
       },
     },
     {
-      targets: 4, // fechaNacimiento
+      targets: 3, // fechaNacimiento
       render: function (data, type, row, meta) {
         //detect if it is a date
         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
@@ -1655,7 +1691,7 @@ ENTABLADOR.crear({
       },
     },
     {
-      targets: 6, // humano
+      targets: 5, // humano
       render: function (data, type, row, meta) {
         var value = ENTABLADOR._.parseBoolean("boolean", data);
         if (value) {

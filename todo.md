@@ -27,18 +27,18 @@
 
 # TO-DO
 
-- agregar class'es cuando se hace el render automatico. (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
 - crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
 
 # TRABAJANDO EN ELLO
 
-- crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea, (fecha nacimiento?) + OPCION (autoRender)
-- (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
-- +ENTABLADOR.\_.createAutoRender
+- agregar class'es cuando se hace el render automatico. (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
 
 # ULTIMOS HECHOS
 
-- mejorados mucho los AUTO RENDER's
+- | +opciones.autoRender (ignora files)| crear los renders para las columnas, que se pongas automaticamente. hacer como lo hice en 'files'. hacer para: textarea
+- | +opciones.renderBlacklist[] | (mirar arriba) hacerlo un array con las columnas que se quieren omitir (blacklist) de generarlos automaticamente.
+- +ENTABLADOR.\_.createAutoRender
+- opciones.createButtons
 
 # FIXED - ON WATCH
 
