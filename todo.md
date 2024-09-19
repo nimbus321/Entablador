@@ -23,11 +23,12 @@
 
 # IDEAS MAS PRÓXIMAS
 
+- |to fix| si click al svg editar en files, me abre para subir un archivo
 - considerar poner un div con cursor:auto entre la foto y el btn de eliminar on hover de type file
 - crear .edited() que devuelva si la tabla fue editada o no.
+- crear un obj con datos originales para compararlo al editar un campo para saber si es el dato original o no
 - sanitanizar el nombre de la tabla misma (ej; 'TABLA')
 - pensar como implementar campos obligatorios
-- considerar el order de la tabla, tal vez poner un span invisible con los valores reales ordenables.
 
 # TO-DO
 

@@ -637,7 +637,7 @@ const ENTABLADOR = (function () {
         var fromModal = LabelClick.fromModal;
         var field = LabelClick.field;
         var table_name_Modal = LabelClick.table_name;
-        var ENT_TABLA = LabelClick.ENT_TABLA;
+        var ENT_TABLA = window[table_name_Modal];
         var table_name = ENT_TABLA.table().node().id;
 
         var cellDataTables = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
@@ -1310,7 +1310,7 @@ const ENTABLADOR = (function () {
       var tr = $(el).closest("tr").addClass("ENTABLADOR-row-eliminado").attr("title", "Fila Eliminada");
 
       var row = tabla.row(tr).data();
-      console.log(row);
+      // console.log(row);
       var Cambios = ENTABLADOR._.CAMBIOS_TABLAS;
       // añadir cambios a CAMBIOS_TABLAS
       if (!Cambios[tabla_nombre]) {
@@ -1720,7 +1720,7 @@ ENTABLADOR.crear({
   fixOrder: true,
   meta: {
     key: "id",
-    // secondary_key: "nombre",
+    secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
       fechaNacimiento: "date",
@@ -1792,7 +1792,7 @@ ENTABLADOR.crear({
     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
     { id: 7 },
   ]);
 // Add css rule
