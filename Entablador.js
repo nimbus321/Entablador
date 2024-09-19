@@ -356,10 +356,10 @@ const ENTABLADOR = (function () {
       columnDefs: columnDefs,
       order: config.order || [[1, "asc"]],
     };
-    // autoRender's default value = true
+    // set following options to true by default
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
-    // createDefaultContent's default value = true
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
+    config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
@@ -500,7 +500,62 @@ const ENTABLADOR = (function () {
         opciones.order[0][0]++;
       }
     }
+    // ########################################################################
+    // Crear d-none
+    // ########################################################################
+    // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER"] = function (settings, col) {
+      return this.api()
+        .column(col, { order: "index" })
+        .nodes()
+        .map(function (td, i) {
+          var data = NuevaTabla.cell(td).data();
+          console.log(data);
+          if (data === "" || data == undefined) {
+            // Verificamos el orden (asc o desc)
+            // ENTABLADOR._.extractNumberFromString(newContent)
+            if (settings.aaSorting[0][1] === "asc") {
+              return Number.MAX_SAFE_INTEGER;
+              // return "zzzzzzzzzzzzzz";
+            } else {
+              return Number.MIN_SAFE_INTEGER;
+              // return "aaaaaaaaaaaaaa";
+            }
+          }
 
+          var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          if (inputsTypes) {
+            var indexCol = NuevaTabla.cell(td).index().column;
+            var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+            if (inputsTypes[columnaNombre] == "file") {
+              if (data === "" || data == undefined) {
+                return 0;
+              } else if (Array.isArray(data)) {
+                return data.length;
+              } else if (typeof data == "string") {
+                return 1;
+              }
+            } else if (inputsTypes[columnaNombre] == "checkbox") {
+              var val = ENTABLADOR._.parseBoolean("string", data);
+              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? -1 : val;
+            } else if (inputsTypes[columnaNombre] == "datetime-local") {
+              return data == undefined || data === "" ? 0 : new Date(data).getTime();
+            }
+          }
+          if (Array.isArray(data)) {
+            return data.length;
+          }
+          return data;
+        });
+    };
+    if (config.fixOrder) {
+      var obj = {
+        targets: "_all",
+        orderDataType: "ENTABLADOR-ORDER",
+      };
+      // opciones.columnDefs.unshift(obj);
+      opciones.columnDefs.push(obj);
+    }
     // ########################################################################
     // Crear funcionamiento de ENTABLADOR-fade en textarea
     // ########################################################################
@@ -552,6 +607,7 @@ const ENTABLADOR = (function () {
       }
     }
     NuevaTabla.ENTABLADOR.COLUMNS = COLUMNS;
+    NuevaTabla.ENTABLADOR.realColumns = opciones.columns;
 
     // ########################################################################
     // HIDE TOOLTIP ON DRAW AND SHOW ON PRE-DRAW
@@ -1615,7 +1671,7 @@ const ENTABLADOR = (function () {
           }
         }
       } else {
-        console.error("Error: El tipo de dato esperado no es válido. Se esperaba 'string' o 'boolean'. Se ha recibido '" + expectedValue + "'.");
+        console.error("Error: El argumento 1 (expectedValue) no es válido. Se esperaba 'string' o 'boolean'. Se ha recibido '" + expectedValue + "'.");
         return "ERROR! parseBoolean()";
       }
     },
@@ -1661,6 +1717,7 @@ ENTABLADOR.crear({
   // autoRender: false,
   // renderBlacklist: ["archivos"],
   createButtons: true,
+  fixOrder: true,
   meta: {
     key: "id",
     // secondary_key: "nombre",

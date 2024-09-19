@@ -31,12 +31,13 @@
 
 # TO-DO
 
-- crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
-
 # TRABAJANDO EN ELLO
+
+- crear order (ENTABLADOR-ORDER). config.fixOrder: true. Falta ajustarlo correctamente. hay un problema en que no valida bien strings con numbers, tienen que ser iguales.
 
 # ULTIMOS HECHOS
 
+- | CANCELADO (cambiado por otra idea) | crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
 - crear defaultContent auto + opcion
 - hacer +1 en el target del order
 - |DECIDIDO no arreglarlo, porque si se puso en blacklist seguramente se dio un render personalizado y en ese caso seguro que se prefiere que no funcione el click en el td| (fix err: cuando archivos en blacklist, no se puede editar al hacer click)
