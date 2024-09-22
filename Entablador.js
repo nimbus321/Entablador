@@ -501,7 +501,7 @@ const ENTABLADOR = (function () {
       }
     }
     // ########################################################################
-    // Crear d-none
+    // config.fixOrder
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
     $.fn.dataTable.ext.order["ENTABLADOR-ORDER"] = function (settings, col) {
@@ -511,25 +511,26 @@ const ENTABLADOR = (function () {
         .map(function (td, i) {
           var data = NuevaTabla.cell(td).data();
           console.log(data);
-          if (data === "" || data == undefined) {
-            // Verificamos el orden (asc o desc)
-            // ENTABLADOR._.extractNumberFromString(newContent)
-            if (settings.aaSorting[0][1] === "asc") {
-              return Number.MAX_SAFE_INTEGER;
-              // return "zzzzzzzzzzzzzz";
+          function ponerAbajo(data) {
+            if (data === "" || data == undefined) {
+              if (settings.aaSorting[0][1] === "asc") {
+                return Number.MAX_SAFE_INTEGER;
+              } else {
+                return Number.MIN_SAFE_INTEGER;
+              }
             } else {
-              return Number.MIN_SAFE_INTEGER;
-              // return "aaaaaaaaaaaaaa";
+              return data;
             }
           }
-
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var indexCol = NuevaTabla.cell(td).index().column;
+          var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
           if (inputsTypes) {
-            var indexCol = NuevaTabla.cell(td).index().column;
-            var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-            if (inputsTypes[columnaNombre] == "file") {
+            if (inputsTypes[columnaNombre] == undefined) {
+              return ponerAbajo(data);
+            } else if (inputsTypes[columnaNombre] == "file") {
               if (data === "" || data == undefined) {
-                return 0;
+                return ponerAbajo(data);
               } else if (Array.isArray(data)) {
                 return data.length;
               } else if (typeof data == "string") {
@@ -537,15 +538,17 @@ const ENTABLADOR = (function () {
               }
             } else if (inputsTypes[columnaNombre] == "checkbox") {
               var val = ENTABLADOR._.parseBoolean("string", data);
-              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? -1 : val;
-            } else if (inputsTypes[columnaNombre] == "datetime-local") {
-              return data == undefined || data === "" ? 0 : new Date(data).getTime();
+              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? ponerAbajo(data) : val;
+            } else if (inputsTypes[columnaNombre] == "datetime-local" || inputsTypes[columnaNombre] == "date") {
+              return data == undefined || data === "" ? ponerAbajo(data) : new Date(data).getTime();
             }
+          } else {
+            return ponerAbajo(data);
           }
           if (Array.isArray(data)) {
             return data.length;
           }
-          return data;
+          return ponerAbajo(data);
         });
     };
     if (config.fixOrder) {
@@ -1722,7 +1725,7 @@ ENTABLADOR.crear({
     key: "id",
     secondary_key: "nombre",
     inputsTypes: {
-      nombre: "text",
+      // nombre: "text",
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",

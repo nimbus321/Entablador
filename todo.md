@@ -32,9 +32,11 @@
 
 # TO-DO
 
+- crear validacion que los inputTypes puestos en la creacion de la tabla sean validos, si no quitarlos y hacer warn
+
 # TRABAJANDO EN ELLO
 
-- crear order (ENTABLADOR-ORDER). config.fixOrder: true. Falta ajustarlo correctamente. hay un problema en que no valida bien strings con numbers, tienen que ser iguales.
+- crear order (ENTABLADOR-ORDER). config.fixOrder: true. Falta ajustarlo correctamente.
 
 # ULTIMOS HECHOS
 
