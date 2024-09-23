@@ -1773,15 +1773,15 @@ ENTABLADOR.crear({
   fixOrder: true,
   meta: {
     key: "id",
-    // secondary_key: "nombre",
-    // inputsTypes: {
-    //   nombre: "text",
-    //   fechaNacimiento: "date",
-    //   humano: "checkbox",
-    //   archivos: "file",
-    //   edad: "number",
-    //   notas: "textarea",
-    // },
+    secondary_key: "nombre",
+    inputsTypes: {
+      nombre: "text",
+      fechaNacimiento: "date",
+      humano: "checkbox",
+      archivos: "file",
+      edad: "number",
+      notas: "textarea",
+    },
   },
   columns: [
     { data: "id", visible: false },
