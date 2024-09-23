@@ -29,6 +29,7 @@
 - crear un obj con datos originales para compararlo al editar un campo para saber si es el dato original o no
 - sanitanizar el nombre de la tabla misma (ej; 'TABLA')
 - pensar como implementar campos obligatorios
+- ver si el formato de order en datatables acepta otro que no sea order: [1,"asc"].
 
 # TO-DO
 

@@ -509,16 +509,24 @@ const ENTABLADOR = (function () {
         .column(col, { order: "index" })
         .nodes()
         .map(function (td, i) {
+          console.log(0, settings.aaSorting[0][1]);
+
           var data = NuevaTabla.cell(td).data();
           console.log(data);
-          function ponerAbajo(data) {
+          function ponerAbajo(data, text = false) {
             if (data === "" || data == undefined) {
-              if (settings.aaSorting[0][1] === "asc") {
-                return Number.MAX_SAFE_INTEGER;
-              } else {
+              if (settings.aaSorting[0][1] === "asc" || NuevaTabla.ENTABLADOR.orderInicial === "asc") {
+                console.log("valor --- ", text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER);
+                return text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER;
+              } else if (settings.aaSorting[0][1] === "desc" || NuevaTabla.ENTABLADOR.orderInicial === "desc") {
+                console.log("valor --- ", Number.MIN_SAFE_INTEGER);
                 return Number.MIN_SAFE_INTEGER;
+              } else {
+                console.log("valor --- ", data);
+                return data;
               }
             } else {
+              console.log("valor --- ", data);
               return data;
             }
           }
@@ -541,6 +549,8 @@ const ENTABLADOR = (function () {
               return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? ponerAbajo(data) : val;
             } else if (inputsTypes[columnaNombre] == "datetime-local" || inputsTypes[columnaNombre] == "date") {
               return data == undefined || data === "" ? ponerAbajo(data) : new Date(data).getTime();
+            } else if (inputsTypes[columnaNombre] == "number") {
+              return data == undefined || data === "" ? ponerAbajo(data) : Number(data);
             }
           } else {
             return ponerAbajo(data);
@@ -548,7 +558,7 @@ const ENTABLADOR = (function () {
           if (Array.isArray(data)) {
             return data.length;
           }
-          return ponerAbajo(data);
+          return ponerAbajo(data, typeof data === "string");
         });
     };
     if (config.fixOrder) {
@@ -568,7 +578,7 @@ const ENTABLADOR = (function () {
         // detect if the height is higher than 100px
         // console.log("height", $(this).height());
         $(this)
-          .closest(".ENTABLADOR-fade-container")
+          .closest(".ENTABLADOR-fade-container:not(.ENTABLADOR-activeFade)")
           .toggleClass("ENTABLADOR-activeFade", $(this).height() >= 100);
       });
     };
@@ -586,6 +596,7 @@ const ENTABLADOR = (function () {
     NuevaTabla.ENTABLADOR.key = config.meta && config.meta.key ? config.meta.key : null;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta && config.meta.secondary_key ? config.meta.secondary_key : null;
     NuevaTabla.ENTABLADOR.inputsTypes = config.meta && config.meta.inputsTypes;
+    NuevaTabla.ENTABLADOR.orderInicial = config.order ? config.order[1] : opciones.order[0][1]; // probablemente traiga problemas. revisar si datatables deja meter otro formato
 
     var columnKeyIndex = NuevaTabla.settings()
       .init()
@@ -1775,6 +1786,7 @@ ENTABLADOR.crear({
       },
     },
   ],
+  order: [5, "desc"],
 })
   .editable(true)
   // .tipoEdicion("modal")
