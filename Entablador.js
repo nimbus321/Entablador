@@ -505,34 +505,52 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
     $.fn.dataTable.ext.order["ENTABLADOR-ORDER"] = function (settings, col) {
+      var currentOrder = this.api().order();
       return this.api()
         .column(col, { order: "index" })
         .nodes()
         .map(function (td, i) {
-          console.log(0, settings.aaSorting[0][1]);
+          // console.log(0, settings.aaSorting[0][1]);
 
           var data = NuevaTabla.cell(td).data();
           console.log(data);
-          function ponerAbajo(data, text = false) {
-            if (data === "" || data == undefined) {
-              if (settings.aaSorting[0][1] === "asc" || NuevaTabla.ENTABLADOR.orderInicial === "asc") {
-                console.log("valor --- ", text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER);
-                return text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER;
-              } else if (settings.aaSorting[0][1] === "desc" || NuevaTabla.ENTABLADOR.orderInicial === "desc") {
-                console.log("valor --- ", Number.MIN_SAFE_INTEGER);
-                return Number.MIN_SAFE_INTEGER;
-              } else {
-                console.log("valor --- ", data);
-                return data;
-              }
-            } else {
-              console.log("valor --- ", data);
-              return data;
-            }
+          // console.log("currentOrder", currentOrder);
+          var extractOrder = ENTABLADOR._.extractOrder;
+          console.log("extractOrder", extractOrder(currentOrder));
+          function ponerAfter(number, text) {
+            // $(td).html($(td).html() + number + text);
           }
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+
+          function ponerAbajo(data, text = false) {
+            if (data === "" || data == undefined) {
+              // if(){
+              // }
+              // if (settings.aaSorting[0][1] === "asc" || NuevaTabla.ENTABLADOR.orderInicial === "asc") {
+              if (extractOrder(currentOrder) === "asc") {
+                var resp = text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER;
+                console.log("valor0 --- ", resp);
+                ponerAfter("0", text);
+                return resp;
+                // } else if (settings.aaSorting[0][1] === "desc" || NuevaTabla.ENTABLADOR.orderInicial === "desc") {
+              } else if (extractOrder(currentOrder) === "desc") {
+                var resp = text ? Number.MIN_SAFE_INTEGER.toString() : Number.MIN_SAFE_INTEGER;
+                console.log(resp);
+                ponerAfter("1", text);
+                return resp;
+              } else {
+                console.log("valor2 --- ", data);
+                ponerAfter("2", text);
+                return data;
+              }
+            } else {
+              console.log("valor3 --- ", data);
+              ponerAfter("3", text);
+              return data;
+            }
+          }
           if (inputsTypes) {
             if (inputsTypes[columnaNombre] == undefined) {
               return ponerAbajo(data);
@@ -558,6 +576,9 @@ const ENTABLADOR = (function () {
           if (Array.isArray(data)) {
             return data.length;
           }
+          // var randomNumberBinary = Math.random() >= 0.5;
+          // return randomNumberBinary ? 1 : 0;
+          // return ponerAbajo(data);
           return ponerAbajo(data, typeof data === "string");
         });
     };
@@ -1695,6 +1716,24 @@ const ENTABLADOR = (function () {
     isNumeric: function (input) {
       return /^\d{1,3}(?:,\d{3})*(?:\.\d+)?$/.test(input);
     },
+    extractOrderIterations: 0,
+    extractOrder: function (order) {
+      if (this.extractOrderIterations > 10) {
+        this.extractOrderIterations = 0;
+        console.error("Error: Se ha detectado un posible bucle infinito en extractOrder().");
+        return;
+      }
+      for (let i = 0; i < order.length; i++) {
+        if (Array.isArray(order[i])) {
+          ENTABLADOR._.extractOrderIterations++;
+          return ENTABLADOR._.extractOrder(order[i]);
+        }
+        if (order[i] === "asc" || order[i] === "desc") {
+          this.extractOrderIterations = 0;
+          return order[i];
+        }
+      }
+    },
   };
   return {
     id,
@@ -1734,15 +1773,15 @@ ENTABLADOR.crear({
   fixOrder: true,
   meta: {
     key: "id",
-    secondary_key: "nombre",
-    inputsTypes: {
-      // nombre: "text",
-      fechaNacimiento: "date",
-      humano: "checkbox",
-      archivos: "file",
-      edad: "number",
-      notas: "textarea",
-    },
+    // secondary_key: "nombre",
+    // inputsTypes: {
+    //   nombre: "text",
+    //   fechaNacimiento: "date",
+    //   humano: "checkbox",
+    //   archivos: "file",
+    //   edad: "number",
+    //   notas: "textarea",
+    // },
   },
   columns: [
     { data: "id", visible: false },

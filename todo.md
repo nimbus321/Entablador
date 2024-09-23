@@ -38,9 +38,11 @@
 # TRABAJANDO EN ELLO
 
 - crear order (ENTABLADOR-ORDER). config.fixOrder: true. Falta ajustarlo correctamente.
+- (arriba) problema: si data = undefined pone min-safe-int pero puede ser text! hay que revisar los inputtypes
 
 # ULTIMOS HECHOS
 
+- \_.extractOrder()
 - | CANCELADO (cambiado por otra idea) | crear opcion para poner un span.d-none con los datos primeros para que el orden funcione bien + tamb crear opcion
 - crear defaultContent auto + opcion
 - hacer +1 en el target del order
