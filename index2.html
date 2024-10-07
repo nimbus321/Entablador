@@ -27,11 +27,6 @@
       <thead></thead>
       <tbody></tbody>
     </table>
-    <h3>Tabla2</h3>
-    <table id="TABLA2" class="table table-hover table-sm table-striped table-bordered table-dark" style="margin-left: auto; margin-right: auto">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -45,70 +40,21 @@
     ENTABLADOR.crear({
       id: "TABLA",
       // createDefaultContent: false,
-      // autoRender: false,
-      // renderBlacklist: ["archivos"],
-      createButtons: false,
-      fixOrder: true,
+      // createButtons: true,
+      // fixOrder: true,
       meta: {
         key: "id",
-        secondary_key: "nombre",
         inputsTypes: {
-          nombre: "text",
-          fechaNacimiento: "date",
-          humano: "checkbox",
-          archivos: "file",
-          edad: "number",
-          // notas: "textarea",
+          orden: "text",
         },
       },
       columns: [
-        { data: "id", visible: false },
-        { data: "nombre", title: "Nombre", class: "editable" },
-        { data: "edad", title: "Edad", class: "editable" },
-        { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
-        { data: "notas", title: "Notas", class: "editable" },
-        { data: "humano", title: "Humano", class: "editable" },
-        { data: "archivos", title: "Archivos", class: "editable" },
+        { data: "id", title: "ID" },
+        { data: "notas", title: "Notas" },
       ],
-      columnDefs: [
-        {
-          targets: 1, // nombre
-          render: function (data, type, row, meta) {
-            return data ? data.toUpperCase() : data;
-          },
-        },
-        {
-          targets: 3, // fechaNacimiento
-          render: function (data, type, row, meta) {
-            //detect if it is a date
-            // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-            if (data == null || data === "") {
-              return data;
-            }
-            var fecha = new Date(data);
-            return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-          },
-        },
-        {
-          targets: 5, // humano
-          render: function (data, type, row, meta) {
-            var value = ENTABLADOR._.parseBoolean("boolean", data);
-            if (value) {
-              return "si!";
-            } else if (value === false) {
-              return "no!";
-            } else if (value === undefined) {
-              return;
-            }
-          },
-        },
-      ],
-      order: [5, "desc"],
+      order: [0, "desc"],
     })
       .editable(true)
-      // .tipoEdicion("modal")
-      // .modalLarge(true)
-      // .longTextareaBehavior("modal")
       .add([
         {
           id: 1,
@@ -127,5 +73,7 @@
         { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
         { id: 7 },
       ]);
+
+    // .add([{ orden: 1 }, { orden: "2" }, { orden: 3 }, { orden: "4" }, { orden: 5 }, { orden: "a" }, { orden: "b" }, { orden: "c" }]);
   </script>
 </html>

@@ -91,7 +91,10 @@ const ENTABLADOR = (function () {
           .init()
           .columns.map((obj) => obj.className)
           .indexOf("ENTABLADOR-btn");
-        ENT_TABLA.column(columnKeyIndex).visible(boolean);
+        // alert(columnKeyIndex);
+        if (columnKeyIndex >= 0) {
+          ENT_TABLA.column(columnKeyIndex).visible(boolean);
+        }
         return this;
       },
       guardar(boolean) {
@@ -514,6 +517,9 @@ const ENTABLADOR = (function () {
 
           var data = NuevaTabla.cell(td).data();
           console.log(data);
+          if (typeof data !== "object") {
+            data.toString();
+          }
           // console.log("currentOrder", currentOrder);
           var extractOrder = ENTABLADOR._.extractOrder;
           console.log("extractOrder", extractOrder(currentOrder));
@@ -606,6 +612,11 @@ const ENTABLADOR = (function () {
 
     // ########################################################################
     // CREAR TABLA
+    console.log("########################       CREAANDO TABLA       ########################");
+    console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
+    console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
+    console.log("############################################################################");
+
     var NuevaTabla = new DataTable("#" + config.id, opciones);
     // ########################################################################
 
@@ -623,7 +634,9 @@ const ENTABLADOR = (function () {
       .init()
       .columns.map((obj) => obj.className)
       .indexOf("ENTABLADOR-btn");
-    NuevaTabla.column(columnKeyIndex).visible(false);
+    if (columnKeyIndex >= 0) {
+      NuevaTabla.column(columnKeyIndex).visible(false);
+    }
 
     // ########################################################################
     // CREAR NuevaTabla.ENTABLADOR.Columns
@@ -1741,114 +1754,91 @@ const ENTABLADOR = (function () {
     _,
   };
 })();
-// Uso del objeto ENTABLADOR
-/*
-ENTABLADOR.crear({
-  ID: "tabla1",
-  columns: [{}, {}, {}],
-  order: [1, "asc"],
-  columnDefs: [{}, {}],
-  autoWidth: false,
-})
-  .editable(true)
-  .guardar(true)
-  .eliminar(true)
-  .add([{}])
-  .draw()
-  .meta({
-    key: "id",
-    inputsTypes: {
-      nombre: "text",
-      edad: "number",
-      fechaNacimiento: "date",
-    },
-  });
-*/
-ENTABLADOR.crear({
-  id: "TABLA",
-  // createDefaultContent: false,
-  // autoRender: false,
-  // renderBlacklist: ["archivos"],
-  createButtons: true,
-  fixOrder: true,
-  meta: {
-    key: "id",
-    secondary_key: "nombre",
-    inputsTypes: {
-      nombre: "text",
-      fechaNacimiento: "date",
-      humano: "checkbox",
-      archivos: "file",
-      edad: "number",
-      notas: "textarea",
-    },
-  },
-  columns: [
-    { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable" },
-    { data: "edad", title: "Edad", class: "editable" },
-    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
-    { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable" },
-    { data: "archivos", title: "Archivos", class: "editable" },
-  ],
-  columnDefs: [
-    {
-      targets: 1, // nombre
-      render: function (data, type, row, meta) {
-        return data ? data.toUpperCase() : data;
-      },
-    },
-    {
-      targets: 3, // fechaNacimiento
-      render: function (data, type, row, meta) {
-        //detect if it is a date
-        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-        if (data == null || data === "") {
-          return data;
-        }
-        var fecha = new Date(data);
-        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-      },
-    },
-    {
-      targets: 5, // humano
-      render: function (data, type, row, meta) {
-        var value = ENTABLADOR._.parseBoolean("boolean", data);
-        if (value) {
-          return "si!";
-        } else if (value === false) {
-          return "no!";
-        } else if (value === undefined) {
-          return;
-        }
-      },
-    },
-  ],
-  order: [5, "desc"],
-})
-  .editable(true)
-  // .tipoEdicion("modal")
-  // .modalLarge(true)
-  // .longTextareaBehavior("modal")
-  .add([
-    {
-      id: 1,
-      nombre: "Caliope",
-      edad: 30,
-      fechaNacimiento: "2000-12-10",
-      humano: false,
-      notas:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
-    },
-    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
-    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
-    { id: 7 },
-  ]);
+// ENTABLADOR.crear({
+//   id: "TABLA",
+//   // createDefaultContent: false,
+//   // autoRender: false,
+//   // renderBlacklist: ["archivos"],
+//   createButtons: true,
+//   fixOrder: true,
+//   meta: {
+//     key: "id",
+//     secondary_key: "nombre",
+//     inputsTypes: {
+//       nombre: "text",
+//       fechaNacimiento: "date",
+//       humano: "checkbox",
+//       archivos: "file",
+//       edad: "number",
+//       notas: "textarea",
+//     },
+//   },
+//   columns: [
+//     { data: "id", visible: false },
+//     { data: "nombre", title: "Nombre", class: "editable" },
+//     { data: "edad", title: "Edad", class: "editable" },
+//     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+//     { data: "notas", title: "Notas", class: "editable" },
+//     { data: "humano", title: "Humano", class: "editable" },
+//     { data: "archivos", title: "Archivos", class: "editable" },
+//   ],
+//   columnDefs: [
+//     {
+//       targets: 1, // nombre
+//       render: function (data, type, row, meta) {
+//         return data ? data.toUpperCase() : data;
+//       },
+//     },
+//     {
+//       targets: 3, // fechaNacimiento
+//       render: function (data, type, row, meta) {
+//         //detect if it is a date
+//         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+//         if (data == null || data === "") {
+//           return data;
+//         }
+//         var fecha = new Date(data);
+//         return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+//       },
+//     },
+//     {
+//       targets: 5, // humano
+//       render: function (data, type, row, meta) {
+//         var value = ENTABLADOR._.parseBoolean("boolean", data);
+//         if (value) {
+//           return "si!";
+//         } else if (value === false) {
+//           return "no!";
+//         } else if (value === undefined) {
+//           return;
+//         }
+//       },
+//     },
+//   ],
+//   order: [5, "desc"],
+// })
+//   .editable(true)
+//   // .tipoEdicion("modal")
+//   // .modalLarge(true)
+//   // .longTextareaBehavior("modal")
+//   .add([
+//     {
+//       id: 1,
+//       nombre: "Caliope",
+//       edad: 30,
+//       fechaNacimiento: "2000-12-10",
+//       humano: false,
+//       notas:
+//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+//       archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+//     },
+//     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
+//     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+//     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+//     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
+//     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
+//     { id: 7 },
+//   ]);
 // Add css rule
 var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;

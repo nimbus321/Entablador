@@ -37,6 +37,8 @@
 
 # TRABAJANDO EN ELLO
 
+- crear opcion (dafault = true) para poner automaticamente title (info sacado de data) si no se detecta. |considerar que pueden ponerlo desde el html|
+
 - crear order (ENTABLADOR-ORDER). config.fixOrder: true. Falta ajustarlo correctamente.
 - (arriba) problema: si data = undefined pone min-safe-int pero puede ser text! hay que revisar los inputtypes
 
