@@ -507,7 +507,7 @@ const ENTABLADOR = (function () {
     // config.fixOrder
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
-    $.fn.dataTable.ext.order["ENTABLADOR-ORDER"] = function (settings, col) {
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-BACKUP"] = function (settings, col) {
       var currentOrder = this.api().order();
       return this.api()
         .column(col, { order: "index" })
@@ -588,10 +588,81 @@ const ENTABLADOR = (function () {
           return ponerAbajo(data, typeof data === "string");
         });
     };
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NEW"] = function (settings, col) {
+      var currentOrder = this.api().order();
+      return this.api()
+        .column(col, { order: "index" })
+        .nodes()
+        .map(function (td, i) {
+          var data = NuevaTabla.cell(td).data();
+          if (typeof data !== "object") {
+            data.toString();
+          }
+          console.log("data (POST) -", data);
+          var extractOrder = ENTABLADOR._.extractOrder;
+          console.log("extractOrder:", extractOrder(currentOrder));
+
+          var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var indexCol = NuevaTabla.cell(td).index().column;
+          var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+
+          function ponerAbajo(textOrNumber) {
+            var text;
+            if (textOrNumber === "text") {
+              text = true;
+            } else if (textOrNumber === "number") {
+              text = false;
+            } else {
+              console.error("ponerAbajo() -> textOrNumber must be 'text' or 'number'. Value given:", textOrNumber);
+            }
+            var order = extractOrder(currentOrder);
+            if (order === "asc") {
+              var resp = text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER.toString();
+              return resp;
+            } else if (order === "desc") {
+              var resp = text ? Number.MIN_SAFE_INTEGER.toString() : Number.MIN_SAFE_INTEGER.toString();
+              return resp;
+            } else {
+              return data;
+            }
+          }
+          if (inputsTypes) {
+            if (inputsTypes[columnaNombre] == undefined) {
+              return data;
+            } else if (inputsTypes[columnaNombre] == "file") {
+              if (data === "" || data == undefined) {
+                return 0;
+              } else if (Array.isArray(data)) {
+                return data.length;
+              } else if (typeof data == "string") {
+                return 1;
+              }
+            } else if (inputsTypes[columnaNombre] == "checkbox") {
+              var val = ENTABLADOR._.parseBoolean("string", data);
+              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? -1 : val;
+            } else if (inputsTypes[columnaNombre] == "datetime-local" || inputsTypes[columnaNombre] == "date") {
+              var D = new Date(data);
+              var isRealDate = D instanceof Date && !isNaN(D);
+              return data == undefined || data === "" ? Number.MIN_SAFE_INTEGER : isRealDate ? new Date(data).getTime() : 0;
+            } else if (inputsTypes[columnaNombre] == "number") {
+              return data == undefined || data === "" ? Number.MIN_SAFE_INTEGER.toString() : data;
+            }
+          } else {
+            return data;
+          }
+          if (Array.isArray(data)) {
+            return data.length;
+          }
+          // var randomNumberBinary = Math.random() >= 0.5;
+          // return randomNumberBinary ? 1 : 0;
+          // return ponerAbajo(data);
+          return ponerAbajo(data, typeof data === "string");
+        });
+    };
     if (config.fixOrder) {
       var obj = {
         targets: "_all",
-        orderDataType: "ENTABLADOR-ORDER",
+        orderDataType: "ENTABLADOR-ORDER-NEW",
       };
       // opciones.columnDefs.unshift(obj);
       opciones.columnDefs.push(obj);
@@ -612,7 +683,7 @@ const ENTABLADOR = (function () {
 
     // ########################################################################
     // CREAR TABLA
-    console.log("########################       CREAANDO TABLA       ########################");
+    console.log("########################       CREANDO TABLA       ########################");
     console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
     console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
     console.log("############################################################################");

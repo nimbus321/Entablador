@@ -41,7 +41,7 @@
       id: "TABLA",
       // createDefaultContent: false,
       // createButtons: true,
-      // fixOrder: true,
+      fixOrder: false,
       meta: {
         key: "id",
         inputsTypes: {
@@ -50,9 +50,11 @@
       },
       columns: [
         { data: "id", title: "ID" },
-        { data: "notas", title: "Notas" },
+        // { data: "notas", title: "Notas" },
+        { data: "test2", title: "Test2" },
+        { data: "test", title: "Test" },
       ],
-      order: [0, "desc"],
+      order: [1, "desc"],
     })
       .editable(true)
       .add([
@@ -69,9 +71,12 @@
         { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
         { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
         { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-        { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
         { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
-        { id: 7 },
+        { test2: "zzzz", test: "z" },
+        { test2: "zzz z", test: "zzzz" },
+        { test2: "z", test: "1" },
+        { test2: "", test: "0" },
+        { test2: "", test: "-1" },
       ]);
 
     // .add([{ orden: 1 }, { orden: "2" }, { orden: 3 }, { orden: "4" }, { orden: 5 }, { orden: "a" }, { orden: "b" }, { orden: "c" }]);

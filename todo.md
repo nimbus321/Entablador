@@ -30,10 +30,12 @@
 - sanitanizar el nombre de la tabla misma (ej; 'TABLA')
 - pensar como implementar campos obligatorios
 - ver si el formato de order en datatables acepta otro que no sea order: [1,"asc"].
+- extractOrder() solo funciona con arrays, pero puede que el order sea objects o similares. revisar documentación
 
 # TO-DO
 
 - crear validacion que los inputTypes puestos en la creacion de la tabla sean validos, si no quitarlos y hacer warn
+- en guardarCambiosModal en la seccion AGREGAR CLASSES, necesita que la oclumna tenga :name para funcionar. pontencial error si no hay...
 
 # TRABAJANDO EN ELLO
 
