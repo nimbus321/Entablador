@@ -4,6 +4,9 @@
 
 const ENTABLADOR = (function () {
   var SVGs = {
+    // EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
+    // NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>`,
+    // FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" class="" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RemoveFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" class="" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RestoreSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="15px" height="20px" viewBox="0 0 24 24" fill="none" style="color: var(--success)"><path d="M4.52185 7H7C7.55229 7 8 7.44772 8 8C8 8.55229 7.55228 9 7 9H3C1.89543 9 1 8.10457 1 7V3C1 2.44772 1.44772 2 2 2C2.55228 2 3 2.44772 3 3V5.6754C4.26953 3.8688 6.06062 2.47676 8.14852 1.69631C10.6633 0.756291 13.435 0.768419 15.9415 1.73041C18.448 2.69239 20.5161 4.53782 21.7562 6.91897C22.9963 9.30013 23.3228 12.0526 22.6741 14.6578C22.0254 17.263 20.4464 19.541 18.2345 21.0626C16.0226 22.5842 13.3306 23.2444 10.6657 22.9188C8.00083 22.5931 5.54702 21.3041 3.76664 19.2946C2.20818 17.5356 1.25993 15.3309 1.04625 13.0078C0.995657 12.4579 1.45216 12.0088 2.00445 12.0084C2.55673 12.0079 3.00351 12.4566 3.06526 13.0055C3.27138 14.8374 4.03712 16.5706 5.27027 17.9625C6.7255 19.605 8.73118 20.6586 10.9094 20.9247C13.0876 21.1909 15.288 20.6513 17.0959 19.4075C18.9039 18.1638 20.1945 16.3018 20.7247 14.1724C21.2549 12.043 20.9881 9.79319 19.9745 7.8469C18.9608 5.90061 17.2704 4.3922 15.2217 3.6059C13.173 2.8196 10.9074 2.80968 8.8519 3.57803C7.11008 4.22911 5.62099 5.40094 4.57993 6.92229C4.56156 6.94914 4.54217 6.97505 4.52185 7Z" fill="currentColor"/></svg>`,
@@ -317,10 +320,22 @@ const ENTABLADOR = (function () {
       return;
     }
     // ########################################################################
+    /*
+              .crear({
+                  ID: ID,
+                  columns: [{}, {}, {}],
+                  order: [1, "asc"],
+                  columnDefs: [{}, {}],
+                  autoWidth: false
+              })
+            */
+
+    // ########################################################################
     // METER { type: "locale-compare", targets: "_all" }
     // ########################################################################
-    var columnDefs = config.columnDefs;
-    if (columnDefs) {
+    var columnDefs;
+    if (config.columnDefs) {
+      columnDefs = config.columnDefs;
       var hayLocaleCompare = false;
       for (let i = 0; i < columnDefs.length; i++) {
         if (columnDefs.type == "locale-compare") {
@@ -348,7 +363,6 @@ const ENTABLADOR = (function () {
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
     config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
-    config.createButtons = config.createButtons == undefined ? true : config.createButtons;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
@@ -493,14 +507,157 @@ const ENTABLADOR = (function () {
     // config.fixOrder
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-BACKUP"] = function (settings, col) {
+      var currentOrder = this.api().order();
+      return this.api()
+        .column(col, { order: "index" })
+        .nodes()
+        .map(function (td, i) {
+          // console.log(0, settings.aaSorting[0][1]);
 
+          var data = NuevaTabla.cell(td).data();
+          console.log(data);
+          if (typeof data !== "object") {
+            data.toString();
+          }
+          // console.log("currentOrder", currentOrder);
+          var extractOrder = ENTABLADOR._.extractOrder;
+          console.log("extractOrder", extractOrder(currentOrder));
+          function ponerAfter(number, text) {
+            // $(td).html($(td).html() + number + text);
+          }
+          var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var indexCol = NuevaTabla.cell(td).index().column;
+          var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+
+          function ponerAbajo(data, text = false) {
+            if (data === "" || data == undefined) {
+              // if(){
+              // }
+              // if (settings.aaSorting[0][1] === "asc" || NuevaTabla.ENTABLADOR.orderInicial === "asc") {
+              if (extractOrder(currentOrder) === "asc") {
+                var resp = text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER;
+                console.log("valor0 --- ", resp);
+                ponerAfter("0", text);
+                return resp;
+                // } else if (settings.aaSorting[0][1] === "desc" || NuevaTabla.ENTABLADOR.orderInicial === "desc") {
+              } else if (extractOrder(currentOrder) === "desc") {
+                var resp = text ? Number.MIN_SAFE_INTEGER.toString() : Number.MIN_SAFE_INTEGER;
+                console.log(resp);
+                ponerAfter("1", text);
+                return resp;
+              } else {
+                console.log("valor2 --- ", data);
+                ponerAfter("2", text);
+                return data;
+              }
+            } else {
+              console.log("valor3 --- ", data);
+              ponerAfter("3", text);
+              return data;
+            }
+          }
+          if (inputsTypes) {
+            if (inputsTypes[columnaNombre] == undefined) {
+              return ponerAbajo(data);
+            } else if (inputsTypes[columnaNombre] == "file") {
+              if (data === "" || data == undefined) {
+                return ponerAbajo(data);
+              } else if (Array.isArray(data)) {
+                return data.length;
+              } else if (typeof data == "string") {
+                return 1;
+              }
+            } else if (inputsTypes[columnaNombre] == "checkbox") {
+              var val = ENTABLADOR._.parseBoolean("string", data);
+              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? ponerAbajo(data) : val;
+            } else if (inputsTypes[columnaNombre] == "datetime-local" || inputsTypes[columnaNombre] == "date") {
+              return data == undefined || data === "" ? ponerAbajo(data) : new Date(data).getTime();
+            } else if (inputsTypes[columnaNombre] == "number") {
+              return data == undefined || data === "" ? ponerAbajo(data) : Number(data);
+            }
+          } else {
+            return ponerAbajo(data);
+          }
+          if (Array.isArray(data)) {
+            return data.length;
+          }
+          // var randomNumberBinary = Math.random() >= 0.5;
+          // return randomNumberBinary ? 1 : 0;
+          // return ponerAbajo(data);
+          return ponerAbajo(data, typeof data === "string");
+        });
+    };
     $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NEW"] = function (settings, col) {
-      // HACER ESTO DESPUÉS !
-      if (Array.isArray(data)) {
-        return data.length;
-      } else {
-        return data;
-      }
+      var currentOrder = this.api().order();
+      return this.api()
+        .column(col, { order: "index" })
+        .nodes()
+        .map(function (td, i) {
+          var data = NuevaTabla.cell(td).data();
+          if (typeof data !== "object") {
+            data.toString();
+          }
+          console.log("data (POST) -", data);
+          var extractOrder = ENTABLADOR._.extractOrder;
+          console.log("extractOrder:", extractOrder(currentOrder));
+
+          var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var indexCol = NuevaTabla.cell(td).index().column;
+          var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+
+          function ponerAbajo(textOrNumber) {
+            var text;
+            if (textOrNumber === "text") {
+              text = true;
+            } else if (textOrNumber === "number") {
+              text = false;
+            } else {
+              console.error("ponerAbajo() -> textOrNumber must be 'text' or 'number'. Value given:", textOrNumber);
+            }
+            var order = extractOrder(currentOrder);
+            if (order === "asc") {
+              var resp = text ? "zzzzzzzzz" : Number.MAX_SAFE_INTEGER.toString();
+              return resp;
+            } else if (order === "desc") {
+              var resp = text ? Number.MIN_SAFE_INTEGER.toString() : Number.MIN_SAFE_INTEGER.toString();
+              return resp;
+            } else {
+              return data;
+            }
+          }
+          if (inputsTypes) {
+            if (inputsTypes[columnaNombre] == undefined) {
+              return data;
+            } else if (inputsTypes[columnaNombre] == "file") {
+              if (data === "" || data == undefined) {
+                return 0;
+              } else if (Array.isArray(data)) {
+                return data.length;
+              } else if (typeof data == "string") {
+                return 1;
+              }
+            } else if (inputsTypes[columnaNombre] == "checkbox") {
+              var val = ENTABLADOR._.parseBoolean("string", data);
+              return val === "false" ? 0 : val === "true" ? 1 : val === "undefined" ? -1 : val;
+            } else if (inputsTypes[columnaNombre] == "datetime-local" || inputsTypes[columnaNombre] == "date") {
+              var D = new Date(data);
+              var isRealDate = D instanceof Date && !isNaN(D);
+              return data == undefined || data === "" ? Number.MIN_SAFE_INTEGER : isRealDate ? new Date(data).getTime() : 0;
+            } else if (inputsTypes[columnaNombre] == "number") {
+              return data == undefined || data === "" ? Number.MIN_SAFE_INTEGER.toString() : data;
+            }
+          } else {
+            return data;
+          }
+          if (Array.isArray(data)) {
+            return data.length;
+          }
+          // var randomNumberBinary = Math.random() >= 0.5;
+          // return randomNumberBinary ? 1 : 0;
+          // return ponerAbajo(data);
+          return ponerAbajo(data, typeof data === "string");
+        });
     };
     if (config.fixOrder) {
       var obj = {
@@ -1668,90 +1825,91 @@ const ENTABLADOR = (function () {
     _,
   };
 })();
-ENTABLADOR.crear({
-  id: "TABLA",
-  fixOrder: false,
-  // createButtons: false,
-  // autoRender: false,
-  // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?)
-  meta: {
-    key: "id",
-    secondary_key: "nombre",
-    inputsTypes: {
-      nombre: "text",
-      fechaNacimiento: "date",
-      humano: "checkbox",
-      archivos: "file",
-      edad: "number",
-      notas: "textarea",
-    },
-  },
-  columns: [
-    { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable" },
-    { data: "edad", title: "Edad", class: "editable" },
-    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
-    { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable" },
-    { data: "archivos", title: "Archivos", class: "editable" },
-  ],
-  columnDefs: [
-    {
-      targets: 1, // nombre
-      render: function (data, type, row, meta) {
-        return data ? data.toUpperCase() : data;
-      },
-    },
-    {
-      targets: 3, // fechaNacimiento
-      render: function (data, type, row, meta) {
-        //detect if it is a date
-        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-        if (data == null || data === "") {
-          return data;
-        }
-        var fecha = new Date(data);
-        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-      },
-    },
-    {
-      targets: 5, // humano
-      render: function (data, type, row, meta) {
-        var value = ENTABLADOR._.parseBoolean("boolean", data);
-        if (value) {
-          return "si!";
-        } else if (value === false) {
-          return "no!";
-        } else if (value === undefined) {
-          return;
-        }
-      },
-    },
-  ],
-  order: [5, "desc"],
-})
-  .editable(true)
-  // .tipoEdicion("modal")
-  // .modalLarge(true)
-  // .longTextareaBehavior("modal")
-  .add([
-    {
-      id: 1,
-      nombre: "Caliope",
-      edad: 30,
-      fechaNacimiento: "2000-12-10",
-      humano: false,
-      notas:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
-    },
-    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
-    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-    { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
-    { id: 7 },
-  ]);
+// ENTABLADOR.crear({
+//   id: "TABLA",
+//   // createDefaultContent: false,
+//   // autoRender: false,
+//   // renderBlacklist: ["archivos"],
+//   createButtons: true,
+//   fixOrder: true,
+//   meta: {
+//     key: "id",
+//     secondary_key: "nombre",
+//     inputsTypes: {
+//       nombre: "text",
+//       fechaNacimiento: "date",
+//       humano: "checkbox",
+//       archivos: "file",
+//       edad: "number",
+//       notas: "textarea",
+//     },
+//   },
+//   columns: [
+//     { data: "id", visible: false },
+//     { data: "nombre", title: "Nombre", class: "editable" },
+//     { data: "edad", title: "Edad", class: "editable" },
+//     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+//     { data: "notas", title: "Notas", class: "editable" },
+//     { data: "humano", title: "Humano", class: "editable" },
+//     { data: "archivos", title: "Archivos", class: "editable" },
+//   ],
+//   columnDefs: [
+//     {
+//       targets: 1, // nombre
+//       render: function (data, type, row, meta) {
+//         return data ? data.toUpperCase() : data;
+//       },
+//     },
+//     {
+//       targets: 3, // fechaNacimiento
+//       render: function (data, type, row, meta) {
+//         //detect if it is a date
+//         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+//         if (data == null || data === "") {
+//           return data;
+//         }
+//         var fecha = new Date(data);
+//         return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+//       },
+//     },
+//     {
+//       targets: 5, // humano
+//       render: function (data, type, row, meta) {
+//         var value = ENTABLADOR._.parseBoolean("boolean", data);
+//         if (value) {
+//           return "si!";
+//         } else if (value === false) {
+//           return "no!";
+//         } else if (value === undefined) {
+//           return;
+//         }
+//       },
+//     },
+//   ],
+//   order: [5, "desc"],
+// })
+//   .editable(true)
+//   // .tipoEdicion("modal")
+//   // .modalLarge(true)
+//   // .longTextareaBehavior("modal")
+//   .add([
+//     {
+//       id: 1,
+//       nombre: "Caliope",
+//       edad: 30,
+//       fechaNacimiento: "2000-12-10",
+//       humano: false,
+//       notas:
+//         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+//       archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+//     },
+//     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
+//     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+//     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+//     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
+//     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
+//     { id: 7 },
+//   ]);
 // Add css rule
 var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;

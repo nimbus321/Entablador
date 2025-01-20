@@ -42,90 +42,90 @@
   <script src="https://cdn.datatables.net/plug-ins/1.12.1/filtering/type-based/accent-neutralise.js"></script>
   <script src="Entablador.js"></script>
   <script>
-    ENTABLADOR.crear({
-      id: "TABLA",
-      // createDefaultContent: false,
-      // autoRender: false,
-      // renderBlacklist: ["archivos"],
-      createButtons: false,
-      fixOrder: true,
-      meta: {
-        key: "id",
-        secondary_key: "nombre",
-        inputsTypes: {
-          nombre: "text",
-          fechaNacimiento: "date",
-          humano: "checkbox",
-          archivos: "file",
-          edad: "number",
-          // notas: "textarea",
-        },
-      },
-      columns: [
-        { data: "id", visible: false },
-        { data: "nombre", title: "Nombre", class: "editable" },
-        { data: "edad", title: "Edad", class: "editable" },
-        { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
-        { data: "notas", title: "Notas", class: "editable" },
-        { data: "humano", title: "Humano", class: "editable" },
-        { data: "archivos", title: "Archivos", class: "editable" },
-      ],
-      columnDefs: [
-        {
-          targets: 1, // nombre
-          render: function (data, type, row, meta) {
-            return data ? data.toUpperCase() : data;
-          },
-        },
-        {
-          targets: 3, // fechaNacimiento
-          render: function (data, type, row, meta) {
-            //detect if it is a date
-            // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
-            if (data == null || data === "") {
-              return data;
-            }
-            var fecha = new Date(data);
-            return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-          },
-        },
-        {
-          targets: 5, // humano
-          render: function (data, type, row, meta) {
-            var value = ENTABLADOR._.parseBoolean("boolean", data);
-            if (value) {
-              return "si!";
-            } else if (value === false) {
-              return "no!";
-            } else if (value === undefined) {
-              return;
-            }
-          },
-        },
-      ],
-      order: [5, "desc"],
-    })
-      .editable(true)
-      // .tipoEdicion("modal")
-      // .modalLarge(true)
-      // .longTextareaBehavior("modal")
-      .add([
-        {
-          id: 1,
-          nombre: "Caliope",
-          edad: 30,
-          fechaNacimiento: "2000-12-10",
-          humano: false,
-          notas:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
-          archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
-        },
-        { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
-        { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
-        { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
-        { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
-        { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
-        { id: 7 },
-      ]);
+    // ENTABLADOR.crear({
+    //   id: "TABLA",
+    //   // createDefaultContent: false,
+    //   // autoRender: false,
+    //   // renderBlacklist: ["archivos"],
+    //   createButtons: false,
+    //   fixOrder: true,
+    //   meta: {
+    //     key: "id",
+    //     secondary_key: "nombre",
+    //     inputsTypes: {
+    //       nombre: "text",
+    //       fechaNacimiento: "date",
+    //       humano: "checkbox",
+    //       archivos: "file",
+    //       edad: "number",
+    //       // notas: "textarea",
+    //     },
+    //   },
+    //   columns: [
+    //     { data: "id", visible: false },
+    //     { data: "nombre", title: "Nombre", class: "editable" },
+    //     { data: "edad", title: "Edad", class: "editable" },
+    //     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+    //     { data: "notas", title: "Notas", class: "editable" },
+    //     { data: "humano", title: "Humano", class: "editable" },
+    //     { data: "archivos", title: "Archivos", class: "editable" },
+    //   ],
+    //   columnDefs: [
+    //     {
+    //       targets: 1, // nombre
+    //       render: function (data, type, row, meta) {
+    //         return data ? data.toUpperCase() : data;
+    //       },
+    //     },
+    //     {
+    //       targets: 3, // fechaNacimiento
+    //       render: function (data, type, row, meta) {
+    //         //detect if it is a date
+    //         // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+    //         if (data == null || data === "") {
+    //           return data;
+    //         }
+    //         var fecha = new Date(data);
+    //         return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+    //       },
+    //     },
+    //     {
+    //       targets: 5, // humano
+    //       render: function (data, type, row, meta) {
+    //         var value = ENTABLADOR._.parseBoolean("boolean", data);
+    //         if (value) {
+    //           return "si!";
+    //         } else if (value === false) {
+    //           return "no!";
+    //         } else if (value === undefined) {
+    //           return;
+    //         }
+    //       },
+    //     },
+    //   ],
+    //   order: [5, "desc"],
+    // })
+    //   .editable(true)
+    //   // .tipoEdicion("modal")
+    //   // .modalLarge(true)
+    //   // .longTextareaBehavior("modal")
+    //   .add([
+    //     {
+    //       id: 1,
+    //       nombre: "Caliope",
+    //       edad: 30,
+    //       fechaNacimiento: "2000-12-10",
+    //       humano: false,
+    //       notas:
+    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+    //       archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+    //     },
+    //     { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
+    //     { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+    //     { id: 4, nombre: "John Dee", edad: 30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+    //     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
+    //     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
+    //     { id: 7 },
+    //   ]);
   </script>
 </html>
