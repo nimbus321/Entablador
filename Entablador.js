@@ -340,15 +340,17 @@ const ENTABLADOR = (function () {
     // ########################################################################
     var opciones = {
       language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
-      autoWidth: config.autoWidth || false,
       columnDefs: columnDefs,
       order: config.order || [[1, "asc"]],
     };
-    // set following options to true by default
+    // set following options default
+    if (config.autoWidth !== undefined) {
+      opciones.autoWidth = config.autoWidth;
+    }
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
-    config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
-    config.createButtons = config.createButtons == undefined ? true : config.createButtons;
+    config.fixOrder = config.fixOrder === undefined ? true : config.fixOrder;
+    config.createButtons = config.createButtons === undefined ? true : config.createButtons;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
