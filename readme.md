@@ -65,7 +65,7 @@ ENTABLADOR.crear({
       date: "date",
     },
   },
-  // All the following properties are optional to state
+  // All the following properties are optional to declare
   columns: [], // DataTables's columns (example below)
   columnDefs: [], // DataTables's columnDefs (example below)
   autoWidth: false,
