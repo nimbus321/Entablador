@@ -8,6 +8,7 @@
 - columnDefs
 - columns
 
+- id
 - createButtons
 - meta
   - .key
@@ -17,6 +18,7 @@
 - fixOrder
 - autoRender
 - createDefaultContent
+- renderBlacklist
 
 #### POR EXAMINAR
 

@@ -65,8 +65,16 @@ ENTABLADOR.crear({
       date: "date",
     },
   },
-  columns: [], // DataTables's columns (example below)           <- Optional
-  columnDefs: [], // DataTables's columnDefs (example below)     <- Optional
+  // All the following properties are optional to state
+  columns: [], // DataTables's columns (example below)
+  columnDefs: [], // DataTables's columnDefs (example below)
+  autoWidth: false,
+  order: [5, "desc"],
+  createButtons: true,
+  fixOrder: true,
+  autoRender: true,
+  createDefaultContent: true,
+  renderBlacklist: ["Column1", "Column3"],
 });
 ```
 
@@ -101,12 +109,19 @@ columnDefs: [
 
 #### Configuration's object structure
 
-| Property     | Value                        | Notes                               | Optional |
-| :----------- | :--------------------------- | :---------------------------------- | :------: |
-| `id`         | The HTML table's ID atribute | Cannot be an already existing table |    No    |
-| `meta`       | meta Object                  | Meta object will be explained below |    No    |
-| `columns`    | DataTable's columns          |                                     |   Yes    |
-| `columnDefs` | DataTable's columnDefs       |                                     |   Yes    |
+| Property               | Value                                                                                                                                                        | Notes                                                                                                | Optional |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- | :------: |
+| `id`                   | The HTML table's ID atribute                                                                                                                                 | Cannot be an already existing table                                                                  |    No    |
+| `meta`                 | meta Object                                                                                                                                                  | Meta object will be explained below                                                                  |    No    |
+| `columns`              | DataTable's columns                                                                                                                                          |                                                                                                      |   Yes    |
+| `columnDefs`           | DataTable's columnDefs                                                                                                                                       |                                                                                                      |   Yes    |
+| `order`                | DataTable's order                                                                                                                                            |                                                                                                      |   Yes    |
+| `autoWidth`            | DataTable's autoWidth (boolean)                                                                                                                              | Default to false                                                                                     |   Yes    |
+| `createButtons`        | Boolean                                                                                                                                                      | Create the button's column<br>to the left to display when<br>the table is editable. Default to true. |   Yes    |
+| `fixOrder`             | Boolean                                                                                                                                                      | Default to true                                                                                      |   Yes    |
+| `autoRender`           | Boolean                                                                                                                                                      | Default to true                                                                                      |   Yes    |
+| `createDefaultContent` | Boolean                                                                                                                                                      | Default to true                                                                                      |   Yes    |
+| `renderBlacklist`      | Array with the column's names<br>that you wish to not render<br>automatically. Names need to<br>be a string. This has no effect<br>if `autoRender` if false. | Example:<br>`["Column1","Column2"]`                                                                  |   Yes    |
 
 #### `meta`'s object
 

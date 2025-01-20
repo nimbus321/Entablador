@@ -485,8 +485,8 @@ const ENTABLADOR = (function () {
         }
       }
       opciones.columns.unshift(obj);
-      if (opciones.order && Array.isArray(opciones.order) && Array.isArray(opciones.order[0]) && typeof opciones.order[0][0] == "number") {
-        opciones.order[0][0]++;
+      if (opciones.order) {
+        console.log("Si se utiliza un index de columna en .order, tener en cuenta que se creó la columna de los botones porque createButtons=true, así que ajustar manualmente el .order");
       }
     }
     // ########################################################################
