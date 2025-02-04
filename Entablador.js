@@ -319,17 +319,6 @@ const ENTABLADOR = (function () {
       return;
     }
     // ########################################################################
-    /*
-              .crear({
-                  ID: ID,
-                  columns: [{}, {}, {}],
-                  order: [1, "asc"],
-                  columnDefs: [{}, {}],
-                  autoWidth: false
-              })
-            */
-
-    // ########################################################################
     // METER { type: "locale-compare", targets: "_all" }
     // ########################################################################
     var columnDefs;
@@ -359,6 +348,7 @@ const ENTABLADOR = (function () {
       // order: config.order || [[1, "asc"]],
     };
     // set following options to true by default
+
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
     config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
