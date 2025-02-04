@@ -2,16 +2,17 @@
 
 # IDEAS
 
+- quitar los svg (ponerlos con ::after)
+
+- crear el orden en ENTABLADOR-ORDER-NEW
+
 # IDEAS MAS PRÓXIMAS
 
 # TO-DO
 
-- quitar los svg
-- crear el orden en ENTABLADOR-ORDER-NEW
-
 # TRABAJANDO EN ELLO
 
-- REESTRUCTURANDO TODO DESDE 0
+- REESTRUCTURANDO TODO DESDE 0 - LIMPIAR TODO
 
 # ULTIMOS HECHOS
 
