@@ -1,7 +1,5 @@
 # A TENER EN CUENTA
 
-- OJO!!! CREO QUE el error que me tomó tanto problema la última vez fue por quitar 'autoWidth: config.autoWidth || false'. Considerar esto.
-
 # IDEAS
 
 - quitar los svg (ponerlos con ::after)
@@ -15,6 +13,7 @@
 
 # TRABAJANDO EN ELLO
 
+- OJO!!! CREO QUE el error que me tomó tanto problema la última vez fue por quitar 'autoWidth: config.autoWidth || false'. Considerar esto. es lo mismo quitarlo que ponerlo autoWidth: true. INVESTIGAR MÁS ESTO
 - Empezar ENTABLADOR-ORDER-SPACES-ON-BOTTOM
 
 # ULTIMOS HECHOS
