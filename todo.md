@@ -12,6 +12,8 @@
 
 # TRABAJANDO EN ELLO
 
+- Empezar ENTABLADOR-ORDER-SPACES-ON-BOTTOM
+
 # ULTIMOS HECHOS
 
 - arreglando errores al editar con modal cuando inputTypes no existe (ya?)

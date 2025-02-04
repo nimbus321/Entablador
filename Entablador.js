@@ -525,7 +525,7 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
 
-    $.fn.dataTable.ext.order["ENTABLDOR-ORDER-OLD"] = function (settings, col) {
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-SPACES-ON-BOTTOM"] = function (settings, col) {
       // HACER ESTO DESPUÉS !
       if (Array.isArray(data)) {
         return String(data.length);
@@ -533,7 +533,7 @@ const ENTABLADOR = (function () {
         return data;
       }
     };
-    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NO-SPACES"] = function (settings, col) {
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NORMAL-SPACES"] = function (settings, col) {
       // Este order no pone los al final si data == "" || undefined. No se toma en cuenta.
       var currentOrder = this.api().order();
       return this.api()
@@ -577,7 +577,7 @@ const ENTABLADOR = (function () {
     if (config.fixOrder) {
       var obj = {
         targets: "_all",
-        orderDataType: "ENTABLADOR-ORDER-NO-SPACES",
+        orderDataType: "ENTABLADOR-ORDER-NORMAL-SPACES",
       };
       // opciones.columnDefs.unshift(obj);
       opciones.columnDefs.push(obj);
