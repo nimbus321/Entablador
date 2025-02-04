@@ -4,9 +4,6 @@
 
 const ENTABLADOR = (function () {
   var SVGs = {
-    // EditedSVG: `<svg class="ml-1 mb-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>`,
-    // NewSVG: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color: var(--success);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>`,
-    // FileSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="22px" viewBox="4 2 16 20" class="" fill="currentColor"><path d="M9 15L11 17L15 13M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
     AddFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" title="Agregar Archivo" style="color: var(--success); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor"><path d="M10 15H14M12 13V17M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RemoveFileSVG: `<svg xmlns="http://www.w3.org/2000/svg" class="" style="color: var(--danger); cursor:pointer;" width="15px" height="20px" viewBox="4 2 16 20" fill="currentColor" viewBox="0 0 24 24" fill="none"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     RestoreSVG: `<svg xmlns="http://www.w3.org/2000/svg" width="15px" height="20px" viewBox="0 0 24 24" fill="none" style="color: var(--success)"><path d="M4.52185 7H7C7.55229 7 8 7.44772 8 8C8 8.55229 7.55228 9 7 9H3C1.89543 9 1 8.10457 1 7V3C1 2.44772 1.44772 2 2 2C2.55228 2 3 2.44772 3 3V5.6754C4.26953 3.8688 6.06062 2.47676 8.14852 1.69631C10.6633 0.756291 13.435 0.768419 15.9415 1.73041C18.448 2.69239 20.5161 4.53782 21.7562 6.91897C22.9963 9.30013 23.3228 12.0526 22.6741 14.6578C22.0254 17.263 20.4464 19.541 18.2345 21.0626C16.0226 22.5842 13.3306 23.2444 10.6657 22.9188C8.00083 22.5931 5.54702 21.3041 3.76664 19.2946C2.20818 17.5356 1.25993 15.3309 1.04625 13.0078C0.995657 12.4579 1.45216 12.0088 2.00445 12.0084C2.55673 12.0079 3.00351 12.4566 3.06526 13.0055C3.27138 14.8374 4.03712 16.5706 5.27027 17.9625C6.7255 19.605 8.73118 20.6586 10.9094 20.9247C13.0876 21.1909 15.288 20.6513 17.0959 19.4075C18.9039 18.1638 20.1945 16.3018 20.7247 14.1724C21.2549 12.043 20.9881 9.79319 19.9745 7.8469C18.9608 5.90061 17.2704 4.3922 15.2217 3.6059C13.173 2.8196 10.9074 2.80968 8.8519 3.57803C7.11008 4.22911 5.62099 5.40094 4.57993 6.92229C4.56156 6.94914 4.54217 6.97505 4.52185 7Z" fill="currentColor"/></svg>`,
@@ -87,16 +84,35 @@ const ENTABLADOR = (function () {
         // console.log(ID + " -- editable: " + boolean);
         ENT_TABLA.table().node().classList.toggle("editable", boolean);
         //make column of table's key invisible or not
-        var columnKeyIndex = ENT_TABLA.settings()
-          .init()
-          .columns.map((obj) => obj.className)
-          .indexOf("ENTABLADOR-btn");
-        var arr = ENT_TABLA.settings().init().columns;
-        // alert(columnKeyIndex);
-        if (columnKeyIndex >= 0) {
-          ENT_TABLA.column(columnKeyIndex).visible(boolean);
-        }
+        // var columnKeyIndex = ENT_TABLA.settings()
+        //   .init()
+        //   .columns.map((obj) => obj.className)
+        //   .indexOf("ENTABLADOR-btn");
+        // // alert(columnKeyIndex);
+        // console.log("uffff columnKeyIndex", columnKeyIndex);
 
+        var columnKeyIndex = 0;
+        if (columnKeyIndex >= 0) {
+          // ENT_TABLA.column(columnKeyIndex).visible(boolean);
+          console.log("ENT_TABLA", ENT_TABLA);
+          console.log("boolean", boolean);
+
+          // TABLA.column("ENTABLADOR-btn:name").visible(boolean); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          console.log('TABLA.column("ENTABLADOR-btn:name")', ENT_TABLA.column("ENTABLADOR-btn:name"));
+          console.log("TEST, DATA", ENT_TABLA.column("ENTABLADOR-btn:name").data().toArray());
+          setTimeout(() => {
+            console.log("TEST DESPUES, DATA", ENT_TABLA.column("ENTABLADOR-btn:name").data().toArray());
+          }, 100);
+
+          // console.log("TEST", "");
+          // TABLA.column("ENTABLADOR-btn:name").visible(boolean);
+
+          // ENT_TABLA.column("ENTABLADOR-btn:name").visible(boolean);
+
+          // TABLA.column("ENTABLADOR-btn:name").visible(boolean);
+          // console.log("ENT_TABLA.column(columnKeyIndex)", ENT_TABLA.column(columnKeyIndex));
+          // console.log("ENT_TABLA.columns().data().toArray()", ENT_TABLA.columns().data().toArray());
+        }
         return this;
       },
       guardar(boolean) {
@@ -116,6 +132,7 @@ const ENTABLADOR = (function () {
         return this;
       },
       add(data) {
+        console.log("AQUIIIIIIIIIIIII1", ENT_TABLA.column("ENTABLADOR-btn:name").data().toArray());
         // console.log(ID + " -- add: " + data);
 
         if (ENT_TABLA != null && typeof ENT_TABLA == "object" && !(ENT_TABLA instanceof Element)) {
@@ -322,22 +339,10 @@ const ENTABLADOR = (function () {
       return;
     }
     // ########################################################################
-    /*
-              .crear({
-                  ID: ID,
-                  columns: [{}, {}, {}],
-                  order: [1, "asc"],
-                  columnDefs: [{}, {}],
-                  autoWidth: false
-              })
-            */
-
-    // ########################################################################
     // METER { type: "locale-compare", targets: "_all" }
     // ########################################################################
-    var columnDefs;
-    if (config.columnDefs) {
-      columnDefs = config.columnDefs;
+    var columnDefs = config.columnDefs;
+    if (columnDefs) {
       var hayLocaleCompare = false;
       for (let i = 0; i < columnDefs.length; i++) {
         if (columnDefs.type == "locale-compare") {
@@ -357,14 +362,17 @@ const ENTABLADOR = (function () {
     // ########################################################################
     var opciones = {
       language: { url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
-      autoWidth: config.autoWidth || false,
       columnDefs: columnDefs,
       order: config.order || [[1, "asc"]],
     };
-    // set following options to true by default
+    // set following options default
+    if (config.autoWidth !== undefined) {
+      opciones.autoWidth = config.autoWidth;
+    }
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
-    config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
+    config.fixOrder = config.fixOrder === undefined ? true : config.fixOrder;
+    config.createButtons = config.createButtons === undefined ? true : config.createButtons;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
@@ -471,7 +479,7 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // Crear buttons column
     // ########################################################################
-    if (config.createButtons === undefined || config.createButtons === true) {
+    if (config.createButtons) {
       var obj = {
         data: null,
         defaultContent: `
@@ -480,7 +488,9 @@ const ENTABLADOR = (function () {
         `,
         orderable: false,
         width: "20px",
-        className: "ENTABLADOR-btn",
+        // className: "ENTABLADOR-btn",
+        name: "ENTABLADOR-btn",
+        visible: false,
       };
       for (var i = 0; i < opciones.columnDefs.length; i++) {
         var targets = opciones.columnDefs[i].targets;
@@ -501,8 +511,8 @@ const ENTABLADOR = (function () {
         }
       }
       opciones.columns.unshift(obj);
-      if (opciones.order && Array.isArray(opciones.order) && Array.isArray(opciones.order[0]) && typeof opciones.order[0][0] == "number") {
-        opciones.order[0][0]++;
+      if (opciones.order) {
+        console.log("Si se utiliza un index de columna en .order, tener en cuenta que se creó la columna de los botones porque createButtons=true, así que ajustar manualmente el .order");
       }
     }
     // ########################################################################
@@ -548,6 +558,9 @@ const ENTABLADOR = (function () {
     console.log("############################################################################");
 
     var NuevaTabla = new DataTable("#" + config.id, opciones);
+    console.log("AAAAAA", NuevaTabla.column("ENTABLADOR-btn:name").data().toArray());
+    console.log("AAAAAA", NuevaTabla.data().toArray());
+
     // ########################################################################
 
     // console.log("this", this);
@@ -560,14 +573,21 @@ const ENTABLADOR = (function () {
     NuevaTabla.ENTABLADOR.inputsTypes = config.meta && config.meta.inputsTypes;
     NuevaTabla.ENTABLADOR.orderInicial = config.order ? config.order[1] : opciones.order[0][1]; // probablemente traiga problemas. revisar si datatables deja meter otro formato
 
-    var columnKeyIndex = NuevaTabla.settings()
-      .init()
-      .columns.map((obj) => obj.className)
-      .indexOf("ENTABLADOR-btn");
-    if (columnKeyIndex >= 0) {
-      NuevaTabla.column(columnKeyIndex).visible(false);
-    }
+    // console.log("----------------------------------------------", 1);
+    // console.log("NuevaTabla", NuevaTabla);
 
+    // var columnKeyIndex = NuevaTabla.settings()
+    //   .init()
+    //   .columns.map((obj) => obj.className)
+    //   .indexOf("ENTABLADOR-btn");
+    // console.log("columnKeyIndex", columnKeyIndex);
+    // if (columnKeyIndex >= 0) {
+    //   // NuevaTabla.column(columnKeyIndex).visible(true);
+    //   console.log("NuevaTabla.column(0)", NuevaTabla.column(0));
+
+    //   // NuevaTabla.column(0).visible(true);
+    // }
+    // console.log("----------------------------------------------", 2);
     // ########################################################################
     // CREAR NuevaTabla.ENTABLADOR.Columns
     // ########################################################################
@@ -1684,7 +1704,6 @@ const ENTABLADOR = (function () {
     _,
   };
 })();
-
 ENTABLADOR.crear({
   id: "TABLA",
   // fixOrder: false,
@@ -1769,10 +1788,25 @@ ENTABLADOR.crear({
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
     { id: 7 },
   ]);
-
 // Add css rule
 var style = document.createElement("style");
 style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
 
+console.log("$$$$$$$$$$$$$$$$$$     FINAL     $$$$$$$$$$$$$$$$$");
+
+console.log("AQUIIIIIIIIIIIIIO", TABLA.column("ENTABLADOR-btn:name").data().toArray());
+console.log(TABLA.column("ENTABLADOR-btn:name"));
+if (!$.fn.DataTable.isDataTable("#TABLA")) {
+  console.error("La tabla NOO está inicializada correctamente.");
+} else {
+  console.log("La tabla SII está inicializada correctamente.");
+}
+// TABLA.draw();
+console.log("AQUIIIIIIIIIIIII", TABLA.column("ENTABLADOR-btn:name").visible(true));
+// console.log("AQUIIIIIIIIIIIII", TABLA.column(0).visible(true));
+// TABLA.column(0).visible(true);  // 0 es el índice de la columna
+
 // $("#TABLA tbody tr:eq(1) td:eq(6)").click();
+
+console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
