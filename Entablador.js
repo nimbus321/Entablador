@@ -515,6 +515,7 @@ const ENTABLADOR = (function () {
         if ((visible === true || visible === undefined) && orderable !== false) {
           index = i;
           break;
+          A;
         }
       }
       opciones.order = [[index, "asc"]];
@@ -524,7 +525,7 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
 
-    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NEW"] = function (settings, col) {
+    $.fn.dataTable.ext.order["ENTABLDOR-ORDER-OLD"] = function (settings, col) {
       // HACER ESTO DESPUÉS !
       if (Array.isArray(data)) {
         return String(data.length);
@@ -532,10 +533,51 @@ const ENTABLADOR = (function () {
         return data;
       }
     };
+    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NO-SPACES"] = function (settings, col) {
+      // Este order no pone los al final si data == "" || undefined. No se toma en cuenta.
+      var currentOrder = this.api().order();
+      return this.api()
+        .column(col, { order: "index" })
+        .nodes()
+        .map(function (td, i) {
+          var data = NuevaTabla.cell(td).data();
+          var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var indexCol = NuevaTabla.cell(td).index().column;
+          var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
+          // console.log("| data -", data);
+
+          if (inputsTypes) {
+            var inpType = inputsTypes[columnaNombre];
+            // console.log("inpType", inpType);
+            if (inpType == undefined) {
+              return data;
+            } else if (inpType == "file") {
+              if (data === "" || data == undefined) {
+                return data;
+              } else if (Array.isArray(data)) {
+                return String(data.length);
+              } else if (typeof data == "string") {
+                return "1";
+              }
+            } else if (inpType == "checkbox") {
+              var val = ENTABLADOR._.parseBoolean("string", data);
+              return val === "false" ? "0" : val === "true" ? "1" : val === "undefined" ? String(data) : val;
+            } else if (inpType == "datetime-local" || inpType == "date") {
+              var D = new Date(data);
+              var isValidDate = !isNaN(D.getTime());
+              return isValidDate ? String(D.getTime()) : "0";
+            } else if (inpType == "text" || inpType == "number") {
+              return data == undefined || data === "" ? data : String(data);
+            }
+          }
+          // console.warn("Failsafe - data:", String(data));
+          return String(data);
+        });
+    };
     if (config.fixOrder) {
       var obj = {
         targets: "_all",
-        orderDataType: "ENTABLADOR-ORDER-NEW",
+        orderDataType: "ENTABLADOR-ORDER-NO-SPACES",
       };
       // opciones.columnDefs.unshift(obj);
       opciones.columnDefs.push(obj);
@@ -1271,12 +1313,12 @@ const ENTABLADOR = (function () {
             // porque es oculta y no editable
             continue;
           }
-          if (inputsTypes[key] == "checkbox") {
+          if (inputsTypes && inputsTypes[key] == "checkbox") {
             if (value == undefined || value === "") {
               value = "undefined";
             }
             $("#ENTABLADOR-" + table_name + "-" + key + "-" + value).prop("checked", true);
-          } else if (inputsTypes[key] == "file") {
+          } else if (inputsTypes && inputsTypes[key] == "file") {
             var files = row[key];
             if (typeof files == "string") {
               files = files != "" ? [files] : [];
@@ -1469,7 +1511,9 @@ const ENTABLADOR = (function () {
         var html = "";
         for (let i = 0; i < COLUMNS.length; i++) {
           var titleColumn = ["", undefined, null].includes(COLUMNS[i][1]) ? COLUMNS[i][0] : COLUMNS[i][1];
-          html += this.crearInputModal(inputsTypes[COLUMNS[i][0]], titleColumn, COLUMNS[i][0], table_name);
+          // console.log("!!!!!!! |- ", inputsTypes);
+          var input = inputsTypes ? inputsTypes[COLUMNS[i][0]] : undefined;
+          html += this.crearInputModal(input, titleColumn, COLUMNS[i][0], table_name);
 
           //poner en ENTABLADOR._.Modal_Editor_Obj
           /*
@@ -1540,7 +1584,7 @@ const ENTABLADOR = (function () {
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
       for (let i = 0; i < Columns.length; i++) {
         var column = Columns[i][0];
-        if (inputsTypes[column] == "checkbox") {
+        if (inputsTypes && inputsTypes[column] == "checkbox") {
           var value = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').attr("data-entablador-value");
 
           // if (value == "undefined") {
@@ -1552,7 +1596,7 @@ const ENTABLADOR = (function () {
           // }
           value = this.parseBoolean("boolean", value);
           this.Modal_Editor_Obj[column] = value;
-        } else if (inputsTypes[column] != "file") {
+        } else if (inputsTypes === undefined || inputsTypes[column] != "file") {
           //input normal (text). tener en cuenta que 'file' ya fue guardado en renderImagesOnModal
           var value = $("#ENTABLADOR-" + table_name + "-" + column).val();
           if ($("#ENTABLADOR-" + table_name + "-" + column + "[type='number']").length > 0 && value !== "") {
@@ -1579,11 +1623,15 @@ const ENTABLADOR = (function () {
       for (const key in rowNueva) {
         if (Object.hasOwnProperty.call(rowNueva, key)) {
           var esArrayVacio = Array.isArray(rowNueva[key]) && rowNueva[key].length == 0;
-          if ((rowNueva[key] === "" || esArrayVacio) && rowOriginal[key] === undefined && inputsTypes[key] != "checkbox") {
+          // comentario del futuro sin idea de que escribí aquí en el codigo de abajo:
+          // creo que es para filtrar los datos que estén vacíos"" desde el input para evitar creer que
+          // como en los datos originales es undefined, entonces "" !== undefined y creerá que actualizó datos,
+          // cosa que no es el resultado esperado. por eso ignorar.
+          if ((rowNueva[key] === "" || esArrayVacio) && rowOriginal[key] === undefined && (inputsTypes === undefined || inputsTypes[key] != "checkbox")) {
             continue;
           }
           //check if it is a checkbox
-          if (inputsTypes[key] == "checkbox") {
+          if (inputsTypes && inputsTypes[key] == "checkbox") {
             rowNueva[key] = this.parseBoolean("boolean", rowNueva[key]);
             rowOriginal[key] = this.parseBoolean("boolean", rowOriginal[key]);
           }
@@ -1702,13 +1750,13 @@ const ENTABLADOR = (function () {
 
 ENTABLADOR.crear({
   id: "TABLA",
-  // fixOrder: false,
+  // fixOrder: true,
   // createButtons: false,
   // autoRender: false,
   // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?)
   meta: {
     key: "id",
-    // secondary_key: "nombre",
+    secondary_key: "nombre",
     inputsTypes: {
       nombre: "text",
       fechaNacimiento: "date",
@@ -1760,10 +1808,10 @@ ENTABLADOR.crear({
       },
     },
   ],
-  // order: [3, "desc"],
+  order: [3, "desc"],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([
