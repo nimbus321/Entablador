@@ -1761,7 +1761,14 @@ const ENTABLADOR = (function () {
       }
     },
     extractNumberFromString: function (input) {
-      return parseInt(input.toString().replace(/\D/g, ""), 10);
+      // return parseInt(input.toString().replace(/\D/g, ""), 10);
+      // return Number(input); // con esto habilita decimales y numeros negativos. es problema si porej. "asd32asd"
+      let cleaned = input
+        .toString()
+        .replace(/[^0-9.-]/g, "") // quita todo que no sea: digito, '-' y '.'
+        .replace(/(?!^)-/g, "") // quita todos los '-' que no estén en el primer caracter
+        .replace(/(?<=\..*)\./g, ""); // quita todos los puntos que esten desp del primero
+      return Number(cleaned);
     },
     isNumeric: function (input) {
       return /^\d{1,3}(?:,\d{3})*(?:\.\d+)?$/.test(input);

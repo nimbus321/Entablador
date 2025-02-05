@@ -11,8 +11,6 @@
 
 # TO-DO
 
-- al ingresar numeros negativos en un campo de type number, me los convierte en positivos
-
 - asegurar que cuando edita con modal (o incluso con inline), si se pone "no especificado" que refleje el cambio correctamente en CAMBIOS. no estoy seguro si es un error o no, tengo que testear.
 
 # TRABAJANDO EN ELLO
@@ -21,6 +19,7 @@
 
 # FIXED - ON WATCH
 
+- .\_.extractNumberFromString() reestructurado para habilitar decimales y negativos.
 - terminado ENTABLADOR-ORDER-NORMAL-SPACES
 - terminado ENTABLADOR-ORDER-SPACES-ON-BOTTOM
 - arreglando errores al editar con modal cuando inputTypes no existe (ya?)
