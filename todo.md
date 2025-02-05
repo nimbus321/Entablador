@@ -1,5 +1,7 @@
 # A TENER EN CUENTA
 
+- OJO!!! CREO QUE el error que me tomó tanto problema la última vez fue por quitar 'autoWidth: config.autoWidth || false'. Considerar esto. es lo mismo quitarlo que ponerlo autoWidth: true. INVESTIGAR MÁS ESTO
+
 # IDEAS
 
 - quitar los svg (ponerlos con ::after)
@@ -7,21 +9,22 @@
 
 # IDEAS MAS PRÓXIMAS
 
-- asegurar que cuando edita con modal (o incluso con inline), si se pone "no especificado" que refleje el cambio correctamente en CAMBIOS. no estoy seguro si es un error o no, tengo que testear.
-
 # TO-DO
+
+- al ingresar numeros negativos en un campo de type number, me los convierte en positivos
+
+- asegurar que cuando edita con modal (o incluso con inline), si se pone "no especificado" que refleje el cambio correctamente en CAMBIOS. no estoy seguro si es un error o no, tengo que testear.
 
 # TRABAJANDO EN ELLO
 
-- OJO!!! CREO QUE el error que me tomó tanto problema la última vez fue por quitar 'autoWidth: config.autoWidth || false'. Considerar esto. es lo mismo quitarlo que ponerlo autoWidth: true. INVESTIGAR MÁS ESTO
-- Empezar ENTABLADOR-ORDER-SPACES-ON-BOTTOM
-
 # ULTIMOS HECHOS
-
-- arreglando errores al editar con modal cuando inputTypes no existe (ya?)
-- crear el orden en ENTABLADOR-ORDER-NO-SPACES (ya?)
-- REESTRUCTURANDO TODO DESDE 0 - LIMPIAR TODO
 
 # FIXED - ON WATCH
 
+- terminado ENTABLADOR-ORDER-NORMAL-SPACES
+- terminado ENTABLADOR-ORDER-SPACES-ON-BOTTOM
+- arreglando errores al editar con modal cuando inputTypes no existe (ya?)
+
 # DONE
+
+- REESTRUCTURANDO TODO DESDE 0 - LIMPIAR TODO

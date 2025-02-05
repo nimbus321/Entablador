@@ -1,3 +1,9 @@
+Links de ordenar
+
+- https://shorturl.at/bVaPV
+- https://shorturl.at/yd9lH
+- https://shorturl.at/K0RWj
+
 # Methods de .crear(config)
 
 #### BUENOS
