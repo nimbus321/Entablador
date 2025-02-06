@@ -1,9 +1,3 @@
-Links de ordenar
-
-- https://shorturl.at/bVaPV
-- https://shorturl.at/yd9lH
-- https://shorturl.at/K0RWj
-
 # Methods de .crear(config)
 
 #### BUENOS
@@ -22,6 +16,7 @@ Links de ordenar
   - inputsTypes
   - renderBlacklist
 - fixOrder
+- fixOrderEmptyAtBottom
 - autoRender
 - createDefaultContent
 - renderBlacklist
@@ -42,7 +37,7 @@ Links de ordenar
 - add
 - draw
 - meta
-- mandatoryFields
+- requiredFields
 - subirArchivoURL
 - uploadData
 - modalLarge

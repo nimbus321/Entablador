@@ -11,14 +11,15 @@
 
 # TO-DO
 
-- asegurar que cuando edita con modal (o incluso con inline), si se pone "no especificado" que refleje el cambio correctamente en CAMBIOS. no estoy seguro si es un error o no, tengo que testear.
-
 # TRABAJANDO EN ELLO
 
 # ULTIMOS HECHOS
 
+- +transition cuando se cambia de tamaño el modal al editar
+
 # FIXED - ON WATCH
 
+- asegurar que cuando edita con modal (o incluso con inline), si se pone "no especificado" que refleje el cambio correctamente en CAMBIOS. no estoy seguro si es un error o no, tengo que testear. (creo que sí está bien)
 - .\_.extractNumberFromString() reestructurado para habilitar decimales y negativos.
 - terminado ENTABLADOR-ORDER-NORMAL-SPACES
 - terminado ENTABLADOR-ORDER-SPACES-ON-BOTTOM

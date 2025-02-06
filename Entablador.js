@@ -31,7 +31,6 @@ const ENTABLADOR = (function () {
       // console.error("No se ha encontrado el ID especificado (", ID, ")");
       return null;
     }
-
     var ENT_TABLA = window[ID];
     if (ENT_TABLA instanceof Element) {
       console.log(ENT_TABLA);
@@ -141,20 +140,15 @@ const ENTABLADOR = (function () {
         }
         return this;
       },
-      meta(meta) {
-        // NO EN USO --
-        console.warn("Deprecated: 'meta' method is deprecated. Use 'tipoEdicion' instead.");
-        return this;
-      },
-      mandatoryFields(arg) {
-        var mandatoryFields = ENTABLADOR._.mandatoryFields;
+      requiredFields(arg) {
+        var requiredFields = ENTABLADOR._.requiredFields;
         if (arg == undefined) {
-          return mandatoryFields[ID] ? mandatoryFields[ID] : [];
+          return requiredFields[ID] ? requiredFields[ID] : [];
         } else if (!Array.isArray(arg) || (arg.length > 0 && typeof arg[0] != "string")) {
-          console.error("El argumento de .mandatoryFields() debe ser un array con strings dentro.\nDatos:", arg);
+          console.error("El argumento de .requiredFields() debe ser un array con strings dentro.\nDatos:", arg);
           return;
         }
-        mandatoryFields[ID] = arg;
+        requiredFields[ID] = arg;
         return this;
       },
       subirArchivoURL(URL) {
@@ -217,13 +211,13 @@ const ENTABLADOR = (function () {
           }
 
           console.log(data[i][primary_key]);
-          //check mandatoryFields
-          var mandatoryFields = ENTABLADOR._.mandatoryFields[ENT_TABLA.table().node().id];
-          mandatoryFields = mandatoryFields ? mandatoryFields : [];
-          for (let j = 0; j < mandatoryFields.length; j++) {
-            var mandatoryField = mandatoryFields[j];
+          //check requiredFields
+          var requiredFields = ENTABLADOR._.requiredFields[ENT_TABLA.table().node().id];
+          requiredFields = requiredFields ? requiredFields : [];
+          for (let j = 0; j < requiredFields.length; j++) {
+            var mandatoryField = requiredFields[j];
             if (data[i][mandatoryField] == undefined) {
-              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nmandatoryFields:", mandatoryFields, "\nData:", data[i]);
+              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nrequiredFields:", requiredFields, "\nData:", data[i]);
               return this;
             }
           }
@@ -352,6 +346,7 @@ const ENTABLADOR = (function () {
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
     config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
+    config.fixOrderEmptyAtBottom = config.fixOrderEmptyAtBottom == undefined ? true : config.fixOrderEmptyAtBottom;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
@@ -619,11 +614,18 @@ const ENTABLADOR = (function () {
         });
     };
     if (config.fixOrder) {
-      var obj = {
-        targets: "_all",
-        orderDataType: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM",
-      };
-      // opciones.columnDefs.unshift(obj);
+      var obj;
+      if (config.fixOrderEmptyAtBottom) {
+        obj = {
+          targets: "_all",
+          orderDataType: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM",
+        };
+      } else {
+        obj = {
+          targets: "_all",
+          orderDataType: "ENTABLADOR-ORDER-NORMAL-SPACES",
+        };
+      }
       opciones.columnDefs.push(obj);
     }
     // ########################################################################
@@ -834,7 +836,7 @@ const ENTABLADOR = (function () {
     longTextareaBehavior: ["buttons", "modal", "see all"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "textarea"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    mandatoryFields: {},
+    requiredFields: {},
     LabelClick: null,
     SVGs: SVGs,
     createAutoRender: function (type_input, indexTarget, config) {
@@ -1410,7 +1412,7 @@ const ENTABLADOR = (function () {
       var tr = $(el).closest("tr").removeClass("ENTABLADOR-row-eliminado").attr("title", "");
 
       var row = tabla.row(tr).data();
-      console.log(row);
+      // console.log(row);
       var Eliminados = ENTABLADOR._.CAMBIOS_TABLAS[tabla_nombre];
       // remover de los eliminados
       if (Eliminados) {
@@ -1419,6 +1421,7 @@ const ENTABLADOR = (function () {
           Eliminados.eliminados.splice(index, 1);
         }
       }
+      console.log("Cambios", Eliminados);
     },
     crearInputModal(input, titleColumn, realNameColumn, table_name) {
       // console.log(input, titleColumn, realNameColumn, table_name);
@@ -1496,7 +1499,7 @@ const ENTABLADOR = (function () {
         var ENT_TABLA = window[table_name];
         var div = `
           <div data-table-name="${table_name}" class="ENTABLADOR_EDICION_MODAL modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog${window[table_name].ENTABLADOR.modalLarge ? " modal-lg" : ""}">
+            <div class="modal-dialog${window[table_name].ENTABLADOR.modalLarge ? " modal-lg" : ""}" style="transition: max-width 0.2s;">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Editar Datos | <span class="ENTABLADOR_CAMPO text-uppercase font-wight-bold text-primary">-</span></h5>
@@ -1801,7 +1804,8 @@ const ENTABLADOR = (function () {
 
 ENTABLADOR.crear({
   id: "TABLA",
-  // fixOrder: true,
+  // fixOrder: false,
+  // fixOrderEmptyAtBottom: false,
   // createButtons: false,
   // autoRender: false,
   // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?)
@@ -1862,9 +1866,9 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   // .modalLarge(true)
-  // .longTextareaBehavior("modal")
+  .longTextareaBehavior("modal")
   .add([
     {
       id: 1,
