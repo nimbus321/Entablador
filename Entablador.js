@@ -41,6 +41,13 @@ const ENTABLADOR = (function () {
 
     const instance = {
       id: ID,
+      uploadDummyFiles(boolean) {
+        if (boolean == undefined) {
+          return ENT_TABLA.ENTABLADOR.uploadDummyFiles;
+        }
+        ENT_TABLA.ENTABLADOR.subirArchivoURL = boolean;
+        return this;
+      },
       tipoEdicion(type) {
         if (type == undefined) {
           return ENT_TABLA.table().node().getAttribute("data-edition-type");
@@ -82,17 +89,7 @@ const ENTABLADOR = (function () {
         }
         // console.log(ID + " -- editable: " + boolean);
         ENT_TABLA.table().node().classList.toggle("editable", boolean);
-        //make column of table's key invisible or not
-        var columnKeyIndex = ENT_TABLA.settings()
-          .init()
-          .columns.map((obj) => obj.className)
-          .indexOf("ENTABLADOR-btn");
-        var arr = ENT_TABLA.settings().init().columns;
-        // alert(columnKeyIndex);
-        if (columnKeyIndex >= 0) {
-          ENT_TABLA.column(columnKeyIndex).visible(boolean);
-        }
-
+        TABLA.column("ENTABLADOR-btn:name").visible(boolean);
         return this;
       },
       guardar(boolean) {
@@ -153,7 +150,7 @@ const ENTABLADOR = (function () {
       },
       subirArchivoURL(URL) {
         console.log("subirArchivoURL: ", URL);
-        ENT_TABLA.subirArchivoURL = URL;
+        ENT_TABLA.ENTABLADOR.subirArchivoURL = URL;
         return this;
       },
       uploadData(data, dontForceAutoID) {
@@ -463,7 +460,8 @@ const ENTABLADOR = (function () {
         orderable: false,
         visible: false,
         width: "20px",
-        className: "ENTABLADOR-btn",
+        // className: "ENTABLADOR-btn",
+        name: "ENTABLADOR-btn",
       };
       for (var i = 0; i < opciones.columnDefs.length; i++) {
         var targets = opciones.columnDefs[i].targets;
@@ -663,14 +661,7 @@ const ENTABLADOR = (function () {
     // NuevaTabla.ENTABLADOR.orderInicial = config.order ? config.order[1] : opciones.order[0][1]; // probablemente traiga problemas. revisar si datatables deja meter otro formato
     // ni idea que poner arriba. cuando trabaje en el order ver esto
 
-    var columnKeyIndex = NuevaTabla.settings()
-      .init()
-      .columns.map((obj) => obj.className)
-      .indexOf("ENTABLADOR-btn");
-    if (columnKeyIndex >= 0) {
-      NuevaTabla.column(columnKeyIndex).visible(false);
-    }
-
+    NuevaTabla.column("ENTABLADOR-btn:name").visible(false);
     // ########################################################################
     // CREAR NuevaTabla.ENTABLADOR.Columns
     // ########################################################################
@@ -746,57 +737,78 @@ const ENTABLADOR = (function () {
 
         var files = event.target.files;
         // console.log(files);
+        function after_POST(success, newContent) {
+          if (success) {
+            if (!fromModal) {
+              $(cell.node()).find(".uploading").hide();
+              $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
+
+              var oldData = cellDataTables.data();
+              var finalData;
+              if (Array.isArray(oldData)) {
+                finalData = [...oldData, ...newContent];
+              } else if (oldData === "") {
+                finalData = newContent;
+              } else {
+                finalData = [oldData, ...newContent];
+                // console.log(finalData);
+              }
+              // console.log("newContent: ", newContent);
+              // console.log("oldData: ", oldData);
+
+              cellDataTables.data(finalData).draw(false);
+              // añadir class .td-editado
+              $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
+
+              var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
+              var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
+
+              ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
+            } else {
+              $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+              $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+
+              // Subir a object del modal
+              var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
+              Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
+              //render images on modal
+              ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
+
+              // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
+            }
+          } else {
+            // HUBO PROBLEMAS
+            if (!fromModal) {
+              $(cell.node()).find(".uploading").hide();
+              $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
+            } else {
+              $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+              $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+            }
+            alert("Error al subir el archivo. Asegurate tener conexión a internet.");
+          }
+        }
+        if (ENT_TABLA.ENTABLADOR.uploadDummyFiles === true) {
+          // DUMMY FILES
+
+          setTimeout(() => {
+            const newContent = ["https://dummyimage.com/99"];
+            console.log("subido", newContent);
+            after_POST(true, newContent);
+          }, 2000);
+        } else {
+          // REAL FILES
+
+          var subirArchivoURL = ENT_TABLA.ENTABLADOR.subirArchivoURL;
+        }
         $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
           var newContent = ["https://dummyimage.com/99"];
           console.log("subido", newContent);
-
-          if (!fromModal) {
-            $(cell.node()).find(".uploading").hide();
-            $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
-
-            var oldData = cellDataTables.data();
-            var finalData;
-            if (Array.isArray(oldData)) {
-              finalData = [...oldData, ...newContent];
-            } else if (oldData === "") {
-              finalData = newContent;
-            } else {
-              finalData = [oldData, ...newContent];
-              // console.log(finalData);
-            }
-            // console.log("newContent: ", newContent);
-            // console.log("oldData: ", oldData);
-
-            cellDataTables.data(finalData).draw(false);
-            // añadir class .td-editado
-            $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
-
-            var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
-            var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
-
-            ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
-          } else {
-            $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-            $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-
-            // Subir a object del modal
-            var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
-            Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
-            //render images on modal
-            ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
-
-            // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
-          }
+          after_POST(true, newContent);
         }).fail(function () {
-          if (!fromModal) {
-            $(cell.node()).find(".uploading").hide();
-            $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
-          } else {
-            $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-            $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-          }
-          alert("Error al subir el archivo. Asegurate tener conexión a internet.");
+          after_POST(false);
         });
+
         event.target.value = "";
       });
     }
@@ -891,14 +903,14 @@ const ENTABLADOR = (function () {
                             <span style="line-break: anywhere;">${data ? data : ""}</span>
                           </div>
                           <div>
-                            <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
+                            <a href="#" style="display:none;text-align:center" class="ENTABLADOR-seeLess text-reset text-decoration-none font-weight-bold" onclick="ENTABLADOR._.textareaShowLess(this);event.preventDefault();">
                               Ver menos
                             </a>
                           </div>
                         </div>
                       </div>
                       <div class="ENTABLADOR-seeMore" style="display:none;">
-                        <a href="#" class="text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
+                        <a href="#" class="d-block text-reset text-decoration-none font-weight-normal" onclick="ENTABLADOR._.textareaShowMore(this);event.preventDefault();">
                           Click para ver más
                         </a>
                       </div>
@@ -1866,9 +1878,10 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  .tipoEdicion("modal")
+  // .tipoEdicion("modal")
   // .modalLarge(true)
-  .longTextareaBehavior("modal")
+  // .longTextareaBehavior("modal")
+  .uploadDummyFiles(true)
   .add([
     {
       id: 1,

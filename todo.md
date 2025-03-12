@@ -13,6 +13,9 @@
 
 # TRABAJANDO EN ELLO
 
+- crear manera nativa y normal para que NO se suban los archivos a firestore desde el cliente, si no que se creen "blob:" files para el html y que SOLO cundo se mande todos los cambios guardados al servidor, ahí es cuando se guardarán en firestore (mandarlos adjuntos). Beneficios: no archivos de más en firestore sin que sean referenciados. mucho mejor en general.
+- .uploadDummyFiles()
+
 # ULTIMOS HECHOS
 
 - +transition cuando se cambia de tamaño el modal al editar

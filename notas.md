@@ -27,10 +27,11 @@
 
 #### BUENOS
 
+- longTextareaBehavior
+- tipoEdicion
+
 #### POR EXAMINAR
 
-- tipoEdicion
-- longTextareaBehavior
 - editable
 - guardar
 - eliminar
@@ -41,3 +42,5 @@
 - subirArchivoURL
 - uploadData
 - modalLarge
+
+TABLA.column("ENTABLADOR-btn:name").visible(boolean);
