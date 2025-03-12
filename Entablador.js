@@ -45,7 +45,7 @@ const ENTABLADOR = (function () {
         if (boolean == undefined) {
           return ENT_TABLA.ENTABLADOR.uploadDummyFiles;
         }
-        ENT_TABLA.ENTABLADOR.subirArchivoURL = boolean;
+        ENT_TABLA.ENTABLADOR.uploadDummyFiles = boolean;
         return this;
       },
       tipoEdicion(type) {
@@ -696,7 +696,7 @@ const ENTABLADOR = (function () {
     // PREPEND INPUT FILE TO TABLE        &&        SET EVENT
     // ########################################################################
     if ($("input#ENTABLADOR_FILE_UPLOADER").length == 0) {
-      var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;">');
+      var fileInput = $('<input type="file" id="ENTABLADOR_FILE_UPLOADER" style="display:none;" multiple>');
       $("#" + config.id).prepend(fileInput);
       fileInput.on("change", function (event) {
         //detect from which cell the file was uploaded
@@ -709,7 +709,10 @@ const ENTABLADOR = (function () {
         var fromModal = LabelClick.fromModal;
         var field = LabelClick.field;
         var table_name_Modal = LabelClick.table_name;
-        var ENT_TABLA = window[table_name_Modal];
+        // var ENT_TABLA = window[table_name_Modal];
+        var ENT_TABLA = ENTABLADOR._.LabelClick.ENT_TABLA;
+        // console.log("!!!!!!!!!!!!", LabelClick);
+
         var table_name = ENT_TABLA.table().node().id;
 
         var cellDataTables = ENT_TABLA.cell({ row: rowIndex, column: columnIndex });
@@ -737,77 +740,84 @@ const ENTABLADOR = (function () {
 
         var files = event.target.files;
         // console.log(files);
-        function after_POST(success, newContent) {
-          if (success) {
-            if (!fromModal) {
-              $(cell.node()).find(".uploading").hide();
-              $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
 
-              var oldData = cellDataTables.data();
-              var finalData;
-              if (Array.isArray(oldData)) {
-                finalData = [...oldData, ...newContent];
-              } else if (oldData === "") {
-                finalData = newContent;
-              } else {
-                finalData = [oldData, ...newContent];
-                // console.log(finalData);
-              }
-              // console.log("newContent: ", newContent);
-              // console.log("oldData: ", oldData);
+        function after_Upload(newContent) {
+          if (!fromModal) {
+            $(cell.node()).find(".uploading").hide();
+            $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
 
-              cellDataTables.data(finalData).draw(false);
-              // añadir class .td-editado
-              $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
-
-              var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
-              var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
-
-              ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
+            var oldData = cellDataTables.data();
+            var finalData;
+            if (Array.isArray(oldData)) {
+              finalData = [...oldData, ...newContent];
+            } else if (oldData === "") {
+              finalData = newContent;
             } else {
-              $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-              $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-
-              // Subir a object del modal
-              var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
-              Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
-              //render images on modal
-              ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
-
-              // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
+              finalData = [oldData, ...newContent];
+              // console.log(finalData);
             }
+            // console.log("newContent: ", newContent);
+            // console.log("oldData: ", oldData);
+
+            cellDataTables.data(finalData).draw(false);
+            // añadir class .td-editado
+            $(cell.node()).addClass("td-editado").attr("title", "Archivos Editados");
+
+            var nombreRow = ENT_TABLA.row(rowIndex).data()[ENT_TABLA.ENTABLADOR.key];
+            var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
+
+            ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
           } else {
-            // HUBO PROBLEMAS
-            if (!fromModal) {
-              $(cell.node()).find(".uploading").hide();
-              $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
-            } else {
-              $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
-              $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
-            }
-            alert("Error al subir el archivo. Asegurate tener conexión a internet.");
+            $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
+            $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
+
+            // Subir a object del modal
+            var Modal_Editor_Obj = ENTABLADOR._.Modal_Editor_Obj;
+            Modal_Editor_Obj[field] = [...Modal_Editor_Obj[field], ...newContent];
+            //render images on modal
+            ENTABLADOR._.renderImagesOnModal(Modal_Editor_Obj[field], table_name_Modal, field);
+
+            // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
           }
         }
         if (ENT_TABLA.ENTABLADOR.uploadDummyFiles === true) {
           // DUMMY FILES
-
           setTimeout(() => {
-            const newContent = ["https://dummyimage.com/99"];
+            const newContent = ["https://dummyimage.com/97"];
             console.log("subido", newContent);
-            after_POST(true, newContent);
-          }, 2000);
+            after_Upload(newContent);
+          }, 1000);
         } else {
           // REAL FILES
-
-          var subirArchivoURL = ENT_TABLA.ENTABLADOR.subirArchivoURL;
+          console.log("FILES ---", files);
+          var newContent = [];
+          var ubicacionesNuevasDeFiles = [];
+          var ubicacionActual = {
+            primaryKey: nombreRow,
+            columnName: ENT_TABLA.settings().init().aoColumns[columnIndex].data,
+          };
+          // use URL.createObjectURL(file)
+          for (let i = 0; i < files.length; i++) {
+            newContent.push(URL.createObjectURL(files[i]));
+            ubicacionesNuevasDeFiles.push({
+              file: files[i],
+              ubicaciones: [ubicacionActual],
+            });
+          }
+          console.log("ubicacionesNuevasDeFiles", ubicacionesNuevasDeFiles);
+          if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
+          } else {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
+              cambios: {},
+              eliminados: [],
+              filesUploads: ubicacionesNuevasDeFiles,
+            };
+          }
+          // MIRAR examples.js EL SEGUNDO. CONSIDERAR QUE PONER EN cambios PORQUE SE PONDRÁ IGUAL EL "blob:"
+          console.log("newContent", newContent);
+          after_Upload(newContent);
         }
-        $.post("https://dummyjson.com/products/add", { title: "link.jpg", files: "TENGO QUE CHECAR ESTO EN EL OTRO PROYECTO" }, function (newContent) {
-          var newContent = ["https://dummyimage.com/99"];
-          console.log("subido", newContent);
-          after_POST(true, newContent);
-        }).fail(function () {
-          after_POST(false);
-        });
 
         event.target.value = "";
       });
@@ -1036,6 +1046,7 @@ const ENTABLADOR = (function () {
             [nombreRow]: contenido,
           },
           eliminados: [],
+          filesUploads: [],
         };
       } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
         CAMBIOS_TABLAS[table_name].cambios[nombreRow] = contenido;
@@ -1881,7 +1892,7 @@ ENTABLADOR.crear({
   // .tipoEdicion("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
-  .uploadDummyFiles(true)
+  // .uploadDummyFiles(true)
   .add([
     {
       id: 1,

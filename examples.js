@@ -10,38 +10,21 @@
     ],
   },
 ];
-// EL COMO USAR EL FILE EN EL FRONTEND
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Uploader Optimizado</title>
-</head>
-<body>
 
-    <input type="file" id="fileInput" accept="image/*" multiple>
-    <div id="preview" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+// PARA GUARDAR CODIGO NESTED. (PARA GUARDARLO EN filesUploads y cambios en CAMBIOS)
 
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const files = event.target.files;
-            for (const file of files) {
-                uploaded(file);
-            }
-        });
+const obj = {
+  usuario: {
+    nombre: "Juan",
+    direccion: {
+      ciudad: "Madrid",
+      codigoPostal: 28001,
+    },
+  },
+};
+function getNestedValue(obj, path) {
+  return path.reduce((acc, key) => (acc && acc[key] ? acc[key] : undefined), obj);
+}
 
-        function uploaded(file) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file); // Usa Blob URL en lugar de base64
-            img.width = 150;
-            img.height = 150;
-            img.style.objectFit = "cover";
-            img.onload = () => URL.revokeObjectURL(img.src); // Libera memoria cuando ya no se use
-
-            document.getElementById('preview').appendChild(img);
-        }
-    </script>
-
-</body>
-</html>
+console.log(getNestedValue(obj, ["usuario", "direccion", "ciudad"])); // "Madrid"
+console.log(getNestedValue(obj, ["usuario", "direccion", "pais"])); // undefined
