@@ -4,12 +4,15 @@
 
 # IDEAS
 
+- crear una comparación con la tabla (o cambios, pensar mejor esto) inicial para confirmar no dar datos vacios a firestore
 - quitar los svg (ponerlos con ::after)
 - volver a checar si puedo actualizar el codigo de usar 'var columnKeyIndex = NuevaTabla.settings()' para usar 'NuevaTabla.column("ENTABLADOR-btn:name")'. MUCHO CUIDADO con esto que fue lo que me rompió el codigo la última vez. hacerlo en 1 solo commit.
 
 # IDEAS MAS PRÓXIMAS
 
 # TO-DO
+
+- order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 
 # TRABAJANDO EN ELLO
 

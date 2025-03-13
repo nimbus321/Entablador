@@ -1068,7 +1068,9 @@ const ENTABLADOR = (function () {
         console.log(".data().toArray():", ENT_TABLA.data().toArray());
         console.log("-----------------------------------------------");
       }
-      if ($(el).hasClass("ENTABLADOR-btn") || $(el).closest("tr").hasClass("ENTABLADOR-row-eliminado")) {
+      var isButtonsColumn = ENT_TABLA.settings().init().aoColumns[indexCelda].name == "ENTABLADOR-btn" ? true : false;
+      var isDeletedRow = $(el).closest("tr").hasClass("ENTABLADOR-row-eliminado");
+      if (isButtonsColumn || isDeletedRow) {
         return;
       } else if (!$(el).hasClass("editable")) {
         alert("Este campo no se puede editar.\nProbablemente porque se genera automáticamente.");
