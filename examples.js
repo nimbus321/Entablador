@@ -6,6 +6,7 @@
       {
         primaryKey: "2",
         column: "archivos",
+        url: "https://www.google.com",
       },
     ],
   },
