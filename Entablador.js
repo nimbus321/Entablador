@@ -725,6 +725,7 @@ const ENTABLADOR = (function () {
           alert("No se puede editar esta fila por un error en la configuración de la tabla. Hablar con soporte.");
           return;
         }
+        // console.log("!!!!! nombreRow", nombreRow);
 
         var cell;
         if (!fromModal) {
@@ -740,8 +741,39 @@ const ENTABLADOR = (function () {
 
         var files = event.target.files;
         // console.log(files);
+        var uploadDummyFiles = ENT_TABLA.ENTABLADOR.uploadDummyFiles;
+        function after_Upload(newContent, nombreRow) {
+          // ############################################
+          var ubicacionesNuevasDeFiles = [];
 
-        function after_Upload(newContent) {
+          var ubicacionActual = {
+            primaryKey: nombreRow,
+            columnName: ENT_TABLA.settings().init().aoColumns[columnIndex].data,
+          };
+          var ubicacionNested = ENTABLADOR._.ubicacionNested;
+          if (ubicacionNested !== false && ubicacionNested !== undefined) {
+            ubicacionActual.ubicacionNested = ubicacionNested;
+            ENTABLADOR._.ubicacionNested = false;
+          }
+          // use URL.createObjectURL(file)
+          var files = uploadDummyFiles ? newContent : event.target.files;
+          for (let i = 0; i < files.length; i++) {
+            ubicacionesNuevasDeFiles.push({
+              file: uploadDummyFiles ? "DUMMY_FILE!" : files[i],
+              ubicaciones: [ubicacionActual],
+              url: newContent[i],
+            });
+          }
+          if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
+          } else {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
+              cambios: {},
+              eliminados: [],
+              filesUploads: ubicacionesNuevasDeFiles,
+            };
+          }
+          // ############################################
           if (!fromModal) {
             $(cell.node()).find(".uploading").hide();
             $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
@@ -780,43 +812,23 @@ const ENTABLADOR = (function () {
             // console.log(0, Modal_Editor_Obj[field], 1, table_name_Modal, 2, field);
           }
         }
-        if (ENT_TABLA.ENTABLADOR.uploadDummyFiles === true) {
+        if (uploadDummyFiles === true) {
           // DUMMY FILES
           setTimeout(() => {
             const newContent = ["https://dummyimage.com/97"];
             console.log("subido", newContent);
-            after_Upload(newContent);
+            after_Upload(newContent, nombreRow);
           }, 1000);
         } else {
           // REAL FILES
           console.log("FILES ---", files);
           var newContent = [];
-          var ubicacionesNuevasDeFiles = [];
-          var ubicacionActual = {
-            primaryKey: nombreRow,
-            columnName: ENT_TABLA.settings().init().aoColumns[columnIndex].data,
-          };
-          // use URL.createObjectURL(file)
+
           for (let i = 0; i < files.length; i++) {
             newContent.push(URL.createObjectURL(files[i]));
-            ubicacionesNuevasDeFiles.push({
-              file: files[i],
-              ubicaciones: [ubicacionActual],
-            });
-          }
-          console.log("ubicacionesNuevasDeFiles", ubicacionesNuevasDeFiles);
-          if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
-            ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
-          } else {
-            ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
-              cambios: {},
-              eliminados: [],
-              filesUploads: ubicacionesNuevasDeFiles,
-            };
           }
           // MIRAR examples.js EL SEGUNDO. CONSIDERAR QUE PONER EN cambios PORQUE SE PONDRÁ IGUAL EL "blob:"
-          console.log("newContent", newContent);
-          after_Upload(newContent);
+          after_Upload(newContent, nombreRow);
         }
 
         event.target.value = "";
