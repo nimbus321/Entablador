@@ -899,12 +899,7 @@ const ENTABLADOR = (function () {
 
               if (Array.isArray(data)) {
                 data.forEach((archivo) => {
-                  //detect if it is an image
-                  // if (archivo.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                  //   html += `<a href="${archivo}" target="_blank" class="ENTABLADOR-tabla-anchor" style="cursor:pointer;margin-right:5px;"><img src="${archivo}" style="height:20px;width:20px;"><div class="ENTABLADOR-btn-eliminar" onclick="ENTABLADOR._.deleteFile(event, { row: ${rowIndex}, column: ${columnIndex} })" style="display: none"><div style="height:10px;display:inline-block;margin-top:3px;cursor:auto !important"></div>${RemoveFileSVG}</div></a>`;
-                  // } else {
                   html += crearElement(data, archivo);
-                  // }
                 });
               } else {
                 html += crearElement(data);

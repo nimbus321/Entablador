@@ -12,6 +12,8 @@
 
 # TO-DO
 
+- QUITAR LA SIMPLE EXISTENCIA DE DUMMY FILES!! todo el punto de tenerlo era para no tener que subir a firestore para testear, pero al cambiarlo por URL.createObjectURL(files[i]) ya no hace falta porque nunca se sube a firestore primero.. vaya tontería que hice al continuar con dummyfiles.
+
 # TRABAJANDO EN ELLO
 
 # ULTIMOS HECHOS
