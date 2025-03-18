@@ -703,7 +703,7 @@ const ENTABLADOR = (function () {
         var field = LabelClick.field;
         var table_name_Modal = LabelClick.table_name;
         // var ENT_TABLA = window[table_name_Modal];
-        var ENT_TABLA = ENTABLADOR._.LabelClick.ENT_TABLA;
+        var ENT_TABLA = fromModal ? window[table_name_Modal] : ENTABLADOR._.LabelClick.ENT_TABLA;
         // console.log("!!!!!!!!!!!!", LabelClick);
 
         var table_name = ENT_TABLA.table().node().id;
@@ -760,17 +760,18 @@ const ENTABLADOR = (function () {
             url: newContent[i],
           });
         }
-        if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
-          ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
-        } else {
-          ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
-            cambios: {},
-            eliminados: [],
-            filesUploads: ubicacionesNuevasDeFiles,
-          };
-        }
         // ############################################
         if (!fromModal) {
+          if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
+          } else {
+            ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
+              cambios: {},
+              eliminados: [],
+              filesUploads: ubicacionesNuevasDeFiles,
+            };
+          }
+
           $(cell.node()).find(".uploading").hide();
           $(cell.node()).find("label[for=ENTABLADOR_FILE_UPLOADER]").show();
 
@@ -796,6 +797,13 @@ const ENTABLADOR = (function () {
 
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
         } else {
+          // Modal_Editor_Obj
+          var Editor_files = ENTABLADOR._.Modal_Editor_Obj_files;
+          if (!Editor_files[field]) {
+            Editor_files[field] = [];
+          }
+          Editor_files[field].push(...ubicacionesNuevasDeFiles);
+
           $(".ENTABLADOR_EDICION_MODAL label[data-field=" + field + "]").show();
           $(".ENTABLADOR_EDICION_MODAL button[data-field=" + field + "]").hide();
 
@@ -842,6 +850,8 @@ const ENTABLADOR = (function () {
         ################################################## */
     CAMBIOS_TABLAS: {},
     Modal_Editor_Obj: {},
+    Modal_Editor_Obj_files: {},
+    Modal_Editor_Obj_files_deletedURL: [],
     ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
     longTextareaBehavior: ["buttons", "modal", "see all"],
@@ -1337,7 +1347,7 @@ const ENTABLADOR = (function () {
       Considerar que si no está especificado en inputsTypes, se pondrá como "text"
       */
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
-
+      ENTABLADOR._.Modal_Editor_Obj_files = {};
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] textarea").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
@@ -1489,12 +1499,22 @@ const ENTABLADOR = (function () {
         
         `;
       } else if (input == "file") {
+        var cols = window[table_name].settings().init().aoColumns;
+        var columnIndex;
+        for (let i = 0; i < cols.length; i++) {
+          if (cols[i].data == realNameColumn) {
+            columnIndex = i;
+            break;
+          }
+        }
+
+        // var columnIndex = ENT_TABLA.settings().init().aoColumns[columnIndex].data
         div = `
         <div class="form-group row">
           <div for="${id}" class="col-sm-3 col-form-label">${titleColumn}</div>
           <div class="col-sm-9">
             <div class="ENTABLADOR-files mt-2" id="${id}-files"></div>
-            <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}', table_name: '${table_name}' };" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
+            <label data-field="${realNameColumn}" for="ENTABLADOR_FILE_UPLOADER" onclick="ENTABLADOR._.LabelClick={ fromModal: true, field: '${realNameColumn}', table_name: '${table_name}', column: ${columnIndex} };" class="btn btn-success btn-sm mb-0 mt-2">Subir Archivos</label>
             <button data-field="${realNameColumn}" class="btn btn-success btn-sm mb-0 mt-2" style="display:none;" disabled><div class="spinner-border spinner-border-sm mr-1"></div>Subir Archivos</button>
           </div>
         </div>`;
@@ -1599,10 +1619,27 @@ const ENTABLADOR = (function () {
         $(that).replaceWith(ENTABLADOR._.SVGs.FileSVG());
       }
     },
-    EliminarFileModal: function (file, table_name, column) {
+    EliminarFileModal: function (url, table_name, column) {
       var arr = this.Modal_Editor_Obj[column];
-      this.Modal_Editor_Obj[column] = arr.filter((arr) => arr != file);
+      this.Modal_Editor_Obj[column] = arr.filter((arr) => arr != url);
       this.renderImagesOnModal(false, table_name, column);
+
+      // eliminar de ENTABLADOR._.Modal_Editor_Obj_files
+      console.log("ENTABLADOR._.Modal_Editor_Obj_files", ENTABLADOR._.Modal_Editor_Obj_files);
+      var Editor_files = ENTABLADOR._.Modal_Editor_Obj_files[column];
+      if (Editor_files) {
+        for (let i = 0; i < Editor_files.length; i++) {
+          if (Editor_files[i].url == url) {
+            console.log("Eliminado del Editor_files:", url, Editor_files[i]);
+
+            Editor_files.splice(i, 1);
+            if (Editor_files.length == 0) {
+              delete ENTABLADOR._.Modal_Editor_Obj_files[column];
+            }
+            break;
+          }
+        }
+      }
     },
     renderImagesOnModal: function (files, table_name, column) {
       // console.log("renderImagesOnModal ->", files, table_name, column);
@@ -1643,13 +1680,6 @@ const ENTABLADOR = (function () {
         if (inputsTypes && inputsTypes[column] == "checkbox") {
           var value = $('.ENTABLADOR_EDICION_MODAL[data-table-name="' + table_name + '"] input[name="ENTABLADOR-' + table_name + "-" + column + '"]:checked').attr("data-entablador-value");
 
-          // if (value == "undefined") {
-          //   value = undefined;
-          // } else if (value === "true") {
-          //   value = true;
-          // } else if (value === "false") {
-          //   value = false;
-          // }
           value = this.parseBoolean("boolean", value);
           this.Modal_Editor_Obj[column] = value;
         } else if (inputsTypes === undefined || inputsTypes[column] != "file") {
@@ -1676,26 +1706,56 @@ const ENTABLADOR = (function () {
       // console.log("rowNueva", rowNueva);
 
       //considerar que pueden haber más columnas en rowNueva que en rowOriginal. rowNueva > rowOriginal
-      for (const key in rowNueva) {
-        if (Object.hasOwnProperty.call(rowNueva, key)) {
-          var esArrayVacio = Array.isArray(rowNueva[key]) && rowNueva[key].length == 0;
+      for (const nombreCol in rowNueva) {
+        if (Object.hasOwnProperty.call(rowNueva, nombreCol)) {
+          var esArrayVacio = Array.isArray(rowNueva[nombreCol]) && rowNueva[nombreCol].length == 0;
           // comentario del futuro sin idea de que escribí aquí en el codigo de abajo:
           // creo que es para filtrar los datos que estén vacíos"" desde el input para evitar creer que
           // como en los datos originales es undefined, entonces "" !== undefined y creerá que actualizó datos,
           // cosa que no es el resultado esperado. por eso ignorar.
-          if ((rowNueva[key] === "" || esArrayVacio) && rowOriginal[key] === undefined && (inputsTypes === undefined || inputsTypes[key] != "checkbox")) {
+          if ((rowNueva[nombreCol] === "" || esArrayVacio) && rowOriginal[nombreCol] === undefined && (inputsTypes === undefined || inputsTypes[nombreCol] != "checkbox")) {
             continue;
           }
           //check if it is a checkbox
-          if (inputsTypes && inputsTypes[key] == "checkbox") {
-            rowNueva[key] = this.parseBoolean("boolean", rowNueva[key]);
-            rowOriginal[key] = this.parseBoolean("boolean", rowOriginal[key]);
+          if (inputsTypes && inputsTypes[nombreCol] == "checkbox") {
+            rowNueva[nombreCol] = this.parseBoolean("boolean", rowNueva[nombreCol]);
+            rowOriginal[nombreCol] = this.parseBoolean("boolean", rowOriginal[nombreCol]);
           }
-          if (rowNueva[key] != rowOriginal[key]) {
-            // console.log("TEST X---", key, rowNueva[key], rowOriginal[key]);
-            rowChanged[key] = rowNueva[key];
-            keysChanged.push(key);
-            ENTABLADOR._.addChanges(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], key, rowNueva[key]);
+          if (rowNueva[nombreCol] != rowOriginal[nombreCol]) {
+            // console.log("TEST X---", nombreCol, rowNueva[nombreCol], rowOriginal[nombreCol]);
+            rowChanged[nombreCol] = rowNueva[nombreCol];
+            keysChanged.push(nombreCol);
+            ENTABLADOR._.addChanges(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], nombreCol, rowNueva[nombreCol]);
+            // Subir Modal_Editor_Obj_files
+            if (inputsTypes && inputsTypes[nombreCol] == "file") {
+              // this.Modal_Editor_Obj_files[nombreCol] = this.Modal_Editor_Obj[nombreCol];
+              if (this.Modal_Editor_Obj_files[nombreCol] && Object.keys(this.Modal_Editor_Obj_files[nombreCol]).length > 0) {
+                ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...this.Modal_Editor_Obj_files[nombreCol]);
+              }
+              // this.Modal_Editor_Obj_files_deletedURL eliminar de filesUploads
+              console.log("si");
+
+              if (this.Modal_Editor_Obj_files_deletedURL[nombreCol] && this.Modal_Editor_Obj_files_deletedURL[nombreCol].length > 0) {
+                // tener en cuenta que Modal_Editor_Obj_files_deletedURL es un array
+                for (let i = 0; i < this.Modal_Editor_Obj_files_deletedURL.length; i++) {
+                  const url = this.Modal_Editor_Obj_files_deletedURL[i];
+                  console.log("url", url);
+                  var filesUploads = this.CAMBIOS_TABLAS[table_name].filesUploads;
+                  // considerar que filesUploads es un array
+                  // considerar que Modal_Editor_Obj_files_deletedURL es un array
+                }
+              }
+
+              // if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
+              //   ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
+              // } else {
+              //   ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
+              //     cambios: {},
+              //     eliminados: [],
+              //     filesUploads: ubicacionesNuevasDeFiles,
+              //   };
+              // }
+            }
           }
         }
       }
@@ -1875,7 +1935,7 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  // .tipoEdicion("modal")
+  .tipoEdicion("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([

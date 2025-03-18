@@ -10,11 +10,14 @@
 
 # IDEAS MAS PRÓXIMAS
 
-# TO-DO
-
 - order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 
+# TO-DO
+
 # TRABAJANDO EN ELLO
+
+- crear this.Modal_Editor_Obj_files_deletedURL y adaptarlo!! - actualmente estoy en guardarCambiosModal() pero falta establecer Modal_Editor_Obj_files_deletedURL cuando se eliminan los files en el modal (es un array).
+- arreglar y adaptar el subir archivos cuando es por modal. || CONSIDERAR QUE HAY QUE GUARDAR LAS UBICACIONES DE LOS FILES Y SOLO SI SE HACE CLICK EL BTN DEL MODAL DE GUARDAR ES QUE SE SUBE A CAMBIOS
 
 # ULTIMOS HECHOS
 
