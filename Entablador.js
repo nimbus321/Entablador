@@ -1908,7 +1908,6 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",
-      archivos0: "file",
       edad: "number",
       notas: "textarea",
     },
@@ -1921,7 +1920,6 @@ ENTABLADOR.crear({
     { data: "notas", title: "Notas", class: "editable" },
     { data: "humano", title: "Humano", class: "editable" },
     { data: "archivos", title: "Archivos", class: "editable" },
-    { data: "archivos0", title: "Archivos0", class: "editable" },
   ],
   columnDefs: [
     {

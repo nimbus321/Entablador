@@ -14,6 +14,8 @@
 
 # TO-DO
 
+- checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
+
 # TRABAJANDO EN ELLO
 
 # ULTIMOS HECHOS
