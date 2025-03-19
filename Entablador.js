@@ -270,7 +270,7 @@ const ENTABLADOR = (function () {
           boolean = !ENT_TABLA.ENTABLADOR.modalLarge;
         }
 
-        console.log("Tabla '" + ID + "' cambiado modalLarge: " + boolean);
+        // console.log("Tabla '" + ID + "' cambiado modalLarge: " + boolean);
         ENT_TABLA.ENTABLADOR.modalLarge = boolean;
         // if modal already exists, change the size
         $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + ID + "']")
@@ -1347,7 +1347,8 @@ const ENTABLADOR = (function () {
       Considerar que si no está especificado en inputsTypes, se pondrá como "text"
       */
       var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
-      ENTABLADOR._.Modal_Editor_Obj_files = {};
+      this.Modal_Editor_Obj_files = {};
+      this.Modal_Editor_Obj_files_deletedURL = {};
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] textarea").val("");
       $(".ENTABLADOR_EDICION_MODAL[data-table-name='" + table_name + "'] input[type='radio']").prop("checked", false);
@@ -1622,10 +1623,16 @@ const ENTABLADOR = (function () {
     EliminarFileModal: function (url, table_name, column) {
       var arr = this.Modal_Editor_Obj[column];
       this.Modal_Editor_Obj[column] = arr.filter((arr) => arr != url);
+      // console.log("column --->", column);
+
+      if (!this.Modal_Editor_Obj_files_deletedURL[column]) {
+        this.Modal_Editor_Obj_files_deletedURL[column] = [];
+      }
+      this.Modal_Editor_Obj_files_deletedURL[column].push(url);
       this.renderImagesOnModal(false, table_name, column);
 
       // eliminar de ENTABLADOR._.Modal_Editor_Obj_files
-      console.log("ENTABLADOR._.Modal_Editor_Obj_files", ENTABLADOR._.Modal_Editor_Obj_files);
+      // console.log("ENTABLADOR._.Modal_Editor_Obj_files", ENTABLADOR._.Modal_Editor_Obj_files);
       var Editor_files = ENTABLADOR._.Modal_Editor_Obj_files[column];
       if (Editor_files) {
         for (let i = 0; i < Editor_files.length; i++) {
@@ -1722,28 +1729,43 @@ const ENTABLADOR = (function () {
             rowOriginal[nombreCol] = this.parseBoolean("boolean", rowOriginal[nombreCol]);
           }
           if (rowNueva[nombreCol] != rowOriginal[nombreCol]) {
-            // console.log("TEST X---", nombreCol, rowNueva[nombreCol], rowOriginal[nombreCol]);
             rowChanged[nombreCol] = rowNueva[nombreCol];
             keysChanged.push(nombreCol);
             ENTABLADOR._.addChanges(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], nombreCol, rowNueva[nombreCol]);
             // Subir Modal_Editor_Obj_files
             if (inputsTypes && inputsTypes[nombreCol] == "file") {
-              // this.Modal_Editor_Obj_files[nombreCol] = this.Modal_Editor_Obj[nombreCol];
+              // Subir files nuevos subidos a CAMBIOS_TABLAS.filesUploads
               if (this.Modal_Editor_Obj_files[nombreCol] && Object.keys(this.Modal_Editor_Obj_files[nombreCol]).length > 0) {
                 ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...this.Modal_Editor_Obj_files[nombreCol]);
               }
-              // this.Modal_Editor_Obj_files_deletedURL eliminar de filesUploads
-              console.log("si");
+              // Actualizar files eliminados a CAMBIOS_TABLAS.filesUploads
+              var deletedURLs = this.Modal_Editor_Obj_files_deletedURL;
+              if (deletedURLs[nombreCol] && deletedURLs[nombreCol].length > 0) {
+                console.log("deletedURLs", deletedURLs);
 
-              if (this.Modal_Editor_Obj_files_deletedURL[nombreCol] && this.Modal_Editor_Obj_files_deletedURL[nombreCol].length > 0) {
-                // tener en cuenta que Modal_Editor_Obj_files_deletedURL es un array
-                for (let i = 0; i < this.Modal_Editor_Obj_files_deletedURL.length; i++) {
-                  const url = this.Modal_Editor_Obj_files_deletedURL[i];
+                for (let i = 0; i < deletedURLs[nombreCol].length; i++) {
+                  const url = deletedURLs[nombreCol][i];
                   console.log("url", url);
                   var filesUploads = this.CAMBIOS_TABLAS[table_name].filesUploads;
-                  // considerar que filesUploads es un array
-                  // considerar que Modal_Editor_Obj_files_deletedURL es un array
+                  for (let i = 0; i < filesUploads.length; i++) {
+                    if (filesUploads[i].url === url) {
+                      filesUploads.splice(i, 1);
+                    }
+                  }
                 }
+
+                // for (const colName_deletedURLs in deletedURLs) {
+                //   for (let i = 0; i < deletedURLs[colName_deletedURLs].length; i++) {
+                //     const url = deletedURLs[colName_deletedURLs][i];
+                //     console.log("url", url);
+                //     var filesUploads = this.CAMBIOS_TABLAS[table_name].filesUploads;
+                //     for (let i = 0; i < filesUploads.length; i++) {
+                //       if (filesUploads[i].url === url) {
+                //         filesUploads.splice(i, 1);
+                //       }
+                //     }
+                //   }
+                // }
               }
 
               // if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
@@ -1886,6 +1908,7 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",
+      archivos0: "file",
       edad: "number",
       notas: "textarea",
     },
@@ -1898,6 +1921,7 @@ ENTABLADOR.crear({
     { data: "notas", title: "Notas", class: "editable" },
     { data: "humano", title: "Humano", class: "editable" },
     { data: "archivos", title: "Archivos", class: "editable" },
+    { data: "archivos0", title: "Archivos0", class: "editable" },
   ],
   columnDefs: [
     {
