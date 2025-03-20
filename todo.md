@@ -14,13 +14,12 @@
 
 # TO-DO
 
-- checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
-
 # TRABAJANDO EN ELLO
 
 # ULTIMOS HECHOS
 
-- puesto titulo automatico si no hay, desde data
+- +config.replaceName al crear tabla para poder evitar que renombre 'name'
+- checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
 - crear this.Modal_Editor_Obj_files_deletedURL y adaptarlo!! - actualmente estoy en guardarCambiosModal() pero falta establecer Modal_Editor_Obj_files_deletedURL cuando se eliminan los files en el modal (es un array).
 - arreglar y adaptar el subir archivos cuando es por modal. || CONSIDERAR QUE HAY QUE GUARDAR LAS UBICACIONES DE LOS FILES Y SOLO SI SE HACE CLICK EL BTN DEL MODAL DE GUARDAR ES QUE SE SUBE A CAMBIOS
 
