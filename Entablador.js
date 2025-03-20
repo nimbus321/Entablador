@@ -1540,7 +1540,7 @@ const ENTABLADOR = (function () {
             <div class="modal-dialog${window[table_name].ENTABLADOR.modalLarge ? " modal-lg" : ""}" style="transition: max-width 0.2s;">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Editar Datos | <span class="ENTABLADOR_CAMPO text-uppercase font-wight-bold text-primary">-</span></h5>
+                  <h5 class="modal-title" style="overflow: hidden; text-overflow: ellipsis;">Editar Datos | <span class="ENTABLADOR_CAMPO text-uppercase font-wight-bold text-primary">-</span></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
