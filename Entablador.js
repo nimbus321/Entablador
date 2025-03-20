@@ -1957,7 +1957,7 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  .editType("modal")
+  // .editType("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([

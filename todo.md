@@ -15,6 +15,8 @@
 
 # IDEAS MAS PRÓXIMAS
 
+- en editType inline: si hover una img y paso hover al btn de eliminar, se quita el efecto de opaco en la img (bien), pero lo mismo en svg no funciona, ahí se queda el efecto de opaco a pesar que esta haciendo el hover en el btn y no en el svg. hacer que se quite el efecto (como en img's)
+
 # TO-DO
 
 - el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
