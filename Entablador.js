@@ -349,7 +349,6 @@ const ENTABLADOR = (function () {
         var name = opciones.columns[i].name;
         var title = opciones.columns[i].title;
 
-        console.log("config.replaceName", config.replaceName);
         if (config.replaceName !== false) {
           if (name !== undefined && name != data) {
             console.warn("En la tabla '" + config.id + "', la columna '" + data + "' ya tiene un '.name'. Se ha eliminado el '.name' que le fue dado ('" + name + "') y cambiado por su '.data' ('" + data + "').");
