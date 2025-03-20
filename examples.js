@@ -1,17 +1,3 @@
-// EJEMPLO DE COMO MANDAR LOS FILES UNA VEZ GUARDADO EN CAMBIOS.
-[
-  {
-    file: FILE1,
-    ubicaciones: [
-      {
-        primaryKey: "2",
-        column: "archivos",
-        url: "https://www.google.com",
-      },
-    ],
-  },
-];
-
 // PARA GUARDAR CODIGO NESTED. (PARA GUARDARLO EN filesUploads y cambios en CAMBIOS)
 
 const obj = {

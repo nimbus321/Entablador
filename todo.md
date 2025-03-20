@@ -4,24 +4,23 @@
 
 # IDEAS
 
+- order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 - crear una comparación con la tabla (o cambios, pensar mejor esto) inicial para confirmar no dar datos vacios a firestore
 - quitar los svg (ponerlos con ::after)
 - volver a checar si puedo actualizar el codigo de usar 'var columnKeyIndex = NuevaTabla.settings()' para usar 'NuevaTabla.column("ENTABLADOR-btn:name")'. MUCHO CUIDADO con esto que fue lo que me rompió el codigo la última vez. hacerlo en 1 solo commit.
 
 # IDEAS MAS PRÓXIMAS
 
-- order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
-
 # TO-DO
 
+- el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
 - adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
 
 # TRABAJANDO EN ELLO
 
-- cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent.
-
 # ULTIMOS HECHOS
 
+- cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
 - considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
 - asegurar que .uploadData() funcione correctamente
 

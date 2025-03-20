@@ -225,6 +225,12 @@ const ENTABLADOR = (function () {
               if (isTextarea && $(this).find(".ENTABLADOR-textarea-data span").text() === "") {
                 return;
               }
+
+              var isDefaultContent = $(this).html() === ENT_TABLA.settings().init().aoColumns[ENT_TABLA.cell(this).index().column].defaultContent;
+              if (false && isDefaultContent) {
+                // No estoy seguro si es mejor quitar el svg o si dejarlo. Por el momento puse false para dejarlo.
+                return;
+              }
               $(this).addClass("td-nuevo-hayTexto");
             }
           });
@@ -1892,7 +1898,7 @@ ENTABLADOR.crear({
   // fixOrderEmptyAtBottom: false,
   // createButtons: false,
   // autoRender: false,
-  // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?)
+  // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?). tiene que ver si no se usa un renderizado en la columna, creo.
   meta: {
     key: "id",
     secondary_key: "nombre",
@@ -1912,7 +1918,7 @@ ENTABLADOR.crear({
     { data: "edad", title: "Edad", class: "editable" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
     { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable", defaultContent: " " },
+    { data: "humano", title: "Humano", class: "editable", defaultContent: "No especificado" },
     { data: "archivos", title: "Archivos", class: "editable" },
   ],
   columnDefs: [
