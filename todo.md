@@ -14,14 +14,16 @@
 
 # TO-DO
 
+- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
+
 # TRABAJANDO EN ELLO
+
+- cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent.
 
 # ULTIMOS HECHOS
 
-- +config.replaceName al crear tabla para poder evitar que renombre 'name'
-- checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
-- crear this.Modal_Editor_Obj_files_deletedURL y adaptarlo!! - actualmente estoy en guardarCambiosModal() pero falta establecer Modal_Editor_Obj_files_deletedURL cuando se eliminan los files en el modal (es un array).
-- arreglar y adaptar el subir archivos cuando es por modal. || CONSIDERAR QUE HAY QUE GUARDAR LAS UBICACIONES DE LOS FILES Y SOLO SI SE HACE CLICK EL BTN DEL MODAL DE GUARDAR ES QUE SE SUBE A CAMBIOS
+- considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
+- asegurar que .uploadData() funcione correctamente
 
 # FIXED - ON WATCH
 
@@ -31,6 +33,10 @@
 
 # DONE
 
+- +config.replaceName al crear tabla para poder evitar que renombre 'name'
+- checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
+- crear this.Modal_Editor_Obj_files_deletedURL y adaptarlo!! - actualmente estoy en guardarCambiosModal() pero falta establecer Modal_Editor_Obj_files_deletedURL cuando se eliminan los files en el modal (es un array).
+- arreglar y adaptar el subir archivos cuando es por modal. || CONSIDERAR QUE HAY QUE GUARDAR LAS UBICACIONES DE LOS FILES Y SOLO SI SE HACE CLICK EL BTN DEL MODAL DE GUARDAR ES QUE SE SUBE A CAMBIOS
 - crear manera nativa y normal para que NO se suban los archivos a firestore desde el cliente, si no que se creen "blob:" files para el html y que SOLO cundo se mande todos los cambios guardados al servidor, ahí es cuando se guardarán en firestore (mandarlos adjuntos). Beneficios: no archivos de más en firestore sin que sean referenciados. mucho mejor en general.
 - QUITAR LA SIMPLE EXISTENCIA DE DUMMY FILES!! todo el punto de tenerlo era para no tener que subir a firestore para testear, pero al cambiarlo por URL.createObjectURL(files[i]) ya no hace falta porque nunca se sube a firestore primero.. vaya tontería que hice al continuar con dummyfiles.
 

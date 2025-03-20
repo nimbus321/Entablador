@@ -41,11 +41,11 @@ const ENTABLADOR = (function () {
 
     const instance = {
       id: ID,
-      tipoEdicion(type) {
+      editType(type) {
         if (type == undefined) {
           return ENT_TABLA.table().node().getAttribute("data-edition-type");
         }
-        // console.log(ID + " -- tipoEdicion: " + type);
+        // console.log(ID + " -- editType: " + type);
         var editTypes = ENTABLADOR._.editTypes;
         if (!editTypes.includes(type)) {
           console.error("Tipo de edición no válido. Tipos válidos:", editTypes);
@@ -156,8 +156,8 @@ const ENTABLADOR = (function () {
           },
           ID2: ...
         }
-        */
-        /* EXPECTED VALUE FOR  data:
+       
+        EXPECTED VALUE FOR  data:
         [{
           ENTABLADOR_KEY: "ID",
           COLUMNA1: "VALOR",
@@ -174,7 +174,7 @@ const ENTABLADOR = (function () {
         //check if it is an array of objects
         for (let i = 0; i < data.length; i++) {
           if (typeof data[i] != "object") {
-            console.error(".uploadData(data) -> data is not an array of objects. data:", data);
+            console.error(".uploadData(data) -> data is not an array of objects.\ndata:", data, "\nelement on array that is not an object: data[" + i + "]: '", data[i], "'");
             return this;
           }
           //check if it has the key specified
@@ -183,7 +183,7 @@ const ENTABLADOR = (function () {
 
           if (data[i][primary_key] == undefined) {
             if (dontForceAutoID) {
-              console.error(".uploadData() -> value of the key '" + primary_key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
+              console.error(".uploadData() -> value of the primary key '" + primary_key + "' is mising and dontForceAutoID=true.\nData:", data[i]);
               return this;
             } else {
               data[i][primary_key] = ENTABLADOR._.getNewID(ENT_TABLA.data().toArray(), primary_key, data);
@@ -348,6 +348,11 @@ const ENTABLADOR = (function () {
         var data = opciones.columns[i].data;
         var name = opciones.columns[i].name;
         var title = opciones.columns[i].title;
+        // title_th es el title que está en el element th de la tabla, detectar si hay texto
+        var title_th = $(document.getElementById(config.id)).find("th").eq(i).text().trim();
+
+        title = title || title_th;
+        // console.log("title_th", title_th);
 
         if (config.replaceName !== false) {
           if (name !== undefined && name != data) {
@@ -356,9 +361,11 @@ const ENTABLADOR = (function () {
           opciones.columns[i].name = data;
         }
 
-        if (title == undefined && data != null) {
+        if (title === undefined && data != null) {
           // Poner el titulo desde data en minusculas y la primera letra en mayusculas
           opciones.columns[i].title = data.charAt(0).toUpperCase() + data.slice(1).toLowerCase();
+        } else if (title !== "") {
+          opciones.columns[i].title = title;
         }
 
         if (config.createDefaultContent) {
@@ -462,7 +469,7 @@ const ENTABLADOR = (function () {
         orderable: false,
         visible: false,
         width: "20px",
-        // className: "ENTABLADOR-btn",
+        className: "ENTABLADOR-btn",
         name: "ENTABLADOR-btn",
       };
       for (var i = 0; i < opciones.columnDefs.length; i++) {
@@ -643,7 +650,7 @@ const ENTABLADOR = (function () {
 
     // ########################################################################
     // CREAR TABLA
-    console.log("########################       CREANDO TABLA       ########################");
+    console.log("#########################       CREANDO TABLA       ########################");
     console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
     console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
     console.log("############################################################################");
@@ -1749,11 +1756,11 @@ const ENTABLADOR = (function () {
               // Actualizar files eliminados a CAMBIOS_TABLAS.filesUploads
               var deletedURLs = this.Modal_Editor_Obj_files_deletedURL;
               if (deletedURLs[nombreCol] && deletedURLs[nombreCol].length > 0) {
-                console.log("deletedURLs", deletedURLs);
+                // console.log("deletedURLs", deletedURLs);
 
                 for (let i = 0; i < deletedURLs[nombreCol].length; i++) {
                   const url = deletedURLs[nombreCol][i];
-                  console.log("url", url);
+                  // console.log("url", url);
                   var filesUploads = this.CAMBIOS_TABLAS[table_name].filesUploads;
                   for (let i = 0; i < filesUploads.length; i++) {
                     if (filesUploads[i].url === url) {
@@ -1761,30 +1768,7 @@ const ENTABLADOR = (function () {
                     }
                   }
                 }
-
-                // for (const colName_deletedURLs in deletedURLs) {
-                //   for (let i = 0; i < deletedURLs[colName_deletedURLs].length; i++) {
-                //     const url = deletedURLs[colName_deletedURLs][i];
-                //     console.log("url", url);
-                //     var filesUploads = this.CAMBIOS_TABLAS[table_name].filesUploads;
-                //     for (let i = 0; i < filesUploads.length; i++) {
-                //       if (filesUploads[i].url === url) {
-                //         filesUploads.splice(i, 1);
-                //       }
-                //     }
-                //   }
-                // }
               }
-
-              // if (ENTABLADOR._.CAMBIOS_TABLAS[table_name]) {
-              //   ENTABLADOR._.CAMBIOS_TABLAS[table_name].filesUploads.push(...ubicacionesNuevasDeFiles);
-              // } else {
-              //   ENTABLADOR._.CAMBIOS_TABLAS[table_name] = {
-              //     cambios: {},
-              //     eliminados: [],
-              //     filesUploads: ubicacionesNuevasDeFiles,
-              //   };
-              // }
             }
           }
         }
@@ -1923,11 +1907,12 @@ ENTABLADOR.crear({
   },
   columns: [
     { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable" },
+    { data: "nombre", class: "editable" },
+    // { data: "nombre", title: "Nombre", class: "editable" },
     { data: "edad", title: "Edad", class: "editable" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
     { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable" },
+    { data: "humano", title: "Humano", class: "editable", defaultContent: " " },
     { data: "archivos", title: "Archivos", class: "editable" },
   ],
   columnDefs: [
@@ -1966,7 +1951,7 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  .tipoEdicion("modal")
+  // .editType("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([
@@ -1986,7 +1971,8 @@ ENTABLADOR.crear({
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
     { id: 7 },
-  ]);
+  ])
+  .uploadData([{ nombre: "10!" }]);
 
 // Add css rule
 var style = document.createElement("style");
