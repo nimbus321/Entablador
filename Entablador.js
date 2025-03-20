@@ -347,10 +347,15 @@ const ENTABLADOR = (function () {
       for (let i = 0; i < opciones.columns.length; i++) {
         var data = opciones.columns[i].data;
         var name = opciones.columns[i].name;
+        var title = opciones.columns[i].title;
         if (name != undefined && name != data) {
           console.warn("En la tabla '" + config.id + "', la columna '" + data + "' ya tiene un '.name'. Se ha eliminado el '.name' que le fue dado ('" + name + "') y cambiado por su '.data' ('" + data + "').");
         }
         opciones.columns[i].name = data;
+        if (title == undefined && data != null) {
+          // Poner el titulo desde data en minusculas y la primera letra en mayusculas
+          opciones.columns[i].title = data.charAt(0).toUpperCase() + data.slice(1).toLowerCase();
+        }
 
         if (config.createDefaultContent) {
           if (opciones.columns[i].defaultContent == undefined) {
@@ -491,7 +496,6 @@ const ENTABLADOR = (function () {
         if ((visible === true || visible === undefined) && orderable !== false) {
           index = i;
           break;
-          A;
         }
       }
       opciones.order = [[index, "asc"]];
@@ -1912,14 +1916,23 @@ ENTABLADOR.crear({
       notas: "textarea",
     },
   },
+  // columns: [
+  //   { data: "id", visible: false },
+  //   { data: "nombre", title: "Nombre", class: "editable" },
+  //   { data: "edad", title: "Edad", class: "editable" },
+  //   { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+  //   { data: "notas", title: "Notas", class: "editable" },
+  //   { data: "humano", title: "Humano", class: "editable" },
+  //   { data: "archivos", title: "Archivos", class: "editable" },
+  // ],
   columns: [
     { data: "id", visible: false },
-    { data: "nombre", title: "Nombre", class: "editable" },
-    { data: "edad", title: "Edad", class: "editable" },
-    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
-    { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable" },
-    { data: "archivos", title: "Archivos", class: "editable" },
+    { data: "nombre", class: "editable" },
+    { data: "edad", class: "editable" },
+    { data: "fechaNacimiento", class: "editable" },
+    { data: "notas", class: "editable" },
+    { data: "humano", class: "editable" },
+    { data: "archivos", class: "editable" },
   ],
   columnDefs: [
     {
