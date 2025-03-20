@@ -200,7 +200,7 @@ const ENTABLADOR = (function () {
             }
           }
 
-          console.log(data[i][primary_key]);
+          // console.log(data[i][primary_key]);
           //check requiredFields
           var requiredFields = ENTABLADOR._.requiredFields[ENT_TABLA.table().node().id];
           requiredFields = requiredFields ? requiredFields : [];
