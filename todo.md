@@ -1,5 +1,9 @@
 # A TENER EN CUENTA
 
+- Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
+  Element with focus: div
+  Ancestor with aria-hidden: <div> etc. esto se puede reproducir al hacer click a editar la tabla y MUY rapidamente darle click al dev tools y desp cerrar el modal dando click fuera de modal.
+
 - OJO!!! CREO QUE el error que me tomó tanto problema la última vez fue por quitar 'autoWidth: config.autoWidth || false'. Considerar esto. es lo mismo quitarlo que ponerlo autoWidth: true. INVESTIGAR MÁS ESTO
 
 # IDEAS
@@ -20,6 +24,7 @@
 
 # ULTIMOS HECHOS
 
+- en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's |FIXED (pero feo la vrd)|
 - cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
 - considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
 - asegurar que .uploadData() funcione correctamente

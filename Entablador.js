@@ -1682,10 +1682,10 @@ const ENTABLADOR = (function () {
       for (let i = 0; i < files.length; i++) {
         // detect if it is an image or a file (make it svg)
         var file = `
-        <div style="position:relative;display: inline-block" class="ENTABLADOR-tabla-anchor">
+        <div style="position:relative;display: inline-block;" class="ENTABLADOR-tabla-anchor">
           <button onclick="ENTABLADOR._.EliminarFileModal('${files[i]}', '${table_name}', '${column}')" class="eliminarFoto">&times;</button>
           <a href="${files[i]}" target="_blank" style="cursor: zoom-in;">
-            <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1" onerror="this.onerror=null;ENTABLADOR._.ImgOnError(this)">
+            <img src="${files[i]}" alt="Foto" class="img-thumbnail m-1" onerror="this.onerror=null;this.parentElement.parentElement.style.paddingTop = '7px';ENTABLADOR._.ImgOnError(this)">
           </a>
         </div>`;
         $("#ENTABLADOR-" + table_name + "-" + column + "-files").append(file);
@@ -1957,7 +1957,7 @@ ENTABLADOR.crear({
   order: [6, "asc"],
 })
   .editable(true)
-  // .editType("modal")
+  .editType("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
   .add([
