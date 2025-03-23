@@ -215,6 +215,8 @@ const ENTABLADOR = (function () {
         // subir a la tabla y poner la class .newData a la row
         var rows = ENT_TABLA.rows.add(data).draw().nodes();
         $(rows).addClass("font-weight-bold text-success tr-nuevo").attr("title", "Dato Nuevo");
+        //set text-success to the td elements
+        $(rows).find("td").addClass("text-success td-nuevo");
         // en cada celda que tenga algun dato poner el svg new
         $(rows)
           .find("td")
@@ -1211,6 +1213,10 @@ const ENTABLADOR = (function () {
 
           cell.addClass("td-editado text-primary font-weight-bold");
           cell.attr("title", "Campo Editado");
+          var isNewTR = cell.closest("tr").hasClass("ENTABLADOR-row-nuevo");
+          if (!isNewTR) {
+            cell.addClass("td-nuevo-hayTexto");
+          }
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
           // console.log("----->", table_name, nombreRow, nombreColumna, newContent);
 
@@ -1465,6 +1471,7 @@ const ENTABLADOR = (function () {
       console.log("Cambios", Eliminados);
     },
     crearInputModal(input, titleColumn, realNameColumn, table_name) {
+      haz;
       // console.log(input, titleColumn, realNameColumn, table_name);
       if (input == undefined || input === "") {
         console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto '" + ENTABLADOR._.validInputs[0] + "'.");

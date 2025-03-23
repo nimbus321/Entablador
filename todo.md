@@ -19,10 +19,13 @@
 
 # TO-DO
 
+- al eliminar una row, no se borra el file de filesUploads.
 - el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
 - adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
 
 # TRABAJANDO EN ELLO
+
+- cambios en los css selectors de los svg's y adaptarlos.
 
 # ULTIMOS HECHOS
 
