@@ -8,6 +8,7 @@
 
 # IDEAS
 
+- hacer que al querer recuperar los cambios, verifique si hay eliminados, y si hay, eliminar de cambios y de filesUploads.
 - order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 - crear una comparación con la tabla (o cambios, pensar mejor esto) inicial para confirmar no dar datos vacios a firestore
 - quitar los svg (ponerlos con ::after)
@@ -19,16 +20,17 @@
 
 # TO-DO
 
-- al eliminar una row, no se borra el file de filesUploads.
-- el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
 - adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
 
 # TRABAJANDO EN ELLO
 
-- cambios en los css selectors de los svg's y adaptarlos.
+- crear un method para obtener los cambios (para mandarlo al server)
 
 # ULTIMOS HECHOS
 
+- cambios en los css selectors de los svg's y adaptarlos.
+- al eliminar una row, no se borra el file de filesUploads. |delear con esto al guardarlo en el server|
+- el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
 - en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's |FIXED (pero feo la vrd)|
 - cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
 - considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
