@@ -200,18 +200,43 @@ const ENTABLADOR = (function () {
             }
           }
 
-          // console.log(data[i][primary_key]);
           //check requiredFields
           var requiredFields = ENTABLADOR._.requiredFields[ENT_TABLA.table().node().id];
           requiredFields = requiredFields ? requiredFields : [];
           for (let j = 0; j < requiredFields.length; j++) {
             var mandatoryField = requiredFields[j];
             if (data[i][mandatoryField] == undefined) {
-              console.error(".uploadData() -> value of the mandatory field '" + mandatoryField + "' is mising.\nrequiredFields:", requiredFields, "\nData:", data[i]);
+              console.error(".uploadData() -> value of the required field '" + mandatoryField + "' is mising.\nrequiredFields:", requiredFields, "\nData:", data[i]);
               return this;
             }
           }
+          // detectar si se subió en un campo que tiene inputTypes: file y que no sea un file
+          var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
+          console.log("DATA:::", data[i]);
+          // console.error(".uploadData() -> value of the field '" + nombreColInputType + "' is not a file.\nData:", data[i]);
+          var inputTypesFiles = inputsTypes ? Object.keys(inputsTypes).filter((key) => inputsTypes[key] === "file") : [];
+          console.log("inputTypesFiles", inputTypesFiles);
+
+          if (inputTypesFiles.length > 0) {
+            for (let j = 0; j < inputTypesFiles.length; j++) {
+              var value = data[i][inputTypesFiles[j]];
+              console.log("inputTypesFiles[j]", inputTypesFiles[j]);
+              console.log("value", value);
+
+              if (value != undefined) {
+                var isFile = value instanceof FileList;
+                if (!isFile) {
+                  console.error(".uploadData() -> value of the field '" + inputTypesFiles[j] + "' is not a file.\nData:", data[i]);
+                  return this;
+                }
+              }
+            }
+          }
         }
+        // ##############################################################
+        // subir a la tabla
+        // ##############################################################
+
         // subir a la tabla y poner la class .newData a la row
         var rows = ENT_TABLA.rows.add(data).draw().nodes();
         $(rows).addClass("font-weight-bold text-success tr-nuevo").attr("title", "Dato Nuevo");
@@ -1931,14 +1956,14 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",
+      archivos2: "file",
       edad: "number",
       notas: "textarea",
     },
   },
   columns: [
     { data: "id", visible: false },
-    { data: "nombre", class: "editable" },
-    // { data: "nombre", title: "Nombre", class: "editable" },
+    { data: "nombre", title: "Nombre", class: "editable" },
     { data: "edad", title: "Edad", class: "editable" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
     { data: "notas", title: "Notas", class: "editable" },
@@ -1984,6 +2009,7 @@ ENTABLADOR.crear({
   // .editType("modal")
   // .modalLarge(true)
   // .longTextareaBehavior("modal")
+  .requiredFields(["nombre", "id"])
   .add([
     {
       id: 1,
@@ -2002,7 +2028,7 @@ ENTABLADOR.crear({
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
     { id: 7 },
   ])
-  .uploadData([{ nombre: "10!" }]);
+  .uploadData([{ nombre: "10!", archivos: "file lol" }]);
 
 // Add css rule
 var style = document.createElement("style");

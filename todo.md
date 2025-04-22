@@ -17,11 +17,13 @@
 
 # IDEAS MAS PRÓXIMAS
 
-- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
-
 # TO-DO
 
+- .subirArchivoURL() <- cheacar porque creo que no lo he quitado aún
+
 # TRABAJANDO EN ELLO
+
+- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. >>>>>>>>>>>> ya pasé FileList a uploadData(), pero falta que lo pueda guardar en cambios y que haga un :blob para ponerlo en el DOM.
 
 # ULTIMOS HECHOS
 
