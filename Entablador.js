@@ -213,16 +213,16 @@ const ENTABLADOR = (function () {
           // detectar si se subió en un campo que tiene inputTypes: file y que no sea un file
           var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
           var colNamesHasFileOnData = [];
-          console.log("DATA:::", data[i]);
+          // console.log("DATA:::", data[i]);
           // console.error(".uploadData() -> value of the field '" + nombreColInputType + "' is not a file.\nData:", data[i]);
           var inputTypesFiles = inputsTypes ? Object.keys(inputsTypes).filter((key) => inputsTypes[key] === "file") : [];
-          console.log("inputTypesFiles", inputTypesFiles);
+          // console.log("inputTypesFiles", inputTypesFiles);
 
           if (inputTypesFiles.length > 0) {
             for (let j = 0; j < inputTypesFiles.length; j++) {
               var value = data[i][inputTypesFiles[j]];
-              console.log("inputTypesFiles[j]", inputTypesFiles[j]);
-              console.log("value", value);
+              // console.log("inputTypesFiles[j]", inputTypesFiles[j]);
+              // console.log("value", value);
 
               if (value != undefined) {
                 var isFile = value instanceof FileList;
@@ -236,7 +236,7 @@ const ENTABLADOR = (function () {
           }
         }
         // colNamesHasFileOnData | poner como valor el :blob y ponerlo correctamente en cambios filesUploads
-        console.log("colNamesHasFileOnData", colNamesHasFileOnData);
+        // console.log("colNamesHasFileOnData", colNamesHasFileOnData);
         for (let i = 0; i < colNamesHasFileOnData.length; i++) {
           var colName = colNamesHasFileOnData[i];
           var fileList = data[i][colName];
