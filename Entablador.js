@@ -212,6 +212,7 @@ const ENTABLADOR = (function () {
           }
           // detectar si se subió en un campo que tiene inputTypes: file y que no sea un file
           var inputsTypes = ENT_TABLA.ENTABLADOR.inputsTypes;
+          var colNamesHasFileOnData = [];
           console.log("DATA:::", data[i]);
           // console.error(".uploadData() -> value of the field '" + nombreColInputType + "' is not a file.\nData:", data[i]);
           var inputTypesFiles = inputsTypes ? Object.keys(inputsTypes).filter((key) => inputsTypes[key] === "file") : [];
@@ -229,10 +230,37 @@ const ENTABLADOR = (function () {
                   console.error(".uploadData() -> value of the field '" + inputTypesFiles[j] + "' is not a file.\nData:", data[i]);
                   return this;
                 }
+                colNamesHasFileOnData.push(inputTypesFiles[j]);
               }
             }
           }
         }
+        // colNamesHasFileOnData | poner como valor el :blob y ponerlo correctamente en cambios filesUploads
+        console.log("colNamesHasFileOnData", colNamesHasFileOnData);
+        for (let i = 0; i < colNamesHasFileOnData.length; i++) {
+          var colName = colNamesHasFileOnData[i];
+          var fileList = data[i][colName];
+          var array_URLS = [];
+          for (let ia = 0; ia < fileList.length; ia++) {
+            array_URLS.push(URL.createObjectURL(fileList[ia]));
+
+            // ponerlo en cambios filesUploads
+            if (ENTABLADOR._.CAMBIOS_TABLAS[ID] == undefined) {
+              ENTABLADOR._.CAMBIOS_TABLAS[ID] = {
+                cambios: {},
+                eliminados: [],
+                filesUploads: [],
+              };
+            }
+            ENTABLADOR._.CAMBIOS_TABLAS[ID].filesUploads.push({
+              file: fileList[ia],
+              ubicaciones: [{ primaryKey: data[i][primary_key], columnName: colName }],
+              url: array_URLS[ia],
+            });
+          }
+          data[i][colName] = array_URLS;
+        }
+
         // ##############################################################
         // subir a la tabla
         // ##############################################################
@@ -240,7 +268,6 @@ const ENTABLADOR = (function () {
         // subir a la tabla y poner la class .newData a la row
         var rows = ENT_TABLA.rows.add(data).draw().nodes();
         $(rows).addClass("font-weight-bold text-success tr-nuevo").attr("title", "Dato Nuevo");
-        //set text-success to the td elements
         $(rows).find("td").addClass("text-success td-nuevo");
         // en cada celda que tenga algun dato poner el svg new
         $(rows)
@@ -1307,19 +1334,26 @@ const ENTABLADOR = (function () {
         newContent = data.filter((archivo) => archivo != link);
         //detect if it is an empty array
         if (newContent.length == 0) {
-          newContent = "";
+          newContent = [];
         }
         cellDataTables.data(newContent).draw(false);
       } else {
         //detect if it is a string
         if (typeof data == "string") {
           if (data == link) {
-            cellDataTables.data("").draw(false);
-            newContent = "";
+            cellDataTables.data([]).draw(false);
+            newContent = [];
           }
         }
       }
       ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
+      // eliminar de filesUploads
+      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
+
+      if (CAMBIOS_TABLAS[table_name]) {
+        CAMBIOS_TABLAS[table_name].filesUploads = CAMBIOS_TABLAS[table_name].filesUploads.filter((archivo) => archivo.url != link);
+      }
+
       // añadir class .td-editado
       $(cellDataTables.node()).addClass("td-editado").attr("title", "Archivos Editados");
     },
@@ -2027,8 +2061,8 @@ ENTABLADOR.crear({
     { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
     { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
     { id: 7 },
-  ])
-  .uploadData([{ nombre: "10!", archivos: "file lol" }]);
+  ]);
+// .uploadData([{ nombre: "10!", archivosa: "file lol" }]);
 
 // Add css rule
 var style = document.createElement("style");

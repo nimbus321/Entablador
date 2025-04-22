@@ -19,24 +19,19 @@
 
 # TO-DO
 
+- al subir archivos con modal, no se ve el svg de editado. supongo porque oculto el div de subir archivos inline y creo que ahi esta el svg de editado.
 - .subirArchivoURL() <- cheacar porque creo que no lo he quitado aún
 
 # TRABAJANDO EN ELLO
 
-- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. >>>>>>>>>>>> ya pasé FileList a uploadData(), pero falta que lo pueda guardar en cambios y que haga un :blob para ponerlo en el DOM.
-
 # ULTIMOS HECHOS
 
-- crear un method para obtener los cambios (para mandarlo al server)|DONE .getChanges()|
-- cambios en los css selectors de los svg's y adaptarlos.
-- al eliminar una row, no se borra el file de filesUploads. |delear con esto al guardarlo en el server|
-- el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
-- en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's |FIXED (pero feo la vrd)|
-- cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
-- considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
-- asegurar que .uploadData() funcione correctamente
+- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. >>>>>>>>>>>> ya pasé FileList a uploadData(), pero falta que lo pueda guardar en cambios y que haga un :blob para ponerlo en el DOM.
+- al eliminar files cuando inputType:inline, no se borran los de filesUploads |FIXED|
 
 # FIXED - ON WATCH
+
+- considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
 
 - .\_.extractNumberFromString() reestructurado para habilitar decimales y negativos.
 - terminado ENTABLADOR-ORDER-NORMAL-SPACES
@@ -44,6 +39,12 @@
 
 # DONE
 
+- cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
+- el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.
+- crear un method para obtener los cambios (para mandarlo al server)|DONE .getChanges()|
+- cambios en los css selectors de los svg's y adaptarlos.
+- al eliminar una row, no se borra el file de filesUploads. |delear con esto al guardarlo en el server|
+- en modal, en los archivos svg, el btn de eliminar está ligeramente más abajo que en las img's |FIXED (pero feo la vrd)|
 - +config.replaceName al crear tabla para poder evitar que renombre 'name'
 - checar que se generen bien automaticamente los titles, etc en base a "data" (de columns al crear tabla)
 - crear this.Modal_Editor_Obj_files_deletedURL y adaptarlo!! - actualmente estoy en guardarCambiosModal() pero falta establecer Modal_Editor_Obj_files_deletedURL cuando se eliminan los files en el modal (es un array).
