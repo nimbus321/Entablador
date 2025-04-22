@@ -28,7 +28,8 @@
 #### BUENOS
 
 - longTextareaBehavior
-- tipoEdicion
+- editType
+- getChanges
 
 #### POR EXAMINAR
 

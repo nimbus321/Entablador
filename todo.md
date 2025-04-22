@@ -8,6 +8,7 @@
 
 # IDEAS
 
+- en editType inline: si hover una img y paso hover al btn de eliminar, se quita el efecto de opaco en la img (bien), pero lo mismo en svg no funciona, ahí se queda el efecto de opaco a pesar que esta haciendo el hover en el btn y no en el svg. hacer que se quite el efecto (como en img's)
 - hacer que al querer recuperar los cambios, verifique si hay eliminados, y si hay, eliminar de cambios y de filesUploads.
 - order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 - crear una comparación con la tabla (o cambios, pensar mejor esto) inicial para confirmar no dar datos vacios a firestore
@@ -16,18 +17,15 @@
 
 # IDEAS MAS PRÓXIMAS
 
-- en editType inline: si hover una img y paso hover al btn de eliminar, se quita el efecto de opaco en la img (bien), pero lo mismo en svg no funciona, ahí se queda el efecto de opaco a pesar que esta haciendo el hover en el btn y no en el svg. hacer que se quite el efecto (como en img's)
+- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
 
 # TO-DO
 
-- adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. o tal vez, --no se que
-
 # TRABAJANDO EN ELLO
-
-- crear un method para obtener los cambios (para mandarlo al server)
 
 # ULTIMOS HECHOS
 
+- crear un method para obtener los cambios (para mandarlo al server)|DONE .getChanges()|
 - cambios en los css selectors de los svg's y adaptarlos.
 - al eliminar una row, no se borra el file de filesUploads. |delear con esto al guardarlo en el server|
 - el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.

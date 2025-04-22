@@ -287,6 +287,24 @@ const ENTABLADOR = (function () {
 
         return this;
       },
+      getChanges(arg) {
+        if (arg !== undefined) {
+          console.error("El método .getChanges() no acepta argumentos");
+        }
+        var cambios_tabla = ENTABLADOR._.CAMBIOS_TABLAS[ID];
+        if (cambios_tabla == undefined) {
+          return {
+            cambios: {},
+            eliminados: [],
+            filesUploads: [],
+          };
+        }
+        var cambios = cambios_tabla.cambios;
+        var eliminados = cambios_tabla.eliminados;
+        var filesUploads = cambios_tabla.filesUploads;
+
+        return cambios_tabla;
+      },
     };
     return instance;
   }
@@ -1471,7 +1489,6 @@ const ENTABLADOR = (function () {
       console.log("Cambios", Eliminados);
     },
     crearInputModal(input, titleColumn, realNameColumn, table_name) {
-      haz;
       // console.log(input, titleColumn, realNameColumn, table_name);
       if (input == undefined || input === "") {
         console.warn("No se ha especificado un tipo de input para la columna '" + realNameColumn + "'. Se ha puesto '" + ENTABLADOR._.validInputs[0] + "'.");
