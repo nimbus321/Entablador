@@ -21,9 +21,10 @@
 
 - si se hace .editable(false) crear un check si hay cambios (o si hay campos editados; considerar si hay texto azul por ej. en la tabla).
 - al eliminar la tabla, eliminar cualquier tipo de dato guardado de la tabla, por ejemplo en cambios, etc.
-- cambiar el sistema actual de isaar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config
 
 # TRABAJANDO EN ELLO
+
+- cambiar el sistema actual de usar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config >>>>>>>> cambiar a los que están en \_.validCustomOrder.
 
 # ULTIMOS HECHOS
 

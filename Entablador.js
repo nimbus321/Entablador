@@ -408,8 +408,6 @@ const ENTABLADOR = (function () {
 
     config.autoRender = config.autoRender === undefined ? true : config.autoRender;
     config.createDefaultContent = config.createDefaultContent === undefined ? true : config.createDefaultContent;
-    config.fixOrder = config.fixOrder == undefined ? true : config.fixOrder;
-    config.fixOrderEmptyAtBottom = config.fixOrderEmptyAtBottom == undefined ? true : config.fixOrderEmptyAtBottom;
 
     // ##########################################################################################
     // METER COLUMNAS     &&     COLUMNAS NAME = DATA     &&     config.createDefaultContent
@@ -585,11 +583,11 @@ const ENTABLADOR = (function () {
       opciones.order = [[index, "asc"]];
     }
     // ########################################################################
-    // config.fixOrder
+    // config.customOrder
     // ########################################################################
     // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
 
-    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-SPACES-ON-BOTTOM"] = function (settings, col) {
+    $.fn.dataTable.ext.order["SPACES_ON_BOTTOM"] = function (settings, col) {
       // Este order sí pone cuando data === undefined || "" al final.
       var currentOrder = this.api().order();
       var order = ENTABLADOR._.extractOrder(currentOrder);
@@ -652,7 +650,7 @@ const ENTABLADOR = (function () {
           return loguear(String(data));
         });
     };
-    $.fn.dataTable.ext.order["ENTABLADOR-ORDER-NORMAL-SPACES"] = function (settings, col) {
+    $.fn.dataTable.ext.order["NORMAL_SPACES"] = function (settings, col) {
       // Este order no pone al final si data == "" || undefined. No se toma en cuenta.
       return this.api()
         .column(col, { order: "index" })
@@ -692,21 +690,29 @@ const ENTABLADOR = (function () {
           return String(data);
         });
     };
-    if (config.fixOrder) {
-      var obj;
-      if (config.fixOrderEmptyAtBottom) {
-        obj = {
-          targets: "_all",
-          orderDataType: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM",
-        };
+    var obj = {
+      targets: "_all",
+      orderDataType: "",
+    };
+    var customOrder = config.customOrder;
+    var ordenar = true;
+    if (customOrder === undefined) {
+      obj.orderDataType = this._.validCustomOrder[0];
+    } else if (customOrder === false) {
+      ordenar = false;
+    } else {
+      if (this._.validCustomOrder.includes(config.customOrder)) {
+        obj.orderDataType = config.customOrder;
       } else {
-        obj = {
-          targets: "_all",
-          orderDataType: "ENTABLADOR-ORDER-NORMAL-SPACES",
-        };
+        console.warn("El valor de customOrder dado '" + config.customOrder + "' no es válido. Puesto por defecto '" + this._.validCustomOrder[0] + "'. Valores válidos:", this._.validCustomOrder);
+        obj.orderDataType = this._.validCustomOrder[0];
       }
+    }
+    // console.log("orderDataType", obj.orderDataType);
+    if (ordenar) {
       opciones.columnDefs.push(obj);
     }
+
     // ########################################################################
     // Crear funcionamiento de ENTABLADOR-fade en textarea
     // ########################################################################
@@ -943,6 +949,7 @@ const ENTABLADOR = (function () {
     ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
     longTextareaBehavior: ["buttons", "modal", "see all"],
+    validCustomOrder: ["SPACES_ON_BOTTOM", "NORMAL_SPACES", "NORMAL_SPACES_REVERSE"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "textarea"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     requiredFields: {},
@@ -1972,8 +1979,7 @@ const ENTABLADOR = (function () {
 ENTABLADOR.crear({
   id: "TABLA",
   // replaceName: false,
-  // fixOrder: false,
-  // fixOrderEmptyAtBottom: false,
+  customOrder: "SPACES_ON_BOTTOM",
   // createButtons: false,
   // autoRender: false,
   // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?). tiene que ver si no se usa un renderizado en la columna, creo.
