@@ -19,6 +19,9 @@
 
 # TO-DO
 
+- al eliminar la tabla, eliminar cualquier tipo de dato guardado de la tabla, por ejemplo en cambios, etc.
+- cambiar el sistema actual de isaar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config
+
 - al subir archivos con modal, no se ve el svg de editado. supongo porque oculto el div de subir archivos inline y creo que ahi esta el svg de editado.
 - .subirArchivoURL() <- cheacar porque creo que no lo he quitado aún
 

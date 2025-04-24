@@ -141,11 +141,6 @@ const ENTABLADOR = (function () {
         requiredFields[ID] = arg;
         return this;
       },
-      subirArchivoURL(URL) {
-        console.log("subirArchivoURL: ", URL);
-        ENT_TABLA.ENTABLADOR.subirArchivoURL = URL;
-        return this;
-      },
       uploadData(data, dontForceAutoID) {
         /* tener en cuenta que el formato de la DB es
         {
