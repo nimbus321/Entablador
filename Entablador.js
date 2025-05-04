@@ -585,7 +585,6 @@ const ENTABLADOR = (function () {
     // ########################################################################
     // config.customOrder
     // ########################################################################
-    // meter columndefs para que ponga un span.d-none al comienzo del td para que se pueda ordenar correctamente
 
     $.fn.dataTable.ext.order["SPACES_ON_BOTTOM"] = function (settings, col) {
       // Este order sí pone cuando data === undefined || "" al final.

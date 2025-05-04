@@ -19,15 +19,17 @@
 
 # TO-DO
 
+- al guardar un dato de un campo, comparar el valor con el object inicial para sabir si se actualizó a como era antes o si es un valor nuevo. (y crear ese object inicial)
 - si se hace .editable(false) crear un check si hay cambios (o si hay campos editados; considerar si hay texto azul por ej. en la tabla).
 - al eliminar la tabla, eliminar cualquier tipo de dato guardado de la tabla, por ejemplo en cambios, etc.
 
 # TRABAJANDO EN ELLO
 
-- cambiar el sistema actual de usar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config >>>>>>>> cambiar a los que están en \_.validCustomOrder.
+- config.customOrder >>> SPACES_ON_BOTTOM, etc. actualizar y revisar los ordenes, y agregar NORMAL_SPACES_REVERSE
 
 # ULTIMOS HECHOS
 
+- cambiar el sistema actual de usar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config >>>>>>>> cambiar a los que están en \_.validCustomOrder.
 - al subir archivos con modal, no se ve el svg de editado. supongo porque oculto el div de subir archivos inline y creo que ahi esta el svg de editado. |en un futuro mejorar todos los selectores css...|
 - .subirArchivoURL() <- cheacar porque creo que no lo he quitado aún
 - adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. >>>>>>>>>>>> ya pasé FileList a uploadData(), pero falta que lo pueda guardar en cambios y que haga un :blob para ponerlo en el DOM.
