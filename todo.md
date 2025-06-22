@@ -12,21 +12,28 @@
 - hacer que al querer recuperar los cambios, verifique si hay eliminados, y si hay, eliminar de cambios y de filesUploads.
 - order ENTABLADOR-ORDER-NORMAL-SPACES, crear uno que sea al revéz
 - crear una comparación con la tabla (o cambios, pensar mejor esto) inicial para confirmar no dar datos vacios a firestore
-- quitar los svg (ponerlos con ::after)
+
 - volver a checar si puedo actualizar el codigo de usar 'var columnKeyIndex = NuevaTabla.settings()' para usar 'NuevaTabla.column("ENTABLADOR-btn:name")'. MUCHO CUIDADO con esto que fue lo que me rompió el codigo la última vez. hacerlo en 1 solo commit.
 
 # IDEAS MAS PRÓXIMAS
 
 # TO-DO
 
-- al guardar un dato de un campo, comparar el valor con el object inicial para sabir si se actualizó a como era antes o si es un valor nuevo. (y crear ese object inicial)
 - si se hace .editable(false) crear un check si hay cambios (o si hay campos editados; considerar si hay texto azul por ej. en la tabla).
 - al eliminar la tabla, eliminar cualquier tipo de dato guardado de la tabla, por ejemplo en cambios, etc.
 
 # TRABAJANDO EN ELLO
 
+ACTUALMENTE TRABAJANDO EN \_Create_Original_Values()
+
+- (abajo) considerar que si comparo objects (por ej. files) puede que ["file1"] != "file1". esto importa cuando lo comparo para saber si es el mismo, no al momento de guardarlo en si.
+- (abajo) considerar que el original value en base al inputsTypes; por ejemplo en checkboz puede ser false o "false" y debería decir que son iguales.
+- crear el object de valor originales, para desp hacer todo tipo de comparaciones y chequeos (como la siguiente)
+- al guardar un dato de un campo, comparar el valor con el object inicial para sabir si se actualizó a como era antes o si es un valor nuevo. (y crear ese object inicial)
+
 # ULTIMOS HECHOS
 
+- quitar los svg (ponerlos con ::after)-mejor no hacer esto, por qué debería?
 - config.customOrder >>> SPACES_ON_BOTTOM, etc. actualizar y revisar los ordenes. Probablemente igual y se vaya a usar siempre unicamente SPACES_ON_BOTTOM, asi que no preocuparse mucho por NORMAL_SPACES hasta que llegue el momento
 - poner que: si en el orden se detecta que data== defaultContent de la columna, que data=""
 

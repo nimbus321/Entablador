@@ -910,6 +910,8 @@ const ENTABLADOR = (function () {
           var nombreColumna = ENT_TABLA.settings().init().aoColumns[columnIndex].data;
 
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, finalData);
+
+          ENTABLADOR._.Create_Original_Values(table_name, nombreRow, nombreColumna, JSON.parse(JSON.stringify(oldData)));
         } else {
           // Modal_Editor_Obj
           var Editor_files = ENTABLADOR._.Modal_Editor_Obj_files;
@@ -963,6 +965,7 @@ const ENTABLADOR = (function () {
         ##         VARIABLE GLOBAL DE LA LIBRERÍA       ##
         ################################################## */
     CAMBIOS_TABLAS: {},
+    ORIGINAL_VALUES: {},
     Modal_Editor_Obj: {},
     Modal_Editor_Obj_files: {},
     Modal_Editor_Obj_files_deletedURL: [],
@@ -1311,6 +1314,10 @@ const ENTABLADOR = (function () {
           }
           ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
           // console.log("----->", table_name, nombreRow, nombreColumna, newContent);
+          if (typeof originalContent === "object") {
+            originalContent = JSON.parse(JSON.stringify(originalContent));
+          }
+          ENTABLADOR._.Create_Original_Values(table_name, nombreRow, nombreColumna, originalContent);
 
           row[nombreColumna] = newContent;
           ENT_TABLA.draw();
@@ -1349,6 +1356,7 @@ const ENTABLADOR = (function () {
       }
 
       var data = cellDataTables.data();
+      this.Create_Original_Values(table_name, nombreRow, nombreColumna, JSON.parse(JSON.stringify(data)));
       var newContent;
 
       //detect if it is an array
@@ -1858,6 +1866,12 @@ const ENTABLADOR = (function () {
             rowChanged[nombreCol] = rowNueva[nombreCol];
             keysChanged.push(nombreCol);
             ENTABLADOR._.addChanges(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], nombreCol, rowNueva[nombreCol]);
+            if (typeof rowOriginal[nombreCol] === "object") {
+              var orgContent = JSON.parse(JSON.stringify(rowOriginal[nombreCol]));
+            } else {
+              var orgContent = rowOriginal[nombreCol];
+            }
+            ENTABLADOR._.Create_Original_Values(table_name, rowOriginal[ENT_TABLA.ENTABLADOR.key], nombreCol, orgContent);
             // Subir Modal_Editor_Obj_files
             if (inputsTypes && inputsTypes[nombreCol] == "file") {
               // Subir files nuevos subidos a CAMBIOS_TABLAS.filesUploads
@@ -1987,6 +2001,20 @@ const ENTABLADOR = (function () {
           return order[i];
         }
       }
+    },
+    Create_Original_Values: function (table_name, nombreRow, nombreColumna, originalContent) {
+      var exists_OriginalValue = false;
+      if (this.ORIGINAL_VALUES[table_name] && this.ORIGINAL_VALUES[table_name][nombreRow] && this.ORIGINAL_VALUES[table_name][nombreRow][nombreColumna]) {
+        exists_OriginalValue = true;
+      }
+      if (!exists_OriginalValue) {
+        if (this.ORIGINAL_VALUES[table_name] === undefined) {
+          this.ORIGINAL_VALUES[table_name] = {};
+        }
+        this.ORIGINAL_VALUES[table_name][nombreRow] = this.ORIGINAL_VALUES[table_name][nombreRow] || {};
+        this.ORIGINAL_VALUES[table_name][nombreRow][nombreColumna] = originalContent;
+      }
+      console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
     },
   };
   return {
