@@ -25,25 +25,22 @@
 
 # TRABAJANDO EN ELLO
 
-- config.customOrder >>> SPACES_ON_BOTTOM, etc. actualizar y revisar los ordenes, y agregar NORMAL_SPACES_REVERSE
-
 # ULTIMOS HECHOS
 
+- config.customOrder >>> SPACES_ON_BOTTOM, etc. actualizar y revisar los ordenes. Probablemente igual y se vaya a usar siempre unicamente SPACES_ON_BOTTOM, asi que no preocuparse mucho por NORMAL_SPACES hasta que llegue el momento
+- poner que: si en el orden se detecta que data== defaultContent de la columna, que data=""
+
+# FIXED - ON WATCH
+
+# DONE
+
+- considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
+- .\_.extractNumberFromString() reestructurado para habilitar decimales y negativos.
 - cambiar el sistema actual de usar fixOrder y fixOrderEmptyAtBottom y haerlo mejor con una opción de escribir directamente el nombre (ej: "ENTABLADOR-ORDER-SPACES-ON-BOTTOM") al crear la tabla en la config >>>>>>>> cambiar a los que están en \_.validCustomOrder.
 - al subir archivos con modal, no se ve el svg de editado. supongo porque oculto el div de subir archivos inline y creo que ahi esta el svg de editado. |en un futuro mejorar todos los selectores css...|
 - .subirArchivoURL() <- cheacar porque creo que no lo he quitado aún
 - adaptar .uploadData() para habilitar subir files desde ahí. tal vez pasar directamente el File object y dejar al usuario hacer todo el proceso manualmente para generar el File object. >>>>>>>>>>>> ya pasé FileList a uploadData(), pero falta que lo pueda guardar en cambios y que haga un :blob para ponerlo en el DOM.
 - al eliminar files cuando inputType:inline, no se borran los de filesUploads |FIXED|
-
-# FIXED - ON WATCH
-
-- considerar que al crear la tabla, puede que haya un title en el th de la tabla, y actualmente no se tiene en cuenta como title así que se reemplaza con data. hay que detectarlo. DONE
-
-- .\_.extractNumberFromString() reestructurado para habilitar decimales y negativos.
-- terminado ENTABLADOR-ORDER-NORMAL-SPACES
-- terminado ENTABLADOR-ORDER-SPACES-ON-BOTTOM
-
-# DONE
 
 - cuando se establece un defaultContent que no sea "", y se agrega con uploadData() un row, la columna con el defaultContent diferente se pondrá con el svg de :after (verde) que es un nuevo dato. crear un sistema para no ponerlo si es solo defaultContent. SOLUCIONADO pero no estoy seguro si es el desired behavior, por el momento puse para que se quede el svg.
 - el editar un campo que se subió con uploadData() (y por lo tanto esta verde), si se edita cambia a azul. hacer que se quede en verde.

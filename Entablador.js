@@ -605,7 +605,7 @@ const ENTABLADOR = (function () {
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-          // console.log("| data --->", data);
+          console.log("| data --->", data);
           function loguear(retur) {
             // console.log("returned ->", retur);
             // console.log("%creturned ->", "color: red; font-weight: bold;", retur);
@@ -617,10 +617,14 @@ const ENTABLADOR = (function () {
             }
             return order === "asc" ? "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" : order === "desc" ? "" : String(data);
           }
-          if (data === "" || data === undefined) {
+
+          var defaultContent = NuevaTabla.ENTABLADOR.realColumns[indexCol].defaultContent;
+          var noData = ["", undefined, defaultContent].includes(data);
+          if (noData) {
             var isNumber = inputsTypes && ["number", "datetime-local", "date"].includes(inputsTypes[columnaNombre]) ? true : false;
             return loguear(ponerAbajo(data, isNumber));
           }
+
           if (inputsTypes) {
             var inpType = inputsTypes[columnaNombre];
             // console.log("inpType", inpType);
@@ -640,17 +644,25 @@ const ENTABLADOR = (function () {
             } else if (inpType == "datetime-local" || inpType == "date") {
               var D = new Date(data);
               var isValidDate = !isNaN(D.getTime());
-              return loguear(isValidDate ? Number(D.getTime()) : "0");
+              return loguear(isValidDate ? D.getTime() : 0);
             } else if (inpType == "number") {
               return loguear(Number(data));
             }
           }
-          // console.warn("Failsafe - data:", String(data));
           return loguear(String(data));
         });
     };
     $.fn.dataTable.ext.order["NORMAL_SPACES"] = function (settings, col) {
       // Este order no pone al final si data == "" || undefined. No se toma en cuenta.
+      var currentOrder = this.api().order();
+      var order = ENTABLADOR._.extractOrder(currentOrder);
+      // console.log("currentOrder (pre extractOrder())", currentOrder);
+      // console.log("order", order);
+      if (order != "desc" && order != "asc") {
+        console.error("El orden está roto porque no se pudo detectar si asc o desc. Detectado: ", order);
+        return String(data);
+      }
+
       return this.api()
         .column(col, { order: "index" })
         .nodes()
@@ -659,36 +671,45 @@ const ENTABLADOR = (function () {
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-          // console.log("| data -", data);
-
+          // console.log("| data --->", data);
+          function loguear(retur) {
+            // console.log("returned ->", retur);
+            // console.log("%creturned ->", "color: red; font-weight: bold;", retur);
+            return retur;
+          }
+          var defaultContent = NuevaTabla.ENTABLADOR.realColumns[indexCol].defaultContent;
+          var noData = ["", undefined, defaultContent].includes(data);
+          if (noData) {
+            return loguear("");
+          }
           if (inputsTypes) {
             var inpType = inputsTypes[columnaNombre];
             // console.log("inpType", inpType);
-            if (inpType == undefined) {
-              return data;
+            if (inpType == undefined || inpType == "text") {
+              return loguear(String(data));
             } else if (inpType == "file") {
               if (data === "" || data == undefined) {
-                return data;
+                return loguear(data);
               } else if (Array.isArray(data)) {
-                return String(data.length);
+                return loguear(String(data.length));
               } else if (typeof data == "string") {
-                return "1";
+                return loguear("1");
               }
             } else if (inpType == "checkbox") {
               var val = ENTABLADOR._.parseBoolean("string", data);
-              return val === "false" ? "0" : val === "true" ? "1" : val === "undefined" ? String(data) : val;
+              return loguear(val === "false" ? "0" : val === "true" ? "1" : val === "undefined" ? String(data) : val);
             } else if (inpType == "datetime-local" || inpType == "date") {
               var D = new Date(data);
               var isValidDate = !isNaN(D.getTime());
-              return isValidDate ? String(D.getTime()) : "0";
-            } else if (inpType == "text" || inpType == "number") {
-              return data == undefined || data === "" ? data : String(data);
+              return loguear(isValidDate ? D.getTime() : 0);
+            } else if (inpType == "number") {
+              return loguear(data == undefined || data === "" ? data : Number(data));
             }
           }
-          // console.warn("Failsafe - data:", String(data));
-          return String(data);
+          return loguear(String(data));
         });
     };
+
     var obj = {
       targets: "_all",
       orderDataType: "",
@@ -948,7 +969,7 @@ const ENTABLADOR = (function () {
     ultimoTdClickeadoPorModal: null,
     editTypes: ["inline", "modal"],
     longTextareaBehavior: ["buttons", "modal", "see all"],
-    validCustomOrder: ["SPACES_ON_BOTTOM", "NORMAL_SPACES", "NORMAL_SPACES_REVERSE"],
+    validCustomOrder: ["SPACES_ON_BOTTOM", "NORMAL_SPACES", "NORMAL_SPACES_REVERSE", "TEST"],
     validInputs: ["text", "number", "date", "datetime-local", "checkbox", "time", "file", "textarea"],
     MESES: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     requiredFields: {},
@@ -1978,7 +1999,7 @@ const ENTABLADOR = (function () {
 ENTABLADOR.crear({
   id: "TABLA",
   // replaceName: false,
-  customOrder: "SPACES_ON_BOTTOM",
+  customOrder: "NORMAL_SPACES", //SPACES_ON_BOTTOM
   // createButtons: false,
   // autoRender: false,
   // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?). tiene que ver si no se usa un renderizado en la columna, creo.
@@ -1990,7 +2011,6 @@ ENTABLADOR.crear({
       fechaNacimiento: "date",
       humano: "checkbox",
       archivos: "file",
-      archivos2: "file",
       edad: "number",
       notas: "textarea",
     },
@@ -2001,7 +2021,7 @@ ENTABLADOR.crear({
     { data: "edad", title: "Edad", class: "editable" },
     { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
     { data: "notas", title: "Notas", class: "editable" },
-    { data: "humano", title: "Humano", class: "editable", defaultContent: "No especificado" },
+    { data: "humano", title: "Humano", class: "editable" },
     { data: "archivos", title: "Archivos", class: "editable" },
   ],
   columnDefs: [
