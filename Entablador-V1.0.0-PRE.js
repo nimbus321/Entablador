@@ -2030,6 +2030,97 @@ const ENTABLADOR = (function () {
   };
 })();
 
+ENTABLADOR.crear({
+  id: "TABLA",
+  // replaceName: false,
+  customOrder: "NORMAL_SPACES", //SPACES_ON_BOTTOM
+  // createButtons: false,
+  // autoRender: false,
+  // createDefaultContent: false, //si es false, al tratar de renderizar da error si no tiene datos (creo?). tiene que ver si no se usa un renderizado en la columna, creo.
+  meta: {
+    key: "id",
+    secondary_key: "nombre",
+    inputsTypes: {
+      nombre: "text",
+      fechaNacimiento: "date",
+      humano: "checkbox",
+      archivos: "file",
+      edad: "number",
+      notas: "textarea",
+    },
+  },
+  columns: [
+    { data: "id", visible: false },
+    { data: "nombre", title: "Nombre", class: "editable" },
+    { data: "edad", title: "Edad", class: "editable" },
+    { data: "fechaNacimiento", title: "Fecha de Nacimiento", class: "editable" },
+    { data: "notas", title: "Notas", class: "editable" },
+    { data: "humano", title: "Humano", class: "editable" },
+    { data: "archivos", title: "Archivos", class: "editable" },
+  ],
+  columnDefs: [
+    {
+      targets: 1, // nombre
+      render: function (data, type, row, meta) {
+        return data ? data.toUpperCase() : data;
+      },
+    },
+    {
+      targets: 3, // fechaNacimiento
+      render: function (data, type, row, meta) {
+        //detect if it is a date
+        // console.log(data); OJO: HAY UN ERROR QUE NO SE REPLICAR QUE SE PONE LA FECHA CON NaN
+        if (data == null || data === "") {
+          return data;
+        }
+        var fecha = new Date(data);
+        return `${fecha.getDate()} ${ENTABLADOR._.MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
+      },
+    },
+    {
+      targets: 5, // humano
+      render: function (data, type, row, meta) {
+        var value = ENTABLADOR._.parseBoolean("boolean", data);
+        if (value) {
+          return "si!";
+        } else if (value === false) {
+          return "no!";
+        } else if (value === undefined) {
+          return;
+        }
+      },
+    },
+  ],
+  order: [6, "asc"],
+})
+  .editable(true)
+  // .editType("modal")
+  // .modalLarge(true)
+  // .longTextareaBehavior("modal")
+  .requiredFields(["nombre", "id"])
+  .add([
+    {
+      id: 1,
+      nombre: "Caliope",
+      edad: 30,
+      fechaNacimiento: "2000-12-10",
+      humano: false,
+      notas:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl. Curabitur sollicitudin turpis ex, vitae rutrum velit vulputate ac. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer non felis commodo, congue ligula quis, luctus odio. Fusce vel sapien non elit consectetur malesuada quis mollis libero. Suspendisse elementum odio et nisi venenatis pellentesque. Aenean a semper felis. Cras efficitur leo id vestibulum molestie. In eget diam ligula. Integer nec mollis leo, iaculis accumsan orci. In venenatis velit tortor, in tincidunt justo egestas id. Duis vel odio cursus, accumsan dui eleifend, faucibus nulla. Nam pharetra facilisis dolor in tempus. Praesent consequat fermentum lorem, vel pulvinar lacus malesuada in.",
+      archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/210.png", "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf", "https://dummyimage.com/210"],
+    },
+    { id: 2, nombre: "Matthew", edad: 18, fechaNacimiento: "2010-11-23", humano: true, archivos: "https://dummyimage.com/200" },
+    { id: 3, nombre: "Lucien's", edad: 35, fechaNacimiento: "1992-02-17", humano: "false", archivos: ["https://dummyimage.com/200.png", "https://dummyimage.com/200"] },
+    { id: 4, nombre: "John Dee", edad: -30, fechaNacimiento: "2000-04-28", humano: "", archivos: "https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf" },
+    { id: 5, nombre: "Morpheus", edad: 25, fechaNacimiento: "2000-08-04", archivos: "" },
+    { id: 6, nombre: "Corinthian", edad: 40, fechaNacimiento: "2000-01-12", humano: "true", notas: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet feugiat nunc, a imperdiet nisl." },
+    { id: 7 },
+  ]);
+// .uploadData([{ nombre: "10!", archivosa: "file lol" }]);
+
+// Add css rule
 var style = document.createElement("style");
-style.innerHTML = `.ENTABLADOR_EDICION_MODAL .img-thumbnail{width:150px;height:150px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .ENTABLADOR-files .img-thumbnail{width:75px;height:75px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .eliminarFoto{border:0;position:absolute;width:25px;height:25px;cursor:pointer;background-color:red;color:#fff!important;top:0;right:0;border-radius:50%;line-height:18px;text-indent:-2px;font-size:25px;display:flex;align-items:flex-start}.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}td.ENTABLADOR-textarea{max-width:400px}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea{position:relative;overflow:hidden}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade{max-height:100px;overflow:hidden;mask-image:linear-gradient(to bottom,black,transparent);-webkit-mask-image:linear-gradient(to bottom,black,transparent);mask-image:-ms-linear-gradient(top,black,transparent)}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span{cursor:pointer}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore{display:block!important;color:#fff!important;position:absolute;bottom:0;left:0;width:100%;padding:5px;text-align:center}table[data-long-textarea-behavior=buttons] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess,table[data-long-textarea-behavior=modal] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess{display:inline-block!important;text-align:center;color:#fff!important;width:100%}.td-editado:not(:has(.ENTABLADOR-fade-container)):not(:has(label[for=ENTABLADOR_FILE_UPLOADER])):not(.td-editado)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:5px}.td-editado:not(.td-nuevo) .ENTABLADOR-fade-container .ENTABLADOR-fade .ENTABLADOR-textarea-data::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:2px}.td-editado:not(.td-nuevo) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}table[data-edition-type=modal] .td-editado:not(.td-nuevo) div:has(> label[for=ENTABLADOR_FILE_UPLOADER])::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}.td-nuevo:has(img) label[for=ENTABLADOR_FILE_UPLOADER]::before,.td-nuevo:has(svg:not([title="Agregar Archivo"])) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');margin-right:5px;transform:translateY(4px);display:inline-block}tr:not(.ENTABLADOR-row-eliminado).tr-nuevo .td-nuevo-hayTexto:not(.ENTABLADOR-btn)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');transform:translateY(4px);display:inline-block;margin-left:5px}`;
+style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD */`;
 document.head.appendChild(style);
+
+// $("#TABLA tbody tr:eq(1) td:eq(6)").click();
