@@ -27,9 +27,10 @@
 ACTUALMENTE TRABAJANDO EN \_Create_Original_Values()
 
 - (abajo) considerar que si comparo objects (por ej. files) puede que ["file1"] != "file1". esto importa cuando lo comparo para saber si es el mismo, no al momento de guardarlo en si.
-- (abajo) considerar que el original value en base al inputsTypes; por ejemplo en checkboz puede ser false o "false" y debería decir que son iguales.
+- (abajo) considerar que el original value en base al inputsTypes; por ejemplo en checkbox puede ser false o "false" y debería decir que son iguales.
 - crear el object de valor originales, para desp hacer todo tipo de comparaciones y chequeos (como la siguiente)
 - al guardar un dato de un campo, comparar el valor con el object inicial para sabir si se actualizó a como era antes o si es un valor nuevo. (y crear ese object inicial)
+- si el user vuelve al valor original, hay que quitar todos los styles y más importante aún: borrar en CAMBIOS_TABLAS
 
 # ULTIMOS HECHOS
 

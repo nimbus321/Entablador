@@ -1306,6 +1306,7 @@ const ENTABLADOR = (function () {
 
           cellDataTables.data(type_input == "checkbox" ? ENTABLADOR._.parseBoolean("string", newContent) : newContent).draw(false);
 
+          row[nombreColumna] = newContent;
           cell.addClass("td-editado text-primary font-weight-bold");
           cell.attr("title", "Campo Editado");
           var isNewTR = cell.closest("tr").hasClass("ENTABLADOR-row-nuevo");
@@ -1317,9 +1318,14 @@ const ENTABLADOR = (function () {
           if (typeof originalContent === "object") {
             originalContent = JSON.parse(JSON.stringify(originalContent));
           }
-          ENTABLADOR._.Create_Original_Values(table_name, nombreRow, nombreColumna, originalContent);
+          // var REAL_originalContent = false;
+          // if (newContent == REAL_originalContent) {
+          //   console.log("Vuelto!");
 
-          row[nombreColumna] = newContent;
+          //   cell.removeClass("td-editado text-primary font-weight-bold");
+          //   cell.attr("title", "");
+          // }
+          ENTABLADOR._.Create_Original_Values(table_name, nombreRow, nombreColumna, originalContent);
           ENT_TABLA.draw();
         });
       } else if (edition_type == "modal") {
