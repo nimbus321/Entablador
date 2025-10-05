@@ -82,7 +82,7 @@ const ENTABLADOR = (function () {
         }
         // console.log(ID + " -- editable: " + boolean);
         ENT_TABLA.table().node().classList.toggle("editable", boolean);
-        TABLA.column("ENTABLADOR-btn:name").visible(boolean);
+        ENT_TABLA.column("ENTABLADOR-btn:name").visible(boolean);
         return this;
       },
       guardar(boolean) {
@@ -245,6 +245,8 @@ const ENTABLADOR = (function () {
                 cambios: {},
                 eliminados: [],
                 filesUploads: [],
+                filesDeleted: [],
+                filesDeletedFromRow: {},
               };
             }
             ENTABLADOR._.CAMBIOS_TABLAS[ID].filesUploads.push({
@@ -344,13 +346,57 @@ const ENTABLADOR = (function () {
             cambios: {},
             eliminados: [],
             filesUploads: [],
+            filesDeleted: [],
+            filesDeletedFromRow: {},
           };
         }
-        var cambios = cambios_tabla.cambios;
-        var eliminados = cambios_tabla.eliminados;
+
+        var cambios_tabla_NEW = {
+          cambios: cambios_tabla.cambios,
+          eliminados: cambios_tabla.eliminados,
+          filesUploads: cambios_tabla.filesUploads,
+          filesDeleted: cambios_tabla.filesDeleted,
+          filesDeletedFromRow: cambios_tabla.filesDeletedFromRow,
+        };
+        // si hay files en filesUploads que se eliminaron en "eliminados", no duplicarlos
+        var filesUploads_NUEVO = [];
         var filesUploads = cambios_tabla.filesUploads;
 
-        return cambios_tabla;
+        if (cambios_tabla.eliminados) {
+          if (filesUploads) {
+            for (let i = 0; i < filesUploads.length; i++) {
+              var fileUpload = filesUploads[i];
+              var ubicaciones = fileUpload.ubicaciones;
+              var file = fileUpload.file;
+              var url = fileUpload.url;
+              var primary_key_col = ubicaciones[0].primaryKey;
+              // si el archivo no está en eliminados, agregarlo
+              if (!cambios_tabla.eliminados.includes(primary_key_col)) {
+                filesUploads_NUEVO.push({
+                  file: file,
+                  ubicaciones: ubicaciones,
+                  url: url,
+                });
+              }
+            }
+            cambios_tabla_NEW.filesUploads = filesUploads_NUEVO;
+          }
+          var cambios_cambios_NEW = {};
+          for (const key in cambios_tabla.cambios) {
+            if (Object.hasOwnProperty.call(cambios_tabla.cambios, key)) {
+              // only put cambios that are not in eliminados
+              if (!cambios_tabla.eliminados.includes(key)) {
+                cambios_cambios_NEW[key] = cambios_tabla.cambios[key];
+              }
+            }
+          }
+          cambios_tabla_NEW.cambios = cambios_cambios_NEW;
+        }
+
+        return cambios_tabla_NEW;
+      },
+      data() {
+        return ENT_TABLA.data().toArray();
       },
     };
     return instance;
@@ -605,7 +651,7 @@ const ENTABLADOR = (function () {
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-          console.log("| data --->", data);
+          //console.log("| data --->", data);
           function loguear(retur) {
             // console.log("returned ->", retur);
             // console.log("%creturned ->", "color: red; font-weight: bold;", retur);
@@ -749,11 +795,13 @@ const ENTABLADOR = (function () {
 
     // ########################################################################
     // CREAR TABLA
-    console.log("#########################       CREANDO TABLA       ########################");
-    console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
-    console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
-    console.log("############################################################################");
-
+    var loguearCrearTabla = false;
+    if (loguearCrearTabla) {
+      console.log("#########################       CREANDO TABLA       ########################");
+      console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
+      console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
+      console.log("############################################################################");
+    }
     var NuevaTabla = new DataTable("#" + config.id, opciones);
     // ########################################################################
 
@@ -883,6 +931,8 @@ const ENTABLADOR = (function () {
               cambios: {},
               eliminados: [],
               filesUploads: ubicacionesNuevasDeFiles,
+              filesDeleted: [],
+              filesDeletedFromRow: {},
             };
           }
 
@@ -1159,6 +1209,8 @@ const ENTABLADOR = (function () {
           },
           eliminados: [],
           filesUploads: [],
+          filesDeleted: [],
+          filesDeletedFromRow: {},
         };
       } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
         CAMBIOS_TABLAS[table_name].cambios[nombreRow] = contenido;
@@ -1349,7 +1401,6 @@ const ENTABLADOR = (function () {
       var ENT_TABLA = window[tablaName];
       var cellDataTables = ENT_TABLA.cell(cell);
       var link = $(event.target).closest("a").attr("href");
-
       var table_name = ENT_TABLA.table().node().id;
       var nombreRow = ENT_TABLA.row(cell.row).data()[ENT_TABLA.ENTABLADOR.key];
       var nombreColumna = ENT_TABLA.settings().init().aoColumns[cell.column].data;
@@ -1384,10 +1435,15 @@ const ENTABLADOR = (function () {
       }
       ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
       // eliminar de filesUploads
-      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
+      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS[table_name];
 
-      if (CAMBIOS_TABLAS[table_name]) {
-        CAMBIOS_TABLAS[table_name].filesUploads = CAMBIOS_TABLAS[table_name].filesUploads.filter((archivo) => archivo.url != link);
+      if (CAMBIOS_TABLAS) {
+        CAMBIOS_TABLAS.filesUploads = CAMBIOS_TABLAS.filesUploads.filter((archivo) => archivo.url != link);
+        // añadir a filesDeleted
+        // detectar si no empieza por "blob:"
+        if (!link.startsWith("blob:")) {
+          CAMBIOS_TABLAS.filesDeleted.push(link);
+        }
       }
 
       // añadir class .td-editado
@@ -1558,10 +1614,40 @@ const ENTABLADOR = (function () {
         Cambios[tabla_nombre] = {
           cambios: {},
           eliminados: [row[tabla.ENTABLADOR.key]],
+          filesDeleted: [],
+          filesUploads: [],
+          filesDeletedFromRow: {},
         };
       } else {
         Cambios[tabla_nombre].eliminados.push(row[tabla.ENTABLADOR.key]);
       }
+      var all_files_from_row = [];
+      var all_cols_files = [];
+      // get all files from the row using inputsTypes
+      var inputsTypes = tabla.ENTABLADOR.inputsTypes;
+      for (const key in inputsTypes) {
+        if (Object.hasOwnProperty.call(inputsTypes, key)) {
+          const type = inputsTypes[key];
+          if (type == "file") {
+            all_cols_files.push(key);
+          }
+        }
+      }
+      for (let i = 0; i < all_cols_files.length; i++) {
+        const nameColumn = all_cols_files[i];
+        var files = row[nameColumn];
+        if (files && files.length > 0) {
+          if (typeof files == "string") {
+            files = [files];
+          }
+          // if it's not a blob: push it
+          files = files.filter((file) => !file.startsWith("blob:"));
+          if (files.length > 0) {
+            all_files_from_row.push(...files);
+          }
+        }
+      }
+      Cambios[tabla_nombre].filesDeletedFromRow[row[tabla.ENTABLADOR.key]] = all_files_from_row;
       console.log("Cambios", Cambios[tabla_nombre]);
     },
     restoreRow: function (el) {
@@ -1580,6 +1666,10 @@ const ENTABLADOR = (function () {
         if (index > -1) {
           Eliminados.eliminados.splice(index, 1);
         }
+      }
+      // eliminar los archivos de filesDeletedFromRow
+      if (Eliminados && Eliminados.filesDeletedFromRow && Eliminados.filesDeletedFromRow[row[tabla.ENTABLADOR.key]]) {
+        delete Eliminados.filesDeletedFromRow[row[tabla.ENTABLADOR.key]];
       }
       console.log("Cambios", Eliminados);
     },
@@ -2020,7 +2110,7 @@ const ENTABLADOR = (function () {
         this.ORIGINAL_VALUES[table_name][nombreRow] = this.ORIGINAL_VALUES[table_name][nombreRow] || {};
         this.ORIGINAL_VALUES[table_name][nombreRow][nombreColumna] = originalContent;
       }
-      console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
+      //console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
     },
   };
   return {
@@ -2124,3 +2214,4 @@ style.innerHTML = `/* NO OLVIDARSE DE METER EL CSS DE /style.css AQUÍ EN PROD *
 document.head.appendChild(style);
 
 // $("#TABLA tbody tr:eq(1) td:eq(6)").click();
+// NOTA: EDITADO EN COMMIT DESPUÉS DE VER LOS ERRORES QUE SE OLVIDARON ARREGLAR.

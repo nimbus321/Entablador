@@ -82,7 +82,7 @@ const ENTABLADOR = (function () {
         }
         // console.log(ID + " -- editable: " + boolean);
         ENT_TABLA.table().node().classList.toggle("editable", boolean);
-        TABLA.column("ENTABLADOR-btn:name").visible(boolean);
+        ENT_TABLA.column("ENTABLADOR-btn:name").visible(boolean);
         return this;
       },
       guardar(boolean) {
@@ -245,6 +245,8 @@ const ENTABLADOR = (function () {
                 cambios: {},
                 eliminados: [],
                 filesUploads: [],
+                filesDeleted: [],
+                filesDeletedFromRow: {},
               };
             }
             ENTABLADOR._.CAMBIOS_TABLAS[ID].filesUploads.push({
@@ -344,13 +346,56 @@ const ENTABLADOR = (function () {
             cambios: {},
             eliminados: [],
             filesUploads: [],
+            filesDeleted: [],
+            filesDeletedFromRow: {},
           };
         }
-        var cambios = cambios_tabla.cambios;
-        var eliminados = cambios_tabla.eliminados;
+        var cambios_tabla_NEW = {
+          cambios: cambios_tabla.cambios,
+          eliminados: cambios_tabla.eliminados,
+          filesUploads: cambios_tabla.filesUploads,
+          filesDeleted: cambios_tabla.filesDeleted,
+          filesDeletedFromRow: cambios_tabla.filesDeletedFromRow,
+        };
+        // si hay files en filesUploads que se eliminaron en "eliminados", no duplicarlos
+        var filesUploads_NUEVO = [];
         var filesUploads = cambios_tabla.filesUploads;
 
-        return cambios_tabla;
+        if (cambios_tabla.eliminados) {
+          if (filesUploads) {
+            for (let i = 0; i < filesUploads.length; i++) {
+              var fileUpload = filesUploads[i];
+              var ubicaciones = fileUpload.ubicaciones;
+              var file = fileUpload.file;
+              var url = fileUpload.url;
+              var primary_key_col = ubicaciones[0].primaryKey;
+              // si el archivo no está en eliminados, agregarlo
+              if (!cambios_tabla.eliminados.includes(primary_key_col)) {
+                filesUploads_NUEVO.push({
+                  file: file,
+                  ubicaciones: ubicaciones,
+                  url: url,
+                });
+              }
+            }
+            cambios_tabla_NEW.filesUploads = filesUploads_NUEVO;
+          }
+          var cambios_cambios_NEW = {};
+          for (const key in cambios_tabla.cambios) {
+            if (Object.hasOwnProperty.call(cambios_tabla.cambios, key)) {
+              // only put cambios that are not in eliminados
+              if (!cambios_tabla.eliminados.includes(key)) {
+                cambios_cambios_NEW[key] = cambios_tabla.cambios[key];
+              }
+            }
+          }
+          cambios_tabla_NEW.cambios = cambios_cambios_NEW;
+        }
+
+        return cambios_tabla_NEW;
+      },
+      data() {
+        return ENT_TABLA.data().toArray();
       },
     };
     return instance;
@@ -605,7 +650,7 @@ const ENTABLADOR = (function () {
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-          console.log("| data --->", data);
+          //console.log("| data --->", data);
           function loguear(retur) {
             // console.log("returned ->", retur);
             // console.log("%creturned ->", "color: red; font-weight: bold;", retur);
@@ -749,10 +794,13 @@ const ENTABLADOR = (function () {
 
     // ########################################################################
     // CREAR TABLA
-    console.log("#########################       CREANDO TABLA       ########################");
-    console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
-    console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
-    console.log("############################################################################");
+    var loguearCrearTabla = false;
+    if (loguearCrearTabla) {
+      console.log("#########################       CREANDO TABLA       ########################");
+      console.log("OPCIONES (ACTUAL THING):", JSON.parse(JSON.stringify(opciones)));
+      console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
+      console.log("############################################################################");
+    }
 
     var NuevaTabla = new DataTable("#" + config.id, opciones);
     // ########################################################################
@@ -883,6 +931,8 @@ const ENTABLADOR = (function () {
               cambios: {},
               eliminados: [],
               filesUploads: ubicacionesNuevasDeFiles,
+              filesDeleted: [],
+              filesDeletedFromRow: {},
             };
           }
 
@@ -1159,6 +1209,8 @@ const ENTABLADOR = (function () {
           },
           eliminados: [],
           filesUploads: [],
+          filesDeleted: [],
+          filesDeletedFromRow: {},
         };
       } else if (!CAMBIOS_TABLAS[table_name].cambios[nombreRow]) {
         CAMBIOS_TABLAS[table_name].cambios[nombreRow] = contenido;
@@ -1384,10 +1436,15 @@ const ENTABLADOR = (function () {
       }
       ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
       // eliminar de filesUploads
-      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS;
+      var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS[table_name];
 
-      if (CAMBIOS_TABLAS[table_name]) {
-        CAMBIOS_TABLAS[table_name].filesUploads = CAMBIOS_TABLAS[table_name].filesUploads.filter((archivo) => archivo.url != link);
+      if (CAMBIOS_TABLAS) {
+        CAMBIOS_TABLAS.filesUploads = CAMBIOS_TABLAS.filesUploads.filter((archivo) => archivo.url != link);
+        // añadir a filesDeleted
+        // detectar si no empieza por "blob:"
+        if (!link.startsWith("blob:")) {
+          CAMBIOS_TABLAS.filesDeleted.push(link);
+        }
       }
 
       // añadir class .td-editado
@@ -1558,10 +1615,42 @@ const ENTABLADOR = (function () {
         Cambios[tabla_nombre] = {
           cambios: {},
           eliminados: [row[tabla.ENTABLADOR.key]],
+          filesDeleted: [],
+          filesUploads: [],
+          filesDeletedFromRow: {},
         };
       } else {
         Cambios[tabla_nombre].eliminados.push(row[tabla.ENTABLADOR.key]);
       }
+
+      var all_files_from_row = [];
+      var all_cols_files = [];
+      // get all files from the row using inputsTypes
+      var inputsTypes = tabla.ENTABLADOR.inputsTypes;
+      for (const key in inputsTypes) {
+        if (Object.hasOwnProperty.call(inputsTypes, key)) {
+          const type = inputsTypes[key];
+          if (type == "file") {
+            all_cols_files.push(key);
+          }
+        }
+      }
+      for (let i = 0; i < all_cols_files.length; i++) {
+        const nameColumn = all_cols_files[i];
+        var files = row[nameColumn];
+        if (files && files.length > 0) {
+          if (typeof files == "string") {
+            files = [files];
+          }
+          // if it's not a blob: push it
+          files = files.filter((file) => !file.startsWith("blob:"));
+          if (files.length > 0) {
+            all_files_from_row.push(...files);
+          }
+        }
+      }
+      Cambios[tabla_nombre].filesDeletedFromRow[row[tabla.ENTABLADOR.key]] = all_files_from_row;
+
       console.log("Cambios", Cambios[tabla_nombre]);
     },
     restoreRow: function (el) {
@@ -1580,6 +1669,10 @@ const ENTABLADOR = (function () {
         if (index > -1) {
           Eliminados.eliminados.splice(index, 1);
         }
+      }
+      // eliminar los archivos de filesDeletedFromRow
+      if (Eliminados && Eliminados.filesDeletedFromRow && Eliminados.filesDeletedFromRow[row[tabla.ENTABLADOR.key]]) {
+        delete Eliminados.filesDeletedFromRow[row[tabla.ENTABLADOR.key]];
       }
       console.log("Cambios", Eliminados);
     },
@@ -2020,7 +2113,7 @@ const ENTABLADOR = (function () {
         this.ORIGINAL_VALUES[table_name][nombreRow] = this.ORIGINAL_VALUES[table_name][nombreRow] || {};
         this.ORIGINAL_VALUES[table_name][nombreRow][nombreColumna] = originalContent;
       }
-      console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
+      //console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
     },
   };
   return {
@@ -2031,5 +2124,5 @@ const ENTABLADOR = (function () {
 })();
 
 var style = document.createElement("style");
-style.innerHTML = `.ENTABLADOR_EDICION_MODAL .img-thumbnail{width:150px;height:150px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .ENTABLADOR-files .img-thumbnail{width:75px;height:75px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .eliminarFoto{border:0;position:absolute;width:25px;height:25px;cursor:pointer;background-color:red;color:#fff!important;top:0;right:0;border-radius:50%;line-height:18px;text-indent:-2px;font-size:25px;display:flex;align-items:flex-start}.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}td.ENTABLADOR-textarea{max-width:400px}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea{position:relative;overflow:hidden}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade{max-height:100px;overflow:hidden;mask-image:linear-gradient(to bottom,black,transparent);-webkit-mask-image:linear-gradient(to bottom,black,transparent);mask-image:-ms-linear-gradient(top,black,transparent)}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span{cursor:pointer}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore{display:block!important;color:#fff!important;position:absolute;bottom:0;left:0;width:100%;padding:5px;text-align:center}table[data-long-textarea-behavior=buttons] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess,table[data-long-textarea-behavior=modal] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess{display:inline-block!important;text-align:center;color:#fff!important;width:100%}.td-editado:not(:has(.ENTABLADOR-fade-container)):not(:has(label[for=ENTABLADOR_FILE_UPLOADER])):not(.td-editado)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:5px}.td-editado:not(.td-nuevo) .ENTABLADOR-fade-container .ENTABLADOR-fade .ENTABLADOR-textarea-data::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:2px}.td-editado:not(.td-nuevo) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}table[data-edition-type=modal] .td-editado:not(.td-nuevo) div:has(> label[for=ENTABLADOR_FILE_UPLOADER])::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}.td-nuevo:has(img) label[for=ENTABLADOR_FILE_UPLOADER]::before,.td-nuevo:has(svg:not([title="Agregar Archivo"])) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');margin-right:5px;transform:translateY(4px);display:inline-block}tr:not(.ENTABLADOR-row-eliminado).tr-nuevo .td-nuevo-hayTexto:not(.ENTABLADOR-btn)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');transform:translateY(4px);display:inline-block;margin-left:5px}`;
+style.innerHTML = `.ENTABLADOR_EDICION_MODAL .img-thumbnail{width:150px;height:150px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .ENTABLADOR-files .img-thumbnail{width:75px;height:75px;object-fit:cover}.ENTABLADOR_EDICION_MODAL .eliminarFoto{border:0;position:absolute;width:25px;height:25px;cursor:pointer;background-color:red;color:#fff!important;top:0;right:0;border-radius:50%;line-height:18px;text-indent:-2px;font-size:25px;display:flex;align-items:flex-start}.ENTABLADOR-row-eliminado{color:var(--danger)!important;text-decoration:line-through;font-weight:700;text-decoration-thickness:3px}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-eliminarRow{display:none}tr.ENTABLADOR-row-eliminado div.ENTABLADOR-restoreRow{display:block!important}table.editable .ENTABLADOR-tabla-anchor{position:relative}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) .ENTABLADOR-tabla-anchor:hover .ENTABLADOR-btn-eliminar{position:absolute!important;display:block!important;bottom:-24px;left:2px;color:var(--danger);width:max-content;z-index:1}table.editable[data-edition-type=inline] tr:not(.ENTABLADOR-row-eliminado) label[for=ENTABLADOR_FILE_UPLOADER]{display:block}table tr.ENTABLADOR-row-eliminado label[for=ENTABLADOR_FILE_UPLOADER],table:not(.editable) label[for=ENTABLADOR_FILE_UPLOADER],table:not([data-edition-type=inline]) label[for=ENTABLADOR_FILE_UPLOADER]{display:none}a.ENTABLADOR-tabla-anchor img:hover{filter:brightness(80%)}td.ENTABLADOR-textarea{max-width:400px}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea{position:relative;overflow:hidden}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade{max-height:100px;overflow:hidden;mask-image:linear-gradient(to bottom,black,transparent);-webkit-mask-image:linear-gradient(to bottom,black,transparent);mask-image:-ms-linear-gradient(top,black,transparent)}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-fade>span{cursor:pointer}table[data-long-textarea-behavior=buttons] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore,table[data-long-textarea-behavior=modal] td.ENTABLADOR-textarea div.ENTABLADOR-activeFade div.ENTABLADOR-seeMore{display:block!important;color:#fff!important;position:absolute;bottom:0;left:0;width:100%;padding:5px;text-align:center}table[data-long-textarea-behavior=buttons] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess,table[data-long-textarea-behavior=modal] .ENTABLADOR-fade-container.ENTABLADOR-seeLess-container .ENTABLADOR-seeLess{display:inline-block!important;text-align:center;width:100%}.td-editado:not(:has(.ENTABLADOR-fade-container)):not(:has(label[for=ENTABLADOR_FILE_UPLOADER])):not(.td-nuevo)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:5px}.td-editado:not(.td-nuevo) .ENTABLADOR-fade-container .ENTABLADOR-fade .ENTABLADOR-textarea-data::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-left:2px}.td-editado:not(.td-nuevo) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}table[data-edition-type=modal] .td-editado:not(.td-nuevo) div:has(> label[for=ENTABLADOR_FILE_UPLOADER])::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="rgb(0, 123, 255)" version="1.1" width="15px" height="15px" viewBox="0 0 528.899 528.899" xml:space="preserve"><g><path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981   c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611   C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069   L27.473,390.597L0.3,512.69z"/></g></svg>');margin-right:5px;transform:translateY(2px);display:inline-block}.td-nuevo:has(img) label[for=ENTABLADOR_FILE_UPLOADER]::before,.td-nuevo:has(svg:not([title="Agregar Archivo"])) label[for=ENTABLADOR_FILE_UPLOADER]::before{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');margin-right:5px;transform:translateY(4px);display:inline-block}tr:not(.ENTABLADOR-row-eliminado).tr-nuevo .td-nuevo-hayTexto:not(.ENTABLADOR-btn)::after{content:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="color:rgb(40, 167, 69);" width="20px" height="20px" fill="currentColor" viewBox="0 0 512 512" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="currentColor" transform="translate(85.333333, 85.333333)"><path d="M170.666667,1.42108547e-14 C264.923264,-3.10380131e-15 341.333333,76.4100694 341.333333,170.666667 C341.333333,264.923264 264.923264,341.333333 170.666667,341.333333 C76.4100694,341.333333 2.57539587e-14,264.923264 1.42108547e-14,170.666667 C2.6677507e-15,76.4100694 76.4100694,3.15255107e-14 170.666667,1.42108547e-14 Z M192,85.3333333 L149.333333,85.3333333 L149.333333,149.333333 L85.3333333,149.333333 L85.3333333,192 L149.333333,191.999333 L149.333333,256 L192,256 L191.999333,191.999333 L256,192 L256,149.333333 L191.999333,149.333333 L192,85.3333333 Z"></path></g></g></svg>');transform:translateY(4px);display:inline-block;margin-left:5px}`;
 document.head.appendChild(style);
