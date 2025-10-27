@@ -113,20 +113,20 @@ const ENTABLADOR = (function () {
           */
           if (Array.isArray(data)) {
             if (typeof data[0] == "object") {
-              ENT_TABLA.rows.add(data).draw();
+              ENT_TABLA.rows.add(data).draw(false);
             } else if (data[0] != null) {
-              ENT_TABLA.row.add(data).draw();
+              ENT_TABLA.row.add(data).draw(false);
             }
           } else {
-            ENT_TABLA.row.add(data).draw();
+            ENT_TABLA.row.add(data).draw(false);
           }
         }
         return this;
       },
-      draw() {
+      draw(arg) {
         console.log("Drawing table");
         if (ENT_TABLA != null && !(ENT_TABLA instanceof Element)) {
-          ENT_TABLA.draw();
+          ENT_TABLA.draw(arg);
         }
         return this;
       },
@@ -263,7 +263,7 @@ const ENTABLADOR = (function () {
         // ##############################################################
 
         // subir a la tabla y poner la class .newData a la row
-        var rows = ENT_TABLA.rows.add(data).draw().nodes();
+        var rows = ENT_TABLA.rows.add(data).draw(false).nodes();
         $(rows).addClass("font-weight-bold text-success tr-nuevo").attr("title", "Dato Nuevo");
         $(rows).find("td").addClass("text-success td-nuevo");
         // en cada celda que tenga algun dato poner el svg new
@@ -357,6 +357,7 @@ const ENTABLADOR = (function () {
           filesDeleted: cambios_tabla.filesDeleted,
           filesDeletedFromRow: cambios_tabla.filesDeletedFromRow,
         };
+
         // si hay files en filesUploads que se eliminaron en "eliminados", no duplicarlos
         var filesUploads_NUEVO = [];
         var filesUploads = cambios_tabla.filesUploads;
@@ -380,6 +381,7 @@ const ENTABLADOR = (function () {
             }
             cambios_tabla_NEW.filesUploads = filesUploads_NUEVO;
           }
+
           var cambios_cambios_NEW = {};
           for (const key in cambios_tabla.cambios) {
             if (Object.hasOwnProperty.call(cambios_tabla.cambios, key)) {
@@ -389,6 +391,7 @@ const ENTABLADOR = (function () {
               }
             }
           }
+
           cambios_tabla_NEW.cambios = cambios_cambios_NEW;
         }
 
@@ -635,8 +638,7 @@ const ENTABLADOR = (function () {
       var api = new $.fn.dataTable.Api(settings);
       var tableId = $(api.table().node()).attr("id");
       var NuevaTabla = window[tableId];
-       
-       // Este order sí pone cuando data === undefined || "" al final.
+      // Este order sí pone cuando data === undefined || "" al final.
       var currentOrder = this.api().order();
       var order = ENTABLADOR._.extractOrder(currentOrder);
       // console.log("currentOrder (pre extractOrder())", currentOrder);
@@ -652,12 +654,30 @@ const ENTABLADOR = (function () {
         .map(function (td, i) {
           var data = NuevaTabla.cell(td).data();
           var inputsTypes = NuevaTabla.ENTABLADOR.inputsTypes;
+          var debug = false;
+          if (debug) {
+            console.log("############# DEBUG ORDER #############");
+            console.log("NuevaTabla", NuevaTabla);
+            console.log("td", td);
+            console.log("NuevaTabla.cell(td)", NuevaTabla.cell(td));
+            console.log("NuevaTabla.cell(td).index()", NuevaTabla.cell(td).index());
+            console.log("#######################################");
+          }
+          // var api = new $.fn.dataTable.Api(settings);
+          // var datax = api.cell(td).data();
+          // var inputsTypes = api.settings()[0].oInit.meta?.inputsTypes;
+          // console.log("api", api);
+          // console.log("api.cell(td)", api.cell(td));
+          // console.log("api.cell(td).index()", api.cell(td).index());
+          // console.log("datax", datax);
+          // console.log("inputsTypes", inputsTypes);
+
           var indexCol = NuevaTabla.cell(td).index().column;
           var columnaNombre = NuevaTabla.ENTABLADOR.realColumns[indexCol].data;
-          //console.log("| data --->", data);
+          //   console.log("| data --->", data);
           function loguear(retur) {
-            // console.log("returned ->", retur);
-            // console.log("%creturned ->", "color: red; font-weight: bold;", retur);
+            //console.log("returned ->", retur);
+            //console.log("%creturned ->", "color: red; font-weight: bold;", retur);
             return retur;
           }
           function ponerAbajo(data, isNumber) {
@@ -681,6 +701,7 @@ const ENTABLADOR = (function () {
             //remplazar todas las tildes por la letra respectiva sin tilde
             data = data.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           }
+
           if (inputsTypes) {
             var inpType = inputsTypes[columnaNombre];
             // console.log("inpType", inpType);
@@ -712,7 +733,7 @@ const ENTABLADOR = (function () {
       var api = new $.fn.dataTable.Api(settings);
       var tableId = $(api.table().node()).attr("id");
       var NuevaTabla = window[tableId];
-       
+
       // Este order no pone al final si data == "" || undefined. No se toma en cuenta.
       var currentOrder = this.api().order();
       var order = ENTABLADOR._.extractOrder(currentOrder);
@@ -824,7 +845,6 @@ const ENTABLADOR = (function () {
       console.log("CONFIG:", JSON.parse(JSON.stringify(config)));
       console.log("############################################################################");
     }
-
     var NuevaTabla = new DataTable("#" + config.id, opciones);
     // ########################################################################
 
@@ -836,6 +856,7 @@ const ENTABLADOR = (function () {
     NuevaTabla.ENTABLADOR.key = config.meta && config.meta.key ? config.meta.key : null;
     NuevaTabla.ENTABLADOR.secondary_key = config.meta && config.meta.secondary_key ? config.meta.secondary_key : null;
     NuevaTabla.ENTABLADOR.inputsTypes = config.meta && config.meta.inputsTypes;
+    NuevaTabla.ENTABLADOR.element_ID = config.id;
     // NuevaTabla.ENTABLADOR.orderInicial = config.order ? config.order[1] : opciones.order[0][1]; // probablemente traiga problemas. revisar si datatables deja meter otro formato
     // ni idea que poner arriba. cuando trabaje en el order ver esto
 
@@ -1401,7 +1422,7 @@ const ENTABLADOR = (function () {
           //   cell.attr("title", "");
           // }
           ENTABLADOR._.Create_Original_Values(table_name, nombreRow, nombreColumna, originalContent);
-          ENT_TABLA.draw();
+          ENT_TABLA.draw(false);
         });
       } else if (edition_type == "modal") {
         var row = ENT_TABLA.row(el).data();
@@ -1424,7 +1445,6 @@ const ENTABLADOR = (function () {
       var ENT_TABLA = window[tablaName];
       var cellDataTables = ENT_TABLA.cell(cell);
       var link = $(event.target).closest("a").attr("href");
-
       var table_name = ENT_TABLA.table().node().id;
       var nombreRow = ENT_TABLA.row(cell.row).data()[ENT_TABLA.ENTABLADOR.key];
       var nombreColumna = ENT_TABLA.settings().init().aoColumns[cell.column].data;
@@ -1458,6 +1478,7 @@ const ENTABLADOR = (function () {
         }
       }
       ENTABLADOR._.addChanges(table_name, nombreRow, nombreColumna, newContent);
+
       // eliminar de filesUploads
       var CAMBIOS_TABLAS = ENTABLADOR._.CAMBIOS_TABLAS[table_name];
 
@@ -1645,7 +1666,6 @@ const ENTABLADOR = (function () {
       } else {
         Cambios[tabla_nombre].eliminados.push(row[tabla.ENTABLADOR.key]);
       }
-
       var all_files_from_row = [];
       var all_cols_files = [];
       // get all files from the row using inputsTypes
@@ -2136,7 +2156,7 @@ const ENTABLADOR = (function () {
         this.ORIGINAL_VALUES[table_name][nombreRow] = this.ORIGINAL_VALUES[table_name][nombreRow] || {};
         this.ORIGINAL_VALUES[table_name][nombreRow][nombreColumna] = originalContent;
       }
-      //console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
+      // console.log("_.ORIGINAL_VALUES", this.ORIGINAL_VALUES);
     },
   };
   return {
