@@ -632,7 +632,11 @@ const ENTABLADOR = (function () {
     // ########################################################################
 
     $.fn.dataTable.ext.order["SPACES_ON_BOTTOM"] = function (settings, col) {
-      // Este order sí pone cuando data === undefined || "" al final.
+      var api = new $.fn.dataTable.Api(settings);
+      var tableId = $(api.table().node()).attr("id");
+      var NuevaTabla = window[tableId];
+       
+       // Este order sí pone cuando data === undefined || "" al final.
       var currentOrder = this.api().order();
       var order = ENTABLADOR._.extractOrder(currentOrder);
       // console.log("currentOrder (pre extractOrder())", currentOrder);
@@ -705,6 +709,10 @@ const ENTABLADOR = (function () {
         });
     };
     $.fn.dataTable.ext.order["NORMAL_SPACES"] = function (settings, col) {
+      var api = new $.fn.dataTable.Api(settings);
+      var tableId = $(api.table().node()).attr("id");
+      var NuevaTabla = window[tableId];
+       
       // Este order no pone al final si data == "" || undefined. No se toma en cuenta.
       var currentOrder = this.api().order();
       var order = ENTABLADOR._.extractOrder(currentOrder);
