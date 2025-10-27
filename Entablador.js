@@ -669,7 +669,14 @@ const ENTABLADOR = (function () {
             var isNumber = inputsTypes && ["number", "datetime-local", "date"].includes(inputsTypes[columnaNombre]) ? true : false;
             return loguear(ponerAbajo(data, isNumber));
           }
-
+          if (typeof data === "string") {
+            data = data
+              .trim()
+              .replace(/\s+/g, " ") // replace multiple spaces with a single space
+              .toLowerCase();
+            //remplazar todas las tildes por la letra respectiva sin tilde
+            data = data.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          }
           if (inputsTypes) {
             var inpType = inputsTypes[columnaNombre];
             // console.log("inpType", inpType);
@@ -726,6 +733,14 @@ const ENTABLADOR = (function () {
           var noData = ["", undefined, defaultContent].includes(data);
           if (noData) {
             return loguear("");
+          }
+          if (typeof data === "string") {
+            data = data
+              .trim()
+              .replace(/\s+/g, " ") // replace multiple spaces with a single space
+              .toLowerCase();
+            //remplazar todas las tildes por la letra respectiva sin tilde
+            data = data.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           }
           if (inputsTypes) {
             var inpType = inputsTypes[columnaNombre];
